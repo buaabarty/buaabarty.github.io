@@ -7,6 +7,7 @@ main:
     pdf: https://arxiv.org/pdf/2406.13972
     code: https://github.com/buaabarty/CREF
     bibtex: https://bib.yliu.me/MICCAI23.txt
+    image:
     notes: Research Track / Oral Presentation
 
   - title: WASTK: A weighted abstract syntax tree kernel method for source code plagiarism detection
