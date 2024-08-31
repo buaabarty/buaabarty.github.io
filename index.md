@@ -4,19 +4,16 @@ layout: homepage
 
 ## About Me
 
-I am a Ph.D. student at ...
+I am a Ph.D. student at Yanshan University under the supervision of Prof. Shunfu Jin, and also CTO of Jisuanke Co. Ltd. I obtained by bachelor and master degree from Beihang University, under the supervision of Prof. Zhoujun Li. I am a Senior Member of China Compter Fedoration (CCF).
 
 ## Research Interests
-
-- **Computer Vision:** image recognition, image generation, video captioning
-- **Machine Learning:** meta-learning, incremental learning, transfer learning
+- Software Repair and Software Engineering
+- Computer Science Education
 
 ## News
 
-- **[Feb. 2020]** Our paper about incremental learning is accepted to CVPR 2020.
-- **[Feb. 2020]** We will host the ACM Multimedia Asia 2020 conference in Singapore!
-- **[Sept. 2019]** Our paper about few-shot learning is accepted to NeurIPS 2019.
-- **[Mar. 2019]** Our paper about few-shot learning is accepted to CVPR 2019.
+- **[Aug, 2024]** Invited as a subreviewer of APSEC'24.
+- **[Jul, 2024]** One paper was accepted by ISSTA'24.
 
 {% include_relative _includes/publications.md %}
 
