@@ -1,22 +1,22 @@
 # Basic Information 
-title: Your Name
+title: Boyang Yang
 position: Ph.D. Student
-affiliation: Your Affiliation
-email: yourname (at) example.edu
+affiliation: Yanshan University (Also as CTO of Jisuanke Co. Ltd.)
+email: yangboyang@jisuanke.com
 
 # Search Engine Optimization (SEO)
 # The following information is used to improve the website traffic from search engines, e.g., Google.
-keywords: minimal light
-description: The Minimal Light is a simple and elegant jekyll theme for academic personal homepage.
-canonical: https://minimal-light-theme.yliu.me/
+keywords: Boyang Yang, Researcher, Homepage
+description: This is the researcher homepage of Boyang Yang.
+canonical: https://buaabarty.github.io/
 
 # Links 
 # If you don't need one of them, you may delete the corresponding line.
-google_scholar: https://scholar.google.com/
+google_scholar: https://scholar.google.com/citations?user=FpRGRi4AAAAJ
 cv_link: assets/files/curriculum_vitae.pdf
-github_link: https://github.com/
-linkedin: https://www.linkedin.com/
-twitter: https://twitter.com/
+github_link: https://github.com/buaabarty
+linkedin: https://www.linkedin.com/in/buaabarty
+twitter: https://twitter.com/buaabarty
 
 # Images (e.g., your profile picture and your website's favicon) 
 # "favicon" and "favicon_dark" are used for the light and dark modes, respectively. 
