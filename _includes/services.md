@@ -9,7 +9,7 @@
 <h4 style="margin:0 10px 0;">Academic Positions</h4>
 
 <ul style="margin:0 0 5px;">
-  <li><a href="https://conf.researchr.org/home/apsec-2024"><autocolor>Senior Member of China Computer Fedoration</autocolor></a></li>
-  <li><a href="https://conf.researchr.org/home/apsec-2024"><autocolor>Committee member of CTO Club and YOCSEF, China Computer Fedoration</autocolor></a></li>
-  <li><a href="https://conf.researchr.org/home/apsec-2024"><autocolor>External Supervisor at Wuhan University</autocolor></a></li>
+  <li><autocolor>Senior Member of China Computer Fedoration</autocolor></li>
+  <li><autocolor>Committee member of CTO Club and YOCSEF, China Computer Fedoration</autocolor></li>
+  <li><autocolor>External Supervisor at Wuhan University</autocolor></li>
 </ul>
