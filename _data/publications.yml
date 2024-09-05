@@ -12,3 +12,10 @@ main:
     authors: Deqiang Fu, Yanyan Xu, Haoran Yu, <strong>Boyang Yang</strong>
     conference: Scientific Programming, 2017
     pdf: https://onlinelibrary.wiley.com/doi/pdf/10.1155/2017/7809047
+
+  - title: "Automated interactive visualization on abstract concepts in computer science"
+    authors: Congmin Mao, Haoran Yu, Jiaxin Shi, Tingjun Cai, <strong>Boyang Yang</strong>
+    conference_short: ITiCSE
+    conference: "ITiCSE '16: Innovation and Technology in Computer Science Education Conference 2016"
+    pdf: https://dl6.globalstf.org/index.php/joc/article/viewFile/1779/2308
+    code: https://github.com/Jisuanke/CSVisFrame
