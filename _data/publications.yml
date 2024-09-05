@@ -8,6 +8,6 @@ main:
     code: https://github.com/buaabarty/CREF
 
   - title: "WASTK: A weighted abstract syntax tree kernel method for source code plagiarism detection"
-    authors: Deqiang Fu, Yanyan Xu, Haoran Yu, Boyang Yang
+    authors: Deqiang Fu, Yanyan Xu, Haoran Yu, <strong>Boyang Yang</strong>
     conference: Scientific Programming, 2017
     pdf: https://onlinelibrary.wiley.com/doi/pdf/10.1155/2017/7809047
