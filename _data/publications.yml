@@ -4,7 +4,7 @@ main:
     authors: <strong>Boyang Yang</strong>, Haoye Tian, Weiguo Pian, Haoran Yu, Haitao Wang, Jacques Klein, Tegawendé F Bissyandé, Shunfu Jin
     conference_short: ISSTA
     conference: 33rd ACM SIGSOFT International Symposium on Software Testing and Analysis (ISSTA), 2024.
-    pdf: https://arxiv.org/pdf/2406.13972
+    pdf: https://dl.acm.org/doi/pdf/10.1145/3650212.3680328
     code: https://github.com/buaabarty/CREF
     page: https://tutorcode.org/
 
