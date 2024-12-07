@@ -12,6 +12,7 @@ I am a Ph.D. candidate at Yanshan University under the supervision of Prof. Shun
 
 ## News
 
+- **[Dec, 2024]** Invited as a reviewer of IJCNN'25.
 - **[Aug, 2024]** Invited as a subreviewer of APSEC'24.
 - **[Jul, 2024]** One paper was accepted by ISSTA'24.
 
