@@ -12,6 +12,7 @@ I am a Ph.D. candidate at Yanshan University under the supervision of Prof. Shun
 
 ## News
 
+- **[May, 2025]** Two paper were accepted by TOSEM.
 - **[Mar, 2025]** Invited as a reviewer of ICIC'25.
 - **[Dec, 2024]** Invited as a reviewer of IJCNN'25.
 - **[Aug, 2024]** Invited as a subreviewer of APSEC'24.

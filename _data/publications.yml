@@ -1,5 +1,19 @@
 main:
 
+  - title: "Teaching LLMs to Repair Code via Multi-Objective Fine-tuning"
+    authors: <strong>Boyang Yang</strong>, Haoye Tian, Jiadong Ren, Hongyu Zhang, Jacques Klein, Tegawendé F Bissyandé, Claire Le Goues, Shunfu Jin
+    conference_short: TOSEM
+    conference: ACM Transactions on Software Engineering and Methodology, 2025.
+    pdf: https://arxiv.org/pdf/2404.12636
+    code: https://github.com/buaabarty/morepair
+
+  - title: "When Fine-Tuning LLMs Meets Data Privacy: An Empirical Study of Federated Learning in LLM-Based Program Repair"
+    authors: Wenqiang Luo, Jacky Keung, <strong>Boyang Yang</strong>, He Ye, Claire Le Goues, Tegawende F Bissyande, Haoye Tian, Xuan Bach D Le
+    conference_short: TOSEM
+    conference: ACM Transactions on Software Engineering and Methodology, 2025.
+    pdf: https://dl.acm.org/doi/pdf/10.1145/3733599
+    code: https://github.com/stringing/Federated-LLM-Based-APR
+  
   - title: "CREF: An LLM-based Conversational Software Repair Framework for Programming Tutors"
     authors: <strong>Boyang Yang</strong>, Haoye Tian, Weiguo Pian, Haoran Yu, Haitao Wang, Jacques Klein, Tegawendé F Bissyandé, Shunfu Jin
     conference_short: ISSTA
