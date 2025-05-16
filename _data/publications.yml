@@ -4,8 +4,9 @@ main:
     authors: <strong>Boyang Yang</strong>, Haoye Tian, Jiadong Ren, Hongyu Zhang, Jacques Klein, Tegawendé F Bissyandé, Claire Le Goues, Shunfu Jin
     conference_short: TOSEM
     conference: ACM Transactions on Software Engineering and Methodology, 2025.
-    pdf: https://arxiv.org/pdf/2404.12636
+    pdf: https://dl.acm.org/doi/10.1145/3735129
     code: https://github.com/buaabarty/morepair
+    page: https://huggingface.co/collections/barty/morepair-6825b33f7414503cf16eec67
 
   - title: "When Fine-Tuning LLMs Meets Data Privacy: An Empirical Study of Federated Learning in LLM-Based Program Repair"
     authors: Wenqiang Luo, Jacky Keung, <strong>Boyang Yang</strong>, He Ye, Claire Le Goues, Tegawende F Bissyande, Haoye Tian, Xuan Bach D Le
