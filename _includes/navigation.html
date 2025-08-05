@@ -1,0 +1,85 @@
+<nav class="navigation">
+  <ul class="nav-list">
+    <li class="nav-item">
+      <a href="/" class="nav-link">Home</a>
+    </li>
+    <li class="nav-item">
+      <a href="/publication.html" class="nav-link">Publications</a>
+    </li>
+    <li class="nav-item">
+      <a href="/teach.html" class="nav-link">Teaching</a>
+    </li>
+    <li class="nav-item">
+      <a href="/resume/resume.pdf" class="nav-link" target="_blank">Resume (EN)</a>
+    </li>
+    <li class="nav-item">
+      <a href="/resume/resume_zh.pdf" class="nav-link" target="_blank">简历 (中文)</a>
+    </li>
+  </ul>
+</nav>
+
+<style>
+.navigation {
+  margin: 20px 0;
+  padding: 0;
+  border-bottom: 1px solid #e1e4e8;
+}
+
+.nav-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 0;
+}
+
+.nav-item {
+  margin: 0;
+}
+
+.nav-link {
+  display: block;
+  padding: 12px 20px;
+  text-decoration: none;
+  color: #586069;
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+  color: #0366d6;
+  border-bottom-color: #0366d6;
+  text-decoration: none;
+}
+
+/* 暗色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .navigation {
+    border-bottom-color: #30363d;
+  }
+  
+  .nav-link {
+    color: #8b949e;
+  }
+  
+  .nav-link:hover {
+    color: #58a6ff;
+    border-bottom-color: #58a6ff;
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .nav-list {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .nav-link {
+    padding: 8px 16px;
+  }
+}
+</style> 
