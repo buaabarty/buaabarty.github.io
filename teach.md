@@ -12,8 +12,8 @@ layout: homepage
 - Mentor graduate students in cybersecurity research and practical applications
 - Develop hands-on training curricula for security engineering practices
 
-**2023 – Present: Principal Instructor**  
-*Information Engineering University of Strategic Support Force*
+**2023 – Present: External Mentor**  
+*Information Engineering University*
 - Lead engineering practice training courses
 - Develop practical training programs for military information systems
 - Supervise capstone projects in information engineering
@@ -21,56 +21,23 @@ layout: homepage
 ### Competition Coaching
 
 **2012: Coach**  
-*Beijing Informatics Winter Camp*
+*Beijing Olympiad in Informatics Winter Camp*
 - Trained high school students in competitive programming
 - Developed algorithmic problem-solving curricula
 - Prepared students for national and international programming contests
 
-**Head of Computer Science Education**  
-*Jisuanke (计蒜客) Online Platform*
+**Chief Teacher**  
+*Jisuanke Online Platform*
 - Lead the development of online programming education platform
 - Design interactive programming courses and assessment systems
 - Oversee curriculum development for competitive programming training
 
-### Course Development & Instruction
-
-**Core Courses:**
-- **Data Structures and Algorithms** (Undergraduate)
-  - Algorithm design and analysis
-  - Competitive programming training
-  - Problem-solving methodology
-
-- **Software Engineering** (Undergraduate)
-  - Automated software engineering approaches
-  - Agile development methodologies
-  - Software quality assurance
-
-- **Introduction to Computer Science** (Undergraduate)
-  - Computational thinking development
-  - Programming fundamentals
-  - System design principles
-
-### Graduate Student Supervision
-
-- **Current:** Supervising 5 M.S. students
-- **Research Areas:** Automated Software Engineering, Computer Science Education
-- **Achievements:** Students have published papers in top-tier conferences (ISSTA, TOSEM)
-
 ### Competition Achievements
 
-- **ACM-ICPC Coach:** Led teams to regional gold medals
-- **Blue Bridge Cup:** National programming contest instructor
-- **CCPC:** China Collegiate Programming Contest mentor
+- **ACM-ICPC Coach:** Led several teams to regional gold medals
+- **Blue Bridge Cup:** Top 1% coach
 - **Personal Achievement:** Represented Beihang University at ACM-ICPC World Finals (27th place)
 
 ### Teaching Awards & Recognition
 
-- Outstanding Teacher Award (2024)
-- Excellence in Student Mentorship
-- Innovation in Online Education Platform Development
-
-### Educational Technology Development
-
-- **Jisuanke Platform:** Co-founded and developed comprehensive online programming education platform
-- **Interactive Learning Systems:** Created automated assessment tools for programming courses
-- **Open Educational Resources:** Contributed to open-source educational materials for computer science 
+- First Prize, MOE Cybersecurity Industry‑Academia Cooperation Excellence (2022)
