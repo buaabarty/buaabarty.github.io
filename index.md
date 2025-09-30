@@ -11,6 +11,7 @@ I am a Ph.D. candidate at Yanshan University under the supervision of Prof. Shun
 - Computer Science Education
 
 ## News
+- **[Sept, 2025]** Two paper were accepted by ASE'25 Journal First Track.
 - **[Sept, 2025]** Invited as a Committee Member of MSR'26 Inductry Track.
 - **[June, 2025]** Invited as a reviewer of NeurIPS'25 and ACL'25.
 - **[May, 2025]** Two paper were accepted by TOSEM.
