@@ -1,6 +1,6 @@
 main:
 
-  - title: "Teaching LLMs to Repair Code via Multi-Objective Fine-tuning"
+  - title: "MORepair: Teaching LLMs to Repair Code via Multi-Objective Fine-tuning"
     authors: <strong>Boyang Yang</strong>, Haoye Tian, Jiadong Ren, Hongyu Zhang, Jacques Klein, Tegawendé F Bissyandé, Claire Le Goues, Shunfu Jin
     conference_short: TOSEM
     conference: ACM Transactions on Software Engineering and Methodology, 2025.
@@ -27,10 +27,3 @@ main:
     authors: Deqiang Fu, Yanyan Xu, Haoran Yu, <strong>Boyang Yang</strong>
     conference: Scientific Programming, 2017
     pdf: https://onlinelibrary.wiley.com/doi/pdf/10.1155/2017/7809047
-
-  - title: "Automated interactive visualization on abstract concepts in computer science"
-    authors: Congmin Mao, Haoran Yu, Jiaxin Shi, Tingjun Cai, <strong>Boyang Yang</strong>
-    conference_short: ITiCSE
-    conference: "ITiCSE '16: Innovation and Technology in Computer Science Education Conference 2016"
-    pdf: https://dl6.globalstf.org/index.php/joc/article/viewFile/1779/2308
-    code: https://github.com/Jisuanke/CSVisFrame
