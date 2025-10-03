@@ -12,7 +12,7 @@ I am a Ph.D. candidate at Yanshan University under the supervision of Prof. Shun
 
 ## News
 - **[Sept, 2025]** Two paper were accepted by ASE'25 Journal First Track.
-- **[Sept, 2025]** Invited as a Committee Member of MSR'26 Inductry Track.
+- **[Sept, 2025]** Invited as a Junior Program Committee of MSR'26 Research Track, and a Program Committee of Industry Track.
 - **[June, 2025]** Invited as a reviewer of NeurIPS'25 and ACL'25.
 - **[May, 2025]** Two paper were accepted by TOSEM.
 - **[Jul, 2024]** One paper was accepted by ISSTA'24.
