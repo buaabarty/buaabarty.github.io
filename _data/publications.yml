@@ -1,5 +1,11 @@
 main:
 
+  - title: "Unlocking LLM Repair Capabilities Through Cross-Language Translation and Multi-Agent Refinement"
+    authors: Wenqiang Luo, Jacky Wai Keung, <strong>Boyang Yang</strong>, Jacques Klein, Tegawende F Bissyande, Haoye Tian, Bach Le
+    conference_short: ICSE
+    conference: IEEE/ACM International Conference on Software Engineering, 2026.
+    pdf: https://arxiv.org/pdf/2503.22512
+
   - title: "MORepair: Teaching LLMs to Repair Code via Multi-Objective Fine-tuning"
     authors: <strong>Boyang Yang</strong>, Haoye Tian, Jiadong Ren, Hongyu Zhang, Jacques Klein, Tegawendé F Bissyandé, Claire Le Goues, Shunfu Jin
     conference_short: TOSEM
