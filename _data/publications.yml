@@ -8,6 +8,12 @@ main:
 
   - title: "MORepair: Teaching LLMs to Repair Code via Multi-Objective Fine-tuning"
     authors: <strong>Boyang Yang</strong>, Haoye Tian, Jiadong Ren, Hongyu Zhang, Jacques Klein, Tegawendé F Bissyandé, Claire Le Goues, Shunfu Jin
+    conference_short: ASE
+    conference: IEEE/ACM International Conference on Automated Software Engineering, 2025.
+    pdf: https://conf.researchr.org/details/ase-2025/ase-2025-journal-first-track/27/MORepair-Teaching-LLMs-to-Repair-Code-via-Multi-Objective-Fine-Tuning
+
+  - title: "MORepair: Teaching LLMs to Repair Code via Multi-Objective Fine-tuning"
+    authors: <strong>Boyang Yang</strong>, Haoye Tian, Jiadong Ren, Hongyu Zhang, Jacques Klein, Tegawendé F Bissyandé, Claire Le Goues, Shunfu Jin
     conference_short: TOSEM
     conference: ACM Transactions on Software Engineering and Methodology, 2025.
     pdf: https://dl.acm.org/doi/10.1145/3735129

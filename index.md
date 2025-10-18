@@ -12,7 +12,7 @@ I am a Ph.D. candidate at Yanshan University under the supervision of Prof. [Shu
 
 ## News
 - **[Oct, 2025]** One paper was accepted by ICSE'26.
-- **[Sept, 2025]** Two paper were accepted by ASE'25 Journal First Track.
+- **[Sept, 2025]** One paper was accepted by ASE'25 Journal First Track.
 - **[Sept, 2025]** Invited as a Program Committee of MSR'26 Research Track and Industry Track.
 - **[June, 2025]** Invited as a reviewer of NeurIPS'25 and ACL'25.
 - **[May, 2025]** Two paper were accepted by TOSEM.
