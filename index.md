@@ -11,6 +11,8 @@ I am CTO of Beijing Jisuanke Co., Ltd. I obtained Ph.D.'s degree from Yanshan Un
 - Program Repair
 
 ## News
+- **[Dec, 2025]** Successfully defended my Ph.D. dissertation.
+- **[Nov, 2025]** Invited as a Program Committee of ICSME'26 Industry Track.
 - **[Oct, 2025]** One paper was accepted by ICSE'26.
 - **[Sept, 2025]** One paper was accepted by ASE'25 Journal First Track.
 - **[Sept, 2025]** Invited as a Program Committee of MSR'26 Research Track and Industry Track.
