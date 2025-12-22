@@ -1,5 +1,11 @@
 main:
 
+  - title: "Input Reduction Enhanced LLM-based Program Repair"
+    authors: <strong>Boyang Yang</strong>, Luyao Ren, Xin Yin, Jiadong Ren, Haoye Tian, Shunfu Jin
+    conference_short: ICSE
+    conference: IEEE/ACM International Conference on Software Engineering, 2026.
+    pdf: https://arxiv.org/abs/2507.15251
+
   - title: "Unlocking LLM Repair Capabilities Through Cross-Language Translation and Multi-Agent Refinement"
     authors: Wenqiang Luo, Jacky Wai Keung, <strong>Boyang Yang</strong>, Jacques Klein, Tegawende F Bissyande, Haoye Tian, Bach Le
     conference_short: ICSE

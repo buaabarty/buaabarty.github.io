@@ -12,6 +12,7 @@ I am CTO of Beijing Jisuanke Co., Ltd. I obtained Ph.D.'s degree from Yanshan Un
 - NLP
 
 ## News
+- **[Dec, 2025]** One paper was accepted by ICSE'26.
 - **[Dec, 2025]** Successfully defended my Ph.D. dissertation.
 - **[Nov, 2025]** Invited as a Program Committee of ICSME'26 Industry Track.
 - **[Oct, 2025]** One paper was accepted by ICSE'26.
