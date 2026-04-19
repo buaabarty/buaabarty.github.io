@@ -13,8 +13,7 @@
 <h4 style="margin:0 10px 0;">Academic Positions</h4>
 
 <ul style="margin:0 0 5px;">
-  <li><autocolor>Senior Member of China Computer Fedoration</autocolor></li>
-  <li><autocolor>Academic Committee member of YOCSEF Baoding, China Computer Fedoration</autocolor></li>
-  <li><autocolor>Committee member of CTO Club and YOCSEF, China Computer Fedoration</autocolor></li>
-  <li><autocolor>External Supervisor at Wuhan University</autocolor></li>
+  <li><autocolor>Senior Member of IEEE and CCF</autocolor></li>
+  <li><autocolor>Academic Committee member of YOCSEF (Baoding)and CTO Club, CCF</autocolor></li>
+  <li><autocolor>External Lecturer at Wuhan University</autocolor></li>
 </ul>
