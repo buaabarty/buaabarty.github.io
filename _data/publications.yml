@@ -1,5 +1,10 @@
 main:
 
+  - title: "HELO-APR: Enhancing Low-Resource Program Repair through Cross-Lingual Knowledge Transfer"
+    authors: Zhipeng Wang, <strong>Boyang Yang</strong>, Yidong Wan, Liuye Guo, You Lv, Tao Zheng, Zhuowei Wang, Tieke He
+    conference_short: ISSTA
+    conference: 35th ACM SIGSOFT International Symposium on Software Testing and Analysis (ISSTA 2026)
+
   - title: "Input Reduction Enhanced LLM-based Program Repair"
     authors: <strong>Boyang Yang</strong>, Luyao Ren, Xin Yin, Jiadong Ren, Haoye Tian, Shunfu Jin
     conference_short: ICSE

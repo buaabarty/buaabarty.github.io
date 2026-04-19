@@ -4,7 +4,7 @@ layout: homepage
 
 ## About Me
 
-I am an Incoming Assistant Professor, and CTO of Beijing Jisuanke Co., Ltd. I obtained Ph.D.'s degree from Yanshan University under the supervision of Prof. [Shunfu Jin](https://orcid.org/0000-0002-5845-5601), Prof. [Haoye Tian](https://haoyetiancoder.github.io/), and Prof. [Jiadong Ren](https://ieeexplore.ieee.org/author/37087377087). Before that, I obtained bachelor's and master's degree from Beihang University, under the supervision of Prof. [Zhoujun Li](https://scholar.google.com.hk/citations?user=e-4LoEcAAAAJ). I am a Senior Member of the China Computer Federation (CCF) and an external supervisor at Wuhan University. Represented Beihang University in the ACM International Collegiate Programming Contest (ICPC) World Finals and achieved 27th place. I have published 5 papers in the Research Track of top-tier venues (ICSE, TOSEM, ISSTA), 3 of which I am the first author. I have served as a Program Committee member for FSE'26, ICSME'26, ICST'26, MSR'26, and AIware'26, and served as a reviewer for the journal EMSE, ASEJ, TOSEM, and TSE.
+I am an Assistant Professor, and CTO of Beijing Jisuanke Co., Ltd. I obtained Ph.D.'s degree from Yanshan University under the supervision of Prof. [Shunfu Jin](https://orcid.org/0000-0002-5845-5601) and Prof. [Haoye Tian](https://haoyetiancoder.github.io/). Before that, I obtained bachelor's and master's degree from Beihang University, under the supervision of Prof. [Zhoujun Li](https://scholar.google.com.hk/citations?user=e-4LoEcAAAAJ). I am a Senior Member of IEEE and CCF, and an external supervisor at Wuhan University. Represented Beihang University in the ACM International Collegiate Programming Contest (ICPC) World Finals and achieved 27th place. I have published 6 papers in the Research Track of top-tier venues (ICSE, TOSEM, ISSTA), 3 of which I am the first author. I have served as a Program Committee member for FSE'26 IVR, ICSME'26 Industry, ICST'26, MSR'26, and AIware'26, and served as a reviewer for the journal EMSE, ASEJ, TOSEM, TSE and TAAS.
 
 ## Research Interests
 - AI4SE
@@ -12,6 +12,8 @@ I am an Incoming Assistant Professor, and CTO of Beijing Jisuanke Co., Ltd. I ob
 - NLP
 
 ## News
+- **[April, 2026]** One paper was accepted by ISSTA'26.
+- **[March, 2026]** Invited as a reviewer of TAAS.
 - **[Feb, 2026]** Invited as a Program Committee of FSE'26 IVR Track.
 - **[Jan, 2026]** Invited as a reviewer of the EMSE, ASEJ, TOSEM, and TSE.
 - **[Jan, 2026]** Invited as a Program Committee of ICST'26 and AIware Research Track.
