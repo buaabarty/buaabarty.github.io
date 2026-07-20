@@ -12,6 +12,9 @@ I am an Assistant Professor (from 2026) at Yanshan University, and CTO (from 201
 - NLP
 
 ## News
+- **[July, 2026]** Invited as a Shadow PC of ICSE'27.
+- **[July, 2026]** Received the AIware Distinguished Reviewer Award.
+- **[June, 2026]** One paper was accepted by IJSEKE.
 - **[April, 2026]** One paper was accepted by ISSTA'26.
 - **[March, 2026]** Invited as a reviewer of TAAS.
 - **[Feb, 2026]** Invited as a Program Committee of FSE'26 IVR Track.

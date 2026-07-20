@@ -6,6 +6,10 @@ layout: homepage
 
 ### Academic Appointments
 
+**2026 – Present: Assistant Professor**  
+*Yanshan University*
+- Teach the undergraduate course "Introduction to Artificial Intelligence" (from Fall 2026)
+
 **2021 – Present: External Mentor**  
 *Wuhan University, School of Cyber Science and Engineering*
 - Design and teach mandatory summer course "Security Maker Practice Training"
