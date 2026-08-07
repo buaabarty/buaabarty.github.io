@@ -4,7 +4,7 @@ layout: homepage
 
 ## About Me
 
-I am an Assistant Professor (from 2026) at Yanshan University, and CTO (from 2015) of Beijing Jisuanke Co., Ltd. I obtained Ph.D. (2026) from Yanshan University under the supervision of Prof. [Shunfu Jin](https://orcid.org/0000-0002-5845-5601) and Prof. [Haoye Tian](https://haoyetiancoder.github.io/). Before that, I obtained bachelor (2013) and master (2018) degree from Beihang University during industry working, under the supervision of Prof. [Zhoujun Li](https://scholar.google.com.hk/citations?user=e-4LoEcAAAAJ). I am a Senior Member of IEEE and CCF, and an external supervisor at Wuhan University. I represented Beihang University in the ACM International Collegiate Programming Contest (ICPC) World Finals and achieved 27th place. I have published 6 papers in the Research Track of top-tier venues (ICSE, TOSEM, ISSTA), 3 of which I am the first author. I have served as a Program Committee member for FSE'26 IVR, ICSME'26 Industry, ICST'26, MSR'26, and AIware'26, and served as a reviewer for the journal EMSE, ASEJ, TOSEM, TSE and TAAS.
+I am an Assistant Professor (from 2026) at Yanshan University, and CTO (from 2015) of Beijing Jisuanke Co., Ltd. I obtained Ph.D. (2026) from Yanshan University under the supervision of Prof. [Shunfu Jin](https://orcid.org/0000-0002-5845-5601) and Prof. [Haoye Tian](https://haoyetiancoder.github.io/). Before that, I obtained bachelor (2013) and master (2018) degree from Beihang University during industry working, under the supervision of Prof. [Zhoujun Li](https://scholar.google.com.hk/citations?user=e-4LoEcAAAAJ). I am a Senior Member of IEEE and CCF, and an external supervisor at Wuhan University. I represented Beihang University in the ACM International Collegiate Programming Contest (ICPC) World Finals and achieved 27th place. I have published 6 papers in the Research Track of top-tier venues (ICSE, TOSEM, ISSTA), 3 of which I am the first author. I have served as a Program Committee member for FSE'26 IVR, FSE'27 Industry, ICSME'26 Industry, ICST'26, MSR'26, and AIware'26, and served as a reviewer for the journal EMSE, ASEJ, TOSEM, TSE and TAAS.
 
 ## Research Interests
 - AI4SE
@@ -12,6 +12,8 @@ I am an Assistant Professor (from 2026) at Yanshan University, and CTO (from 201
 - NLP
 
 ## News
+- **[Aug, 2026]** Invited as a Program Committee of FSE'27 Industry Track.
+- **[Aug, 2026]** Invited as a reviewer of TOSEM.
 - **[July, 2026]** Invited as a Shadow PC of ICSE'27.
 - **[July, 2026]** Received the AIware Distinguished Reviewer Award.
 - **[June, 2026]** One paper was accepted by IJSEKE.

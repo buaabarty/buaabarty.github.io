@@ -3,6 +3,7 @@
 <h4 style="margin:0 10px 0;">Conference Reviewers</h4>
 
 <ul style="margin:0 0 5px;">
+  <li><a href="https://conf.researchr.org/committee/fse-2027/fse-2027-industry-papers-program-committee"><autocolor>FSE 2027 (Industry)</autocolor></a></li>
   <li><a href="https://conf.researchr.org/committee/fse-2026/fse-2026-ideas-visions-and-reflections-program-committee"><autocolor>FSE 2026</autocolor></a></li>
   <li><a href="https://conf.researchr.org/committee/icsme-2026/icsme-2026-industry-track-program-committee"><autocolor>ICSME 2026</autocolor></a></li>
   <li><a href="https://2026.msrconf.org/committee/msr-2026-junior-pc-technical-papers---junior-program-committee"><autocolor>MSR 2026</autocolor></a></li>
