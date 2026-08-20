@@ -70,6 +70,32 @@
   transform: translateY(-1px);
 }
 
+/* CCF tier badge — outlined, tier-coded */
+
+.pub-badge.ccf {
+  background: transparent;
+  border: 1px solid currentColor;
+  padding: 0.13em 0.5em;
+}
+
+.pub-badge.ccf-a {
+  color: #9a6a10;
+}
+
+.pub-badge.ccf-b {
+  color: var(--accent, #1f4e79);
+}
+
+.pub-badge.ccf-c {
+  color: var(--muted, #71757d);
+}
+
+@media (prefers-color-scheme: dark) {
+  .pub-badge.ccf-a {
+    color: #d9ab55;
+  }
+}
+
 .pub-links {
   margin-top: 0.35rem;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;

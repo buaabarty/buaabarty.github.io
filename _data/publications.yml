@@ -3,30 +3,42 @@ main:
   - title: "A Survey of LLM-based Automated Program Repair: Taxonomies, Design Paradigms, and Applications"
     authors: <strong>Boyang Yang</strong>, Zijian Cai, Fengling Liu, Bach Le, Lingming Zhang, Tegawendé F. Bissyandé, Yang Liu, Haoye Tian
     conference_short: TOSEM
+    ccf: CCF-A
     conference: ACM Transactions on Software Engineering and Methodology, 2026.
     pdf: https://arxiv.org/pdf/2506.23749
+
+  - title: "Large Language Models for Fault Localization: An Empirical Study"
+    authors: Yingjian Xiao, Weiwei Gong, Jianjun Huang, Rongqun Hu, Hongwei Li, Anquan Jie, <strong>Boyang Yang</strong>
+    conference_short: IJSEKE
+    ccf: CCF-C
+    conference: International Journal of Software Engineering and Knowledge Engineering, 2026.
+    pdf: https://arxiv.org/pdf/2510.20521
 
   - title: "HELO-APR: Enhancing Low-Resource Program Repair through Cross-Lingual Knowledge Transfer"
     authors: Zhipeng Wang, <strong>Boyang Yang</strong>, Yidong Wan, Liuye Guo, You Lv, Tao Zheng, Zhuowei Wang, Tieke He
     conference_short: ISSTA
+    ccf: CCF-A
     conference: 35th ACM SIGSOFT International Symposium on Software Testing and Analysis (ISSTA 2026)
     page: https://conf.researchr.org/details/issta-2026/issta-2026-research-papers/110/HELO-APR-Enhancing-Low-Resource-Program-Repair-through-Cross-Lingual-Knowledge-Trans
 
   - title: "Input Reduction Enhanced LLM-based Program Repair"
     authors: <strong>Boyang Yang</strong>, Luyao Ren, Xin Yin, Jiadong Ren, Haoye Tian, Shunfu Jin
     conference_short: ICSE
+    ccf: CCF-A
     conference: IEEE/ACM International Conference on Software Engineering, 2026.
     pdf: https://arxiv.org/abs/2507.15251
 
   - title: "Unlocking LLM Repair Capabilities Through Cross-Language Translation and Multi-Agent Refinement"
     authors: Wenqiang Luo, Jacky Wai Keung, <strong>Boyang Yang</strong>, Jacques Klein, Tegawende F Bissyande, Haoye Tian, Bach Le
     conference_short: ICSE
+    ccf: CCF-A
     conference: IEEE/ACM International Conference on Software Engineering, 2026.
     pdf: https://arxiv.org/pdf/2503.22512
 
   - title: "MORepair: Teaching LLMs to Repair Code via Multi-Objective Fine-tuning"
     authors: <strong>Boyang Yang</strong>, Haoye Tian, Jiadong Ren, Hongyu Zhang, Jacques Klein, Tegawendé F Bissyandé, Claire Le Goues, Shunfu Jin
     conference_short: TOSEM & ASE-Journal First Track
+    ccf: CCF-A
     conference: ACM Transactions on Software Engineering and Methodology, 2025.
     pdf: https://dl.acm.org/doi/10.1145/3735129
     code: https://github.com/buaabarty/morepair
@@ -35,13 +47,15 @@ main:
   - title: "When Fine-Tuning LLMs Meets Data Privacy: An Empirical Study of Federated Learning in LLM-Based Program Repair"
     authors: Wenqiang Luo, Jacky Keung, <strong>Boyang Yang</strong>, He Ye, Claire Le Goues, Tegawende F Bissyande, Haoye Tian, Xuan Bach D Le
     conference_short: TOSEM
+    ccf: CCF-A
     conference: ACM Transactions on Software Engineering and Methodology, 2025.
     pdf: https://dl.acm.org/doi/pdf/10.1145/3733599
     code: https://github.com/stringing/Federated-LLM-Based-APR
-  
+
   - title: "CREF: An LLM-based Conversational Software Repair Framework for Programming Tutors"
     authors: <strong>Boyang Yang</strong>, Haoye Tian, Weiguo Pian, Haoran Yu, Haitao Wang, Jacques Klein, Tegawendé F Bissyandé, Shunfu Jin
     conference_short: ISSTA
+    ccf: CCF-A
     conference: 33rd ACM SIGSOFT International Symposium on Software Testing and Analysis (ISSTA), 2024.
     pdf: https://dl.acm.org/doi/pdf/10.1145/3650212.3680328
     code: https://github.com/buaabarty/CREF
