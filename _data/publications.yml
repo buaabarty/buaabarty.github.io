@@ -1,5 +1,11 @@
 main:
 
+  - title: "A Survey of LLM-based Automated Program Repair: Taxonomies, Design Paradigms, and Applications"
+    authors: <strong>Boyang Yang</strong>, Zijian Cai, Fengling Liu, Bach Le, Lingming Zhang, Tegawendé F. Bissyandé, Yang Liu, Haoye Tian
+    conference_short: TOSEM
+    conference: ACM Transactions on Software Engineering and Methodology, 2026.
+    pdf: https://arxiv.org/pdf/2506.23749
+
   - title: "HELO-APR: Enhancing Low-Resource Program Repair through Cross-Lingual Knowledge Transfer"
     authors: Zhipeng Wang, <strong>Boyang Yang</strong>, Yidong Wan, Liuye Guo, You Lv, Tao Zheng, Zhuowei Wang, Tieke He
     conference_short: ISSTA
