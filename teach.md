@@ -4,14 +4,20 @@ layout: homepage
 
 ## Teaching Experience
 
+### Courses
+
+**Fall 2026: Introduction to Artificial Intelligence**  
+*Yanshan University — Instructor, undergraduate course*
+
 ### Academic Appointments
 
 **2026 – Present: Assistant Professor**  
 *Yanshan University*
-- Teach the undergraduate course "Introduction to Artificial Intelligence" (from Fall 2026)
+- Teach undergraduate courses in artificial intelligence
+- Supervise undergraduate and graduate research in AI4SE and program repair
 
 **2021 – Present: External Mentor**  
-*Wuhan University, School of Cyber Science and Engineering*
+*[Wuhan University, School of Cyber Science and Engineering](https://cse.whu.edu.cn/szdw/jsml/mmkxyjsx/fjs.htm)*
 - Design and teach mandatory summer course "Security Maker Practice Training"
 - Mentor graduate students in cybersecurity research and practical applications
 - Develop hands-on training curricula for security engineering practices

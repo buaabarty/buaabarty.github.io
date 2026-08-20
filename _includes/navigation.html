@@ -1,85 +1,95 @@
-<nav class="navigation">
-  <ul class="nav-list">
-    <li class="nav-item">
-      <a href="/" class="nav-link">Home</a>
-    </li>
-    <li class="nav-item">
-      <a href="/publication.html" class="nav-link">Publications</a>
-    </li>
-    <li class="nav-item">
-      <a href="/teach.html" class="nav-link">Teaching</a>
-    </li>
-    <li class="nav-item">
-      <a href="/resume/resume.pdf" class="nav-link" target="_blank">Resume (EN)</a>
-    </li>
-    <li class="nav-item">
-      <a href="/resume/resume_zh.pdf" class="nav-link" target="_blank">简历 (中文)</a>
-    </li>
-  </ul>
+<nav class="site-nav">
+  <div class="site-nav-inner">
+    <a href="/" class="site-nav-brand">Boyang Yang</a>
+    <ul class="site-nav-list">
+      <li><a href="/" class="site-nav-link">Home</a></li>
+      <li><a href="/publication.html" class="site-nav-link">Publications</a></li>
+      <li><a href="/teach.html" class="site-nav-link">Teaching</a></li>
+    </ul>
+  </div>
 </nav>
 
 <style>
-.navigation {
-  margin: 20px 0;
-  padding: 0;
-  border-bottom: 1px solid #e1e4e8;
+.site-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(253, 252, 250, 0.92);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: 1px solid var(--hairline, #e8e5df);
 }
 
-.nav-list {
+.site-nav-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 52px;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.site-nav-brand {
+  font-weight: 600;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+  color: var(--accent, #1f4e79);
+  text-decoration: none;
+}
+
+.site-nav-brand:hover {
+  color: var(--accent-strong, #163a5c);
+}
+
+.site-nav-list {
+  display: flex;
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 0;
+  gap: 4px;
 }
 
-.nav-item {
+.site-nav-list li {
   margin: 0;
 }
 
-.nav-link {
+.site-nav-link {
   display: block;
-  padding: 12px 20px;
-  text-decoration: none;
-  color: #586069;
+  padding: 6px 14px;
+  font-size: 0.95rem;
   font-weight: 500;
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s ease;
+  letter-spacing: 0.02em;
+  color: var(--muted, #71757d);
+  text-decoration: none;
+  border-radius: 6px;
+  transition: color 0.15s ease, background-color 0.15s ease;
 }
 
-.nav-link:hover {
-  color: #0366d6;
-  border-bottom-color: #0366d6;
+.site-nav-link:hover {
+  color: var(--accent, #1f4e79);
+  background: var(--badge-bg, rgba(31, 78, 121, 0.08));
   text-decoration: none;
 }
 
-/* 暗色模式适配 */
 @media (prefers-color-scheme: dark) {
-  .navigation {
-    border-bottom-color: #30363d;
-  }
-  
-  .nav-link {
-    color: #8b949e;
-  }
-  
-  .nav-link:hover {
-    color: #58a6ff;
-    border-bottom-color: #58a6ff;
+  .site-nav {
+    background: rgba(20, 22, 28, 0.9);
   }
 }
 
-/* 响应式设计 */
-@media (max-width: 768px) {
-  .nav-list {
-    flex-direction: column;
-    align-items: center;
+@media (max-width: 480px) {
+  .site-nav-inner {
+    padding: 0 12px;
   }
-  
-  .nav-link {
-    padding: 8px 16px;
+  .site-nav-brand {
+    font-size: 0.95rem;
+  }
+  .site-nav-link {
+    padding: 6px 10px;
+    font-size: 0.9rem;
   }
 }
-</style> 
+</style>

@@ -1,20 +1,16 @@
 ## Services
 
-<h4 style="margin:0 10px 0;">Conference Reviewers</h4>
+#### Conference Reviewers
 
-<ul style="margin:0 0 5px;">
-  <li><a href="https://conf.researchr.org/committee/fse-2027/fse-2027-industry-papers-program-committee"><autocolor>FSE 2027 (Industry)</autocolor></a></li>
-  <li><a href="https://conf.researchr.org/committee/fse-2026/fse-2026-ideas-visions-and-reflections-program-committee"><autocolor>FSE 2026</autocolor></a></li>
-  <li><a href="https://conf.researchr.org/committee/icsme-2026/icsme-2026-industry-track-program-committee"><autocolor>ICSME 2026</autocolor></a></li>
-  <li><a href="https://2026.msrconf.org/committee/msr-2026-junior-pc-technical-papers---junior-program-committee"><autocolor>MSR 2026</autocolor></a></li>
-  <li><a href="https://conf.researchr.org/committee/icst-2026/icst-2026-papers-program-committee"><autocolor>ICST 2026</autocolor></a></li>
-  <li><a href="https://2026.aiwareconf.org/committee/aiware-2026-papers-program-committee"><autocolor>AIware 2026</autocolor></a></li>
-</ul>
+- [FSE 2027 (Industry)](https://conf.researchr.org/committee/fse-2027/fse-2027-industry-papers-program-committee)
+- [FSE 2026](https://conf.researchr.org/committee/fse-2026/fse-2026-ideas-visions-and-reflections-program-committee)
+- [ICSME 2026](https://conf.researchr.org/committee/icsme-2026/icsme-2026-industry-track-program-committee)
+- [MSR 2026](https://2026.msrconf.org/committee/msr-2026-junior-pc-technical-papers---junior-program-committee)
+- [ICST 2026](https://conf.researchr.org/committee/icst-2026/icst-2026-papers-program-committee)
+- [AIware 2026](https://2026.aiwareconf.org/committee/aiware-2026-papers-program-committee)
 
-<h4 style="margin:0 10px 0;">Academic Positions</h4>
+#### Academic Positions
 
-<ul style="margin:0 0 5px;">
-  <li><autocolor>Senior Member of IEEE and CCF</autocolor></li>
-  <li><autocolor>Academic Committee member of YOCSEF (Baoding)and CTO Club, CCF</autocolor></li>
-  <li><autocolor>External Lecturer at Wuhan University</autocolor></li>
-</ul>
+- Senior Member of IEEE and CCF
+- Academic Committee member of YOCSEF (Baoding) and CTO Club, CCF
+- [External Lecturer at Wuhan University](https://cse.whu.edu.cn/szdw/jsml/mmkxyjsx/fjs.htm)
