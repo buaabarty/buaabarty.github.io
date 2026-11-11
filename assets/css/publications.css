@@ -79,7 +79,7 @@
 }
 
 .pub-badge.ccf-a {
-  color: #9a6a10;
+  color: var(--ccf-a, #9a6a10);
 }
 
 .pub-badge.ccf-b {
@@ -88,12 +88,6 @@
 
 .pub-badge.ccf-c {
   color: var(--muted, #71757d);
-}
-
-@media (prefers-color-scheme: dark) {
-  .pub-badge.ccf-a {
-    color: #d9ab55;
-  }
 }
 
 .pub-links {
@@ -127,4 +121,18 @@
   font-size: 0.9rem;
   color: var(--muted, #71757d);
   margin: 0 0 0.25rem;
+}
+
+/* Entry hover: a quiet tint, no movement */
+
+.pub-entry {
+  margin: 0 -12px;
+  padding-left: 12px;
+  padding-right: 12px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.pub-entry:hover {
+  background: var(--badge-bg, rgba(31, 78, 121, 0.08));
 }

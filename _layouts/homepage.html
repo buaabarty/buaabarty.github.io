@@ -4,6 +4,7 @@
     <title>{{ site.title }} | {{site.affiliation}}</title>
 
     <meta charset="UTF-8">
+    <script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="{{ site.description }}">
@@ -101,7 +102,7 @@
 
       </header>
 
-      <section>
+      <section id="main">
 
       {{ content }}
 
@@ -117,6 +118,30 @@
       </footer>
     </div>
     <script src="{{ "/assets/js/scale.fix.js" | relative_url }}"></script>
+    <script>
+    (function () {
+      var heading = document.getElementById('news');
+      var list = heading && heading.nextElementSibling;
+      if (!list || list.tagName !== 'UL') return;
+      var items = list.children;
+      var keep = 6;
+      if (items.length <= keep + 1) return;
+      list.classList.add('news-list', 'is-collapsed');
+      for (var i = keep; i < items.length; i++) items[i].classList.add('news-extra');
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'news-toggle';
+      btn.setAttribute('aria-expanded', 'false');
+      var label = 'Show all ' + items.length + ' news';
+      btn.textContent = label;
+      btn.addEventListener('click', function () {
+        var open = list.classList.toggle('is-collapsed') === false;
+        btn.setAttribute('aria-expanded', String(open));
+        btn.textContent = open ? 'Show less' : label;
+      });
+      list.after(btn);
+    })();
+    </script>
     {% if site.google_analytics %}
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
