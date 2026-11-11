@@ -4,12 +4,13 @@ import { ThemeSwitch, type Theme } from "@/components/arc/theme-switch/theme-swi
 import SegmentedControl from "@/components/arc/segmented-control/segmented-control";
 import { useLang, useT, type Lang } from "./i18n";
 
-export type PageId = "home" | "publications" | "teaching";
+export type PageId = "home" | "publications" | "teaching" | "team";
 
 const titles: Record<PageId, { en: string; zh: string }> = {
   home: { en: "Boyang Yang | Yanshan University", zh: "杨博洋 | 燕山大学" },
   publications: { en: "Publications | Boyang Yang", zh: "论文 | 杨博洋" },
   teaching: { en: "Teaching | Boyang Yang", zh: "教学 | 杨博洋" },
+  team: { en: "Team | Boyang Yang", zh: "团队 | 杨博洋" },
 };
 
 function currentTheme(): Theme {
@@ -43,6 +44,7 @@ export function Layout({ page, children }: { page: PageId; children: ReactNode }
     { value: "home", label: t({ en: "Home", zh: "主页" }), href: "/" },
     { value: "publications", label: t({ en: "Publications", zh: "论文" }), href: "/publication.html" },
     { value: "teaching", label: t({ en: "Teaching", zh: "教学" }), href: "/teach.html" },
+    { value: "team", label: t({ en: "Team", zh: "团队" }), href: "/team.html" },
   ];
 
   return (

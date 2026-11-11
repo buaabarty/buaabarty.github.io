@@ -7,10 +7,11 @@ import { LangProvider } from "./i18n";
 import { Home } from "./pages/Home";
 import { Publications } from "./pages/Publications";
 import { Teaching } from "./pages/Teaching";
+import { Team } from "./pages/Team";
 
 const root = document.getElementById("root")!;
 const page = (root.dataset.page ?? "home") as PageId;
-const Page = { home: Home, publications: Publications, teaching: Teaching }[page];
+const Page = { home: Home, publications: Publications, teaching: Teaching, team: Team }[page];
 
 createRoot(root).render(
   <StrictMode>

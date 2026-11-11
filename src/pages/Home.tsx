@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/arc/button/button";
 import { news } from "@/content/news";
-import { masters } from "@/content/students";
 import { useLang, useT } from "@/i18n";
 import { Profile } from "./Profile";
 import { PublicationList } from "./PublicationList";
@@ -113,19 +112,6 @@ export function Home() {
       <section aria-labelledby="publications">
         <h2 id="publications">{t({ en: "Publications", zh: "论文" })}</h2>
         <PublicationList />
-      </section>
-
-      <section aria-labelledby="students">
-        <h2 id="students">{t({ en: "Students", zh: "指导学生" })}</h2>
-        <h3>{t({ en: "Master's students", zh: "硕士研究生" })}</h3>
-        <ul className="people">
-          {masters.map((m) => (
-            <li key={m.name.en}>
-              <span className="people-name">{m.href ? <a href={m.href}>{t(m.name)}</a> : t(m.name)}</span>
-              <span className="people-years">{m.years}</span>
-            </li>
-          ))}
-        </ul>
       </section>
 
       <section aria-labelledby="services">
