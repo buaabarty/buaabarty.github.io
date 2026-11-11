@@ -16,44 +16,30 @@ limitations under the License.
 <html lang="zh-CN">
 <head>
   <meta name="robots" content="noindex, nofollow">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23124f8c'/%3E%3Ctext x='32' y='40' font-size='20' text-anchor='middle' fill='white' font-family='Arial'%3EYSU%3C/text%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23124f8c'/%3E%3Cpath d='M8 46 L56 18 L56 30 L8 58 Z' fill='%23c9972b'/%3E%3C/svg%3E">
   <meta charset="utf-8">
   <meta name="viewport" content="width=1024">
-  <meta name="keywords" content="神经网络,人工智能导论,机器学习,燕山大学,可视化练习">
+  <meta name="keywords" content="神经网络,人工智能概论,机器学习,燕山大学,可视化练习">
 
   <meta property="og:type" content="article"/>
-  <meta property="og:title" content="燕山大学人工智能导论 — 神经网络可视化练习平台"/>
-  <meta property="og:description" content="面向人工智能专业新生的浏览器端神经网络练习平台。">
-  <meta property="og:url" content="http://playground.tensorflow.org"/>
-  <meta property="og:image" content="http://playground.tensorflow.org/preview.png"/>
+  <meta property="og:title" content="燕山大学人工智能概论 — 第4讲神经网络调参练习"/>
+  <meta property="og:description" content="通过可视化实验观察神经网络如何学习。">
 
   <meta name="twitter:card" value="summary_large_image">
-  <meta name="twitter:title" content="燕山大学人工智能导论 — 神经网络可视化练习平台">
-  <meta name="twitter:description" content="面向人工智能专业新生的浏览器端神经网络练习平台。">
-  <meta name="twitter:url" content="http://playground.tensorflow.org">
-  <meta name="twitter:image" content="http://playground.tensorflow.org/preview.png">
-  <meta name="twitter:image:width" content="560">
-  <meta name="twitter:image:height" content="295">
+  <meta name="twitter:title" content="燕山大学人工智能概论 — 第4讲神经网络调参练习">
+  <meta name="twitter:description" content="通过可视化实验观察神经网络如何学习。">
 
-  <meta name="author" content="Daniel Smilkov and Shan Carter">
-  <title>燕山大学人工智能导论 · 神经网络练习平台</title>
+  <title>燕山大学人工智能概论 · 第4讲神经网络调参练习</title>
   <link rel="stylesheet" href="bundle.css" type="text/css">
   <script src="lib.js"></script>
 </head>
 <body>
-  <!-- GitHub link -->
-  <a class="github-link" href="https://github.com/tensorflow/playground" title="原始项目源码（GitHub）" target="_blank">
-    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 60.5 60.5" width="60" height="60">
-      <polygon class="bg" points="60.5,60.5 0,0 60.5,0 "/>
-      <path class="icon" d="M43.1,5.8c-6.6,0-12,5.4-12,12c0,5.3,3.4,9.8,8.2,11.4c0.6,0.1,0.8-0.3,0.8-0.6c0-0.3,0-1,0-2c-3.3,0.7-4-1.6-4-1.6c-0.5-1.4-1.3-1.8-1.3-1.8c-1.1-0.7,0.1-0.7,0.1-0.7c1.2,0.1,1.8,1.2,1.8,1.2c1.1,1.8,2.8,1.3,3.5,1c0.1-0.8,0.4-1.3,0.8-1.6c-2.7-0.3-5.5-1.3-5.5-5.9c0-1.3,0.5-2.4,1.2-3.2c-0.1-0.3-0.5-1.5,0.1-3.2c0,0,1-0.3,3.3,1.2c1-0.3,2-0.4,3-0.4c1,0,2,0.1,3,0.4c2.3-1.6,3.3-1.2,3.3-1.2c0.7,1.7,0.2,2.9,0.1,3.2c0.8,0.8,1.2,1.9,1.2,3.2c0,4.6-2.8,5.6-5.5,5.9c0.4,0.4,0.8,1.1,0.8,2.2c0,1.6,0,2.9,0,3.3c0,0.3,0.2,0.7,0.8,0.6c4.8-1.6,8.2-6.1,8.2-11.4C55.1,11.2,49.7,5.8,43.1,5.8z"/>
-    </svg>
-  </a>
   <!-- Header -->
   <header>
     <div class="l--page hero">
-      <p class="school-mark">燕山大学 · 人工智能导论</p>
-      <h1>神经网络可视化练习平台</h1>
-      <p class="hero-subtitle">为中国人工智能专业大一新生准备：选择数据、开始训练、观察误差和决策边界，所有实验都在浏览器内完成。</p>
+      <p class="school-mark">燕山大学 · 人工智能概论</p>
+      <h1>第4讲：神经网络调参练习</h1>
+      <p class="hero-subtitle">选择数据、开始训练、观察误差和决策边界，用可视化实验理解神经网络的学习过程。</p>
       <a class="support-link" href="mailto:yby@ysu.edu.cn">使用遇到问题：yby@ysu.edu.cn</a>
     </div>
   </header>
@@ -99,10 +85,10 @@ limitations under the License.
         <label for="activations">激活函数</label>
         <div class="select">
           <select id="activations">
-            <option value="relu">ReLU</option>
-            <option value="tanh">Tanh</option>
-            <option value="sigmoid">Sigmoid</option>
-            <option value="linear">Linear</option>
+            <option value="relu">修正线性</option>
+            <option value="tanh">双曲正切</option>
+            <option value="sigmoid">乙状函数</option>
+            <option value="linear">线性函数</option>
           </select>
         </div>
       </div>
@@ -111,8 +97,8 @@ limitations under the License.
         <div class="select">
           <select id="regularizations">
             <option value="none">不使用</option>
-            <option value="L1">L1</option>
-            <option value="L2">L2</option>
+            <option value="L1">稀疏约束</option>
+            <option value="L2">平滑约束</option>
           </select>
         </div>
       </div>
@@ -201,8 +187,8 @@ limitations under the License.
             <input class="mdl-slider mdl-js-slider" type="range" id="batchSize" min="1" max="30" step="1">
           </p>
         </div>
-          <button class="basic-button" id="data-regen-button" title="重新随机生成当前数据集">
-            重新生成数据
+          <button class="basic-button" id="data-regen-button" title="换一组随机数据">
+            换一组数据
           </button>
       </div>
     </div>
@@ -210,7 +196,7 @@ limitations under the License.
     <!-- Features Column -->
     <div class="column features">
       <h4>输入特征</h4>
-      <p>点击特征方块可开启或关闭输入。初学建议先保留 X1 和 X2。</p>
+      <p>点击特征方块可开启或关闭输入。初学建议先保留前两个基础特征。</p>
       <div id="network">
         <svg id="svg" width="510" height="450">
           <defs>
@@ -348,62 +334,43 @@ limitations under the License.
     </div>
 
     <div class="l--body">
-      <h2>教师课堂定制</h2>
-      <p>可以通过下面的选项隐藏暂时不讲的控件，再保存 <a class="hide-controls-link" href="#">当前链接</a> 给学生使用。重新显示全部内容可直接 <a href="javascript:location.reload();">刷新页面</a>。</p>
-      <div class="hide-controls"></div>
-    </div>
-
-    <div class="l--body">
       <h2>使用问题</h2>
-      <p>本平台用于燕山大学人工智能导论课程练习。如果在课堂或自学中遇到无法打开、显示异常或操作疑问，请发送邮件到 <a href="mailto:yby@ysu.edu.cn">yby@ysu.edu.cn</a>，邮件中尽量附上浏览器、截图和你正在操作的步骤。</p>
-    </div>
-
-    <div class="l--body">
-      <h2>实现与许可</h2>
-      <p>底层示例基于原始 <a href="https://github.com/tensorflow/playground">TensorFlow Playground</a> 项目改造，保留了浏览器端小型神经网络实现，适合教学演示和入门练习。原项目以 Apache License 2.0 开源。</p>
-    </div>
-
-    <div class="l--body">
-      <h2>致谢</h2>
-      <p>
-        原始可视化由 Daniel Smilkov 和 Shan Carter 创建，并延续了 Andrej Karpathy 的 <a href="http://cs.stanford.edu/people/karpathy/convnetjs/demo/classify2d.html">convnet.js demo</a>、Chris Olah 的神经网络文章以及 Google Brain / Big Picture 团队的相关工作。
-      </p>
+      <p>本平台对应第4讲“神经网络与深度学习”的调参演示，也可用于第3讲观察过拟合。如果在课堂或自学中遇到无法打开、显示异常或操作疑问，请发送邮件到 <a href="mailto:yby@ysu.edu.cn">yby@ysu.edu.cn</a>，邮件中尽量附上浏览器、截图和你正在操作的步骤。</p>
     </div>
   </article>
 
   <!-- Footer -->
   <footer>
     <div class="l--body">
-      <div class="footer-brand">燕山大学人工智能导论练习平台</div>
+      <div class="footer-brand">燕山大学人工智能概论练习平台</div>
       <a href="https://www.tensorflow.org/" class="logo">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 528 87" xml:space="preserve">
-        	<path d="M37.4,15.5v70.3H25V15.5H1V3.4h60.4v12.1H37.4z"/>
-        	<path d="M149,85.8v-35c0-12.5-4.7-16.9-12.7-16.9c-8.1,0-12.7,5.8-12.7,15.8v36.1h-12.1V24h12.1v5.9c3.1-4.5,9.2-7.2,15.5-7.2
-        		c14.4,0,22,9.4,22,27.7v35.4H149z"/>
-        	<path d="M188.7,87.1c-8.4,0-17.4-3.3-23.7-7.9l5.5-9.2c5.8,4,12.2,6.1,18,6.1c7.7,0,11.3-2.5,11.3-6.8c0-4.7-5.4-6.9-14.4-10.4
-        		c-13.3-5.2-18.1-9.7-18.1-19.4c0-11.1,8.7-16.8,21.1-16.8c7.8,0,15.4,2.8,21,6.8l-5.3,9.3c-5.1-3.5-10.1-5.3-16-5.3
-        		c-5.9,0-8.5,2.4-8.5,5.7c0,3.1,2.1,5.3,11.4,8.9c13.8,5.3,20.8,9.1,20.8,20.7C211.9,82.5,200.8,87.1,188.7,87.1z"/>
-        	<path d="M242,87.1c-15.5,0-27.2-12.8-27.2-32.1c0-20.2,12-32.3,27.5-32.3c15.8,0,27.5,12.6,27.5,31.9
-        		C269.9,75.1,257.9,87.1,242,87.1z M241.9,34.3c-9.2,0-14.8,8.1-14.8,20.4c0,13.5,6.2,21,15.4,21c9.2,0,15.2-9.3,15.2-20.6
-        		C257.7,42.4,251.7,34.3,241.9,34.3z"/>
-        	<path d="M310,36.8c-2.6-1.4-5.3-2.2-9.3-2.2c-7.7,0-12.1,5.4-12.1,15.9v35.3h-12.1V24h12.1v5.9c2.8-4.1,8-7.2,14.1-7.2
-        		c4.9,0,8,0.9,10.5,2.6L310,36.8z"/>
-        	<path d="M330.3,15.5v21.5H354v12.1h-23.7v36.6H318V3.4h50.3v12.1H330.3z"/>
-        	<path d="M374.5,85.8V6.4L386.6,0v85.8H374.5z"/>
-        	<path d="M421.9,87.1c-15.5,0-27.2-12.8-27.2-32.1c0-20.2,12-32.3,27.5-32.3c15.8,0,27.5,12.6,27.5,31.9
-        		C449.8,75.1,437.7,87.1,421.9,87.1z M421.7,34.3c-9.2,0-14.8,8.1-14.8,20.4c0,13.5,6.2,21,15.4,21c9.2,0,15.2-9.3,15.2-20.6
-        		C437.5,42.4,431.5,34.3,421.7,34.3z"/>
-        	<path d="M510.9,85.8h-10.4l-8.4-31.2c-1.3-4.7-2.6-10.2-3.2-13.2c-0.6,2.9-1.9,8.6-3.2,13.3l-8.2,31.1h-10.4L450.3,24h12l7.3,30
-        		c1.2,4.7,2.5,10.6,3.1,13.5c0.7-3.1,2.1-8.7,3.4-13.5l8.2-30h9.8l8.4,30.1c1.3,4.8,2.6,10.4,3.3,13.4c0.7-3.1,1.9-8.8,3.1-13.5
-        		l7.3-30h12L510.9,85.8z"/>
-        	<path d="M79.1,76.2c-6.7,0-12.7-4-14.9-13.2l40.5-12.2c-0.2-2.8-0.6-5.4-1.3-8c-3-11.6-11.1-20.1-24.7-20.1
-        		c-16,0-27.1,11.3-27.1,32.3c0,20.5,12.2,32.1,26.7,32.1c9.4,0,15.9-2.9,21.3-8.1l-7.2-7.8C88.4,74.3,84.3,76.2,79.1,76.2z
-        	 M78,33.7c7.9,0,12.1,4.5,13.8,10.5l-27.9,8.5l0-3.5C64.9,39.3,69.8,33.7,78,33.7z"/>
+	<path d="M37.4,15.5v70.3H25V15.5H1V3.4h60.4v12.1H37.4z"/>
+	<path d="M149,85.8v-35c0-12.5-4.7-16.9-12.7-16.9c-8.1,0-12.7,5.8-12.7,15.8v36.1h-12.1V24h12.1v5.9c3.1-4.5,9.2-7.2,15.5-7.2
+		c14.4,0,22,9.4,22,27.7v35.4H149z"/>
+	<path d="M188.7,87.1c-8.4,0-17.4-3.3-23.7-7.9l5.5-9.2c5.8,4,12.2,6.1,18,6.1c7.7,0,11.3-2.5,11.3-6.8c0-4.7-5.4-6.9-14.4-10.4
+		c-13.3-5.2-18.1-9.7-18.1-19.4c0-11.1,8.7-16.8,21.1-16.8c7.8,0,15.4,2.8,21,6.8l-5.3,9.3c-5.1-3.5-10.1-5.3-16-5.3
+		c-5.9,0-8.5,2.4-8.5,5.7c0,3.1,2.1,5.3,11.4,8.9c13.8,5.3,20.8,9.1,20.8,20.7C211.9,82.5,200.8,87.1,188.7,87.1z"/>
+	<path d="M242,87.1c-15.5,0-27.2-12.8-27.2-32.1c0-20.2,12-32.3,27.5-32.3c15.8,0,27.5,12.6,27.5,31.9
+		C269.9,75.1,257.9,87.1,242,87.1z M241.9,34.3c-9.2,0-14.8,8.1-14.8,20.4c0,13.5,6.2,21,15.4,21c9.2,0,15.2-9.3,15.2-20.6
+		C257.7,42.4,251.7,34.3,241.9,34.3z"/>
+	<path d="M310,36.8c-2.6-1.4-5.3-2.2-9.3-2.2c-7.7,0-12.1,5.4-12.1,15.9v35.3h-12.1V24h12.1v5.9c2.8-4.1,8-7.2,14.1-7.2
+		c4.9,0,8,0.9,10.5,2.6L310,36.8z"/>
+	<path d="M330.3,15.5v21.5H354v12.1h-23.7v36.6H318V3.4h50.3v12.1H330.3z"/>
+	<path d="M374.5,85.8V6.4L386.6,0v85.8H374.5z"/>
+	<path d="M421.9,87.1c-15.5,0-27.2-12.8-27.2-32.1c0-20.2,12-32.3,27.5-32.3c15.8,0,27.5,12.6,27.5,31.9
+		C449.8,75.1,437.7,87.1,421.9,87.1z M421.7,34.3c-9.2,0-14.8,8.1-14.8,20.4c0,13.5,6.2,21,15.4,21c9.2,0,15.2-9.3,15.2-20.6
+		C437.5,42.4,431.5,34.3,421.7,34.3z"/>
+	<path d="M510.9,85.8h-10.4l-8.4-31.2c-1.3-4.7-2.6-10.2-3.2-13.2c-0.6,2.9-1.9,8.6-3.2,13.3l-8.2,31.1h-10.4L450.3,24h12l7.3,30
+		c1.2,4.7,2.5,10.6,3.1,13.5c0.7-3.1,2.1-8.7,3.4-13.5l8.2-30h9.8l8.4,30.1c1.3,4.8,2.6,10.4,3.3,13.4c0.7-3.1,1.9-8.8,3.1-13.5
+		l7.3-30h12L510.9,85.8z"/>
+	<path d="M79.1,76.2c-6.7,0-12.7-4-14.9-13.2l40.5-12.2c-0.2-2.8-0.6-5.4-1.3-8c-3-11.6-11.1-20.1-24.7-20.1
+		c-16,0-27.1,11.3-27.1,32.3c0,20.5,12.2,32.1,26.7,32.1c9.4,0,15.9-2.9,21.3-8.1l-7.2-7.8C88.4,74.3,84.3,76.2,79.1,76.2z
+	 M78,33.7c7.9,0,12.1,4.5,13.8,10.5l-27.9,8.5l0-3.5C64.9,39.3,69.8,33.7,78,33.7z"/>
         </svg>
       </a>
       <div class="links">
         <a href="mailto:yby@ysu.edu.cn">使用问题反馈</a>
-        <a href="https://github.com/tensorflow/playground">原始项目源码</a>
       </div>
     </div>
   </footer>

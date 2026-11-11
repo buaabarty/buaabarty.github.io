@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>第2讲：网格世界练习</title>
+  <link rel="stylesheet" href="../maze/style.css">
+  <style>
+    .control-panel, .info-panel { min-width: 0; }
+    @media (max-width: 820px) { .workspace { grid-template-columns: minmax(0, 1fr); } }
+    #board { display: grid; gap: 3px; width: min(100%, 640px); margin: 0 auto; }
+    .cell { position: relative; aspect-ratio: 1 / 1; border: 1px solid #c5cedd; border-radius: 4px; background: #fff;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; user-select: none; }
+    .cell .v { font-size: 15px; color: #39465b; }
+    .cell .a { font-size: 26px; line-height: 1; color: var(--ysu-blue); }
+    .cell.wall { background: var(--wall); border-color: var(--wall); }
+    .cell.gold { background: rgba(214, 161, 29, 0.25); border-color: var(--gold); }
+    .cell.trap { background: rgba(198, 70, 70, 0.18); border-color: var(--red); }
+    .cell.start { outline: 3px solid var(--green); outline-offset: -3px; }
+    .cell.walk { background: rgba(31, 138, 112, 0.16); }
+    .cell .tag { font-size: 14px; font-weight: 700; }
+    .hint { color: var(--muted); font-size: 14px; line-height: 1.6; margin: 4px 0 0; }
+    .segmented.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  </style>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">燕山大学 · 人工智能概论</p>
+        <h1>第2讲：网格世界练习</h1>
+      </div>
+      <a class="support-link" href="../../#/tools">返回练习工具</a>
+    </header>
+
+    <section class="workspace" aria-label="网格世界练习区">
+      <aside class="control-panel" aria-label="控制面板">
+        <div class="field-group">
+          <span class="field-label">点格子放什么</span>
+          <div class="segmented three" role="group" aria-label="编辑方式">
+            <button type="button" class="mode-button is-active" data-mode="wall">墙</button>
+            <button type="button" class="mode-button" data-mode="gold">宝藏</button>
+            <button type="button" class="mode-button" data-mode="trap">陷阱</button>
+            <button type="button" class="mode-button" data-mode="start">起点</button>
+            <button type="button" class="mode-button" data-mode="empty">空地</button>
+          </div>
+        </div>
+        <div class="field-group">
+          <label for="goldR">宝藏的奖励：<b id="goldRV"></b></label>
+          <input id="goldR" type="range" min="1" max="20" value="10">
+        </div>
+        <div class="field-group">
+          <label for="trapR">陷阱的奖励：<b id="trapRV"></b></label>
+          <input id="trapR" type="range" min="-20" max="0" value="-10">
+        </div>
+        <div class="field-group">
+          <label for="stepR">每走一步的奖励：<b id="stepRV"></b></label>
+          <input id="stepR" type="range" min="-50" max="10" value="-1">
+          <p class="hint">负数表示走路要付代价，代价越大越想快点结束。</p>
+        </div>
+        <div class="field-group">
+          <label for="gamma">远处奖励打几折：<b id="gammaV"></b></label>
+          <input id="gamma" type="range" min="50" max="100" value="90">
+        </div>
+        <div class="field-group">
+          <label for="slip">脚下打滑的概率：<b id="slipV"></b></label>
+          <input id="slip" type="range" min="0" max="40" step="10" value="0">
+          <p class="hint">打滑时会随机走到旁边方向。</p>
+        </div>
+        <div class="button-grid">
+          <button type="button" id="stepBtn" class="primary">再算一轮</button>
+          <button type="button" id="runBtn">一直算到不变</button>
+          <button type="button" id="resetBtn">清空价值</button>
+          <button type="button" id="defaultBtn">恢复默认地图</button>
+        </div>
+      </aside>
+
+      <section class="maze-area" aria-label="网格">
+        <div class="canvas-frame"><div id="board"></div></div>
+      </section>
+
+      <aside class="info-panel" aria-label="运行状态">
+        <div class="metric-list">
+          <div><span>已经算了</span><strong id="rounds">0 轮</strong></div>
+          <div><span>从起点出发的结局</span><strong id="outcome">-</strong></div>
+          <div><span>路上走了几步</span><strong id="steps">-</strong></div>
+        </div>
+        <div class="tips">
+          <h2>怎么看</h2>
+          <p>格子里的数字是“从这里出发，往后能拿到的奖励大概有多少”。箭头是在这个格子上最划算的走法。</p>
+          <p>一开始所有数字都是 0。每算一轮，宝藏和陷阱的消息就往外传一格。</p>
+          <p>绿色格子是机器人从起点按箭头走出来的路线。</p>
+          <h2>试试看</h2>
+          <p>把每步奖励调到很大的负数，机器人会不会宁可跳进陷阱？把它调成正数又会怎样？</p>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+<script>
+(function () {
+  'use strict';
+  var R = 6, C = 8, $ = function (id) { return document.getElementById(id); };
+  var DEFAULT = [
+    '........',
+    '.##..#..',
+    '.....#T.',
+    '.#T#...G',
+    '.#...#T.',
+    'S...#...'
+  ];
+  var grid, V, rounds, mode = 'wall';
+  var DIRS = [[-1, 0, '↑'], [0, 1, '→'], [1, 0, '↓'], [0, -1, '←']];
+
+  function load() {
+    grid = DEFAULT.map(function (row) { return row.split(''); });
+    reset();
+  }
+  function reset() {
+    V = grid.map(function (row) { return row.map(function () { return 0; }); });
+    rounds = 0; render();
+  }
+  function p() {
+    return { gold: +$('goldR').value, trap: +$('trapR').value, step: +$('stepR').value / 10,
+             gamma: +$('gamma').value / 100, slip: +$('slip').value / 100 };
+  }
+  function terminal(ch) { return ch === 'G' || ch === 'T'; }
+  function move(r, c, d) {
+    var nr = r + DIRS[d][0], nc = c + DIRS[d][1];
+    if (nr < 0 || nr >= R || nc < 0 || nc >= C || grid[nr][nc] === '#') return [r, c];
+    return [nr, nc];
+  }
+  function reward(r, c, P) {
+    var ch = grid[r][c];
+    return ch === 'G' ? P.gold : ch === 'T' ? P.trap : P.step;
+  }
+  function q(r, c, d, P, Vs) {
+    var outs = [[d, 1 - P.slip]];
+    if (P.slip > 0) { outs.push([(d + 1) % 4, P.slip / 2]); outs.push([(d + 3) % 4, P.slip / 2]); }
+    return outs.reduce(function (t, o) {
+      var s = move(r, c, o[0]), ch = grid[s[0]][s[1]];
+      return t + o[1] * (reward(s[0], s[1], P) + (terminal(ch) ? 0 : P.gamma * Vs[s[0]][s[1]]));
+    }, 0);
+  }
+  function best(r, c, P) {
+    var b = 0, bv = -Infinity;
+    for (var d = 0; d < 4; d++) { var v = q(r, c, d, P, V); if (v > bv + 1e-9) { bv = v; b = d; } }
+    return b;
+  }
+  function sweep() {
+    var P = p(), delta = 0;
+    var NV = V.map(function (row, r) {
+      return row.map(function (v, c) {
+        var ch = grid[r][c];
+        if (ch === '#' || terminal(ch)) return 0;
+        var m = -Infinity;
+        for (var d = 0; d < 4; d++) m = Math.max(m, q(r, c, d, P, V));
+        delta = Math.max(delta, Math.abs(m - v));
+        return m;
+      });
+    });
+    V = NV; rounds++;
+    return delta;
+  }
+  function walk() {
+    var P = p(), s = null, seen = {}, path = [];
+    grid.forEach(function (row, r) { row.forEach(function (ch, c) { if (ch === 'S') s = [r, c]; }); });
+    if (!s || !rounds) return { path: [], end: '-' };
+    for (var i = 0; i < R * C; i++) {
+      path.push(s[0] + ',' + s[1]);
+      var ch = grid[s[0]][s[1]];
+      if (ch === 'G') return { path: path, end: '拿到宝藏', n: i };
+      if (ch === 'T') return { path: path, end: '掉进陷阱', n: i };
+      if (seen[s]) return { path: path, end: '原地打转', n: i };
+      seen[s] = 1;
+      s = move(s[0], s[1], best(s[0], s[1], P));
+    }
+    return { path: path, end: '原地打转', n: R * C };
+  }
+  function render() {
+    var P = p();
+    $('goldRV').textContent = '+' + P.gold; $('trapRV').textContent = P.trap;
+    $('stepRV').textContent = P.step.toFixed(1); $('gammaV').textContent = P.gamma.toFixed(2);
+    $('slipV').textContent = Math.round(P.slip * 100) + '%';
+    var w = walk(), on = {};
+    w.path.forEach(function (k) { on[k] = 1; });
+    var b = $('board'); b.style.gridTemplateColumns = 'repeat(' + C + ', minmax(0, 1fr))'; b.innerHTML = '';
+    grid.forEach(function (row, r) {
+      row.forEach(function (ch, c) {
+        var d = document.createElement('div');
+        d.className = 'cell' + (ch === '#' ? ' wall' : ch === 'G' ? ' gold' : ch === 'T' ? ' trap' : '') +
+          (ch === 'S' ? ' start' : '') + (on[r + ',' + c] && ch !== 'G' && ch !== 'T' ? ' walk' : '');
+        if (ch === 'G') d.innerHTML = '<span class="tag">宝藏</span><span class="v">+' + P.gold + '</span>';
+        else if (ch === 'T') d.innerHTML = '<span class="tag">陷阱</span><span class="v">' + P.trap + '</span>';
+        else if (ch !== '#') {
+          d.innerHTML = (rounds ? '<span class="a">' + DIRS[best(r, c, P)][2] + '</span>' : '') +
+            '<span class="v">' + V[r][c].toFixed(1) + '</span>' + (ch === 'S' ? '<span class="tag">起点</span>' : '');
+        }
+        d.addEventListener('click', function () { edit(r, c); });
+        b.appendChild(d);
+      });
+    });
+    $('rounds').textContent = rounds + ' 轮';
+    $('outcome').textContent = w.end;
+    $('steps').textContent = w.n === undefined ? '-' : w.n + ' 步';
+  }
+  function edit(r, c) {
+    var map = { wall: '#', gold: 'G', trap: 'T', empty: '.', start: 'S' }, ch = map[mode];
+    if (ch === 'S') grid.forEach(function (row) { row.forEach(function (x, j) { if (x === 'S') row[j] = '.'; }); });
+    grid[r][c] = ch; reset();
+  }
+  [].forEach.call(document.querySelectorAll('.mode-button'), function (btn) {
+    btn.addEventListener('click', function () {
+      mode = btn.getAttribute('data-mode');
+      [].forEach.call(document.querySelectorAll('.mode-button'), function (x) { x.classList.toggle('is-active', x === btn); });
+    });
+  });
+  ['goldR', 'trapR', 'stepR', 'gamma', 'slip'].forEach(function (id) { $(id).addEventListener('input', reset); });
+  $('stepBtn').addEventListener('click', function () { sweep(); render(); });
+  $('runBtn').addEventListener('click', function () { for (var i = 0; i < 500 && sweep() > 1e-4; i++); render(); });
+  $('resetBtn').addEventListener('click', reset);
+  $('defaultBtn').addEventListener('click', load);
+  load();
+})();
+</script>
+</body>
+</html>

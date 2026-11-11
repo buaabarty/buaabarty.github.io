@@ -353,7 +353,7 @@
         currentNode.key,
         visited,
         uniqueKeys(open, new Set(closed.map((node) => node.key))),
-        "A* 正在优先探索更接近终点的节点"
+        "A* 正在优先探索更接近终点的格子"
       ));
     }
 
@@ -368,7 +368,7 @@
     const explored = [];
     const visited = new Set();
     const steps = [];
-    const message = useStack ? "DFS 正在沿一条分支向深处探索" : "BFS 正在按层扩展候选节点";
+    const message = useStack ? "DFS 正在沿一条分支向深处探索" : "BFS 正在按层扩展候选格子";
 
     while (frontier.length > 0) {
       const current = useStack ? frontier.pop() : frontier.shift();

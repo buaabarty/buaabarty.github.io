@@ -76,15 +76,33 @@ export const scheduleEvents: Record<number, { hw: number; kind: "out" | "due" }[
 
 type Row = { item: L; points: string; look: L };
 
-export type ToolId = "maze" | "nn";
+export type ToolId = "maze" | "grid" | "ml" | "nn";
 export const tools: { id: ToolId; href: string; title: L; text: L }[] = [
   {
     id: "maze",
     href: "/teach/ai-intro/tools/maze/",
     title: { en: "Maze search", zh: "迷宫搜索" },
     text: {
-      en: "Draw a maze, then run breadth-first, depth-first, and A* search step by step, and compare the cells examined and the path length.",
-      zh: "自己画迷宫，逐步运行广度优先、深度优先和 A* 搜索，对比查看过的格子数和路径长度。",
+      en: "Draw a maze, then run breadth-first, depth-first, and A* search step by step, and compare the cells examined and the path length. Lecture 2.",
+      zh: "自己画迷宫，逐步运行广度优先、深度优先和 A* 搜索，对比查看过的格子数和路径长度。对应第 2 讲。",
+    },
+  },
+ {
+    id: "grid",
+    href: "/teach/ai-intro/tools/grid/",
+    title: { en: "Grid world", zh: "网格世界" },
+    text: {
+      en: "Watch a robot learn where to go from rewards and traps, and see how changing the reward per step changes its route. Lecture 2.",
+      zh: "看机器人怎样根据奖励和陷阱学会往哪走，调整每一步的奖励，观察路线怎么变。对应第 2 讲。",
+    },
+  },
+  {
+    id: "ml",
+    href: "/teach/ai-intro/tools/ml/",
+    title: { en: "Machine learning workflow", zh: "机器学习流程" },
+    text: {
+      en: "Pick data and a model, choose how to test it, and compare training and test accuracy to see overfitting. Lecture 3.",
+      zh: "选数据、选模型、选测法，对比训练准确率和测试准确率，看清过拟合。对应第 3 讲。",
     },
   },
   {
@@ -92,8 +110,8 @@ export const tools: { id: ToolId; href: string; title: L; text: L }[] = [
     href: "/teach/ai-intro/tools/nn/",
     title: { en: "Neural network playground", zh: "神经网络练习" },
     text: {
-      en: "Change the data, layers, neurons, and learning rate, then watch the decision boundary and the training and test loss curves.",
-      zh: "调整数据、层数、神经元数和学习率，观察决策边界以及训练损失和测试损失两条曲线。",
+      en: "Change the data, layers, neurons, and learning rate, then watch the decision boundary and the training and test loss curves. Lecture 4.",
+      zh: "调整数据、层数、神经元数和学习率，观察决策边界以及训练损失和测试损失两条曲线。对应第 4 讲。",
     },
   },
 ];
@@ -119,7 +137,7 @@ export const homeworks: Homework[] = [
     id: 1,
     title: { en: "The world of search", zh: "搜索的世界" },
     lectures: [1, 2],
-    tools: ["maze"],
+    tools: ["maze", "grid"],
     out: { en: "Wed, Nov 25, after class", zh: "11 月 25 日 周三课后" },
     due: { en: "Mon, Nov 30, before class", zh: "11 月 30 日 周一上课前" },
     overview: {
@@ -147,7 +165,10 @@ export const homeworks: Homework[] = [
       },
       {
         title: { en: "Part C. Optional, not graded", zh: "Part C　选做，不计分" },
-        text: { en: "In the grid world, change the reward values and watch how the policy changes.", zh: "在网格世界里改奖励值，观察走法怎么变。" },
+        text: {
+          en: "Open the grid world tool and click “一直算到不变” (run until stable) to see where the robot goes from the start. Then move “每走一步的奖励” (reward per step) toward negative values, find the value at which the robot switches to heading into the trap, and think about why.",
+          zh: "打开网格世界练习页，先点“一直算到不变”，看机器人从起点走到哪里。再把“每走一步的奖励”往负的方向调，找出机器人改去陷阱的那个值，想一想为什么。",
+        },
       },
     ],
     submit: {
@@ -173,22 +194,23 @@ export const homeworks: Homework[] = [
     id: 2,
     title: { en: "Letting machines learn from data", zh: "让机器从数据里学" },
     lectures: [3, 4],
-    tools: ["nn"],
+    tools: ["ml", "nn"],
     out: { en: "Wed, Dec 2, after class", zh: "12 月 2 日 周三课后" },
     due: { en: "Mon, Dec 7, before class", zh: "12 月 7 日 周一上课前" },
     overview: {
-      en: "First train a classifier in the Orange workflow and deliberately cause overfitting. Then change the structure and learning rate in the neural network playground and watch the loss curve.",
-      zh: "先在 Orange 流水线里训练一个分类器，故意制造过拟合。再在本站的神经网络练习工具里改结构和学习率，看损失曲线怎么变。",
+      en: "First train a classifier in the machine learning workflow tool on this site and deliberately cause overfitting. Then change the structure and learning rate in the neural network playground and watch the loss curve.",
+      zh: "先在课程网站的机器学习练习页里训练分类器，故意制造过拟合。再在神经网络练习页里改结构和学习率，看损失曲线怎么变。",
     },
     tasks: [
       {
         title: { en: "Part A. Cause overfitting on purpose", zh: "Part A　制造一次过拟合" },
         note: { en: "Lecture 3 task, core", zh: "对应第 3 讲任务，核心" },
         steps: [
-          { en: "Build the workflow: load data, train a classifier, test and score.", zh: "搭好流水线：读数据、训练分类器、测试与评分。" },
-          { en: "Record the training and test accuracy under normal conditions.", zh: "记下正常情况下训练集和测试集的准确率。" },
-          { en: "Shrink the training data drastically, or add noise, and record again.", zh: "故意把训练数据减到很少，或加入噪声，再记一次。" },
-          { en: "Compare the gap between training and test in the two runs, and describe what overfitting looks like in your numbers.", zh: "比较两次训练集与测试集的差别，说明“过拟合”在你的数字里是什么样。" },
+          { en: "In the machine learning tool, choose the “西瓜挑选” (watermelon picking) data, tick “k 近邻” (k-nearest neighbors) as the model, and set the test method to “用单独的测试集” (separate test set).", zh: "在机器学习练习页选“西瓜挑选”数据，模型勾选 k 近邻，测法选“用单独的测试集”。" },
+          { en: "Set k to 1 and record the training and test accuracy. Then set k to 5 and record again.", zh: "把 k 调到 1，记下训练准确率和测试准确率。再把 k 调到 5，记一次。" },
+          { en: "Turn on “画出模型的分区” (draw the model's regions), capture the k=1 and k=5 views, and compare how the region boundaries differ.", zh: "打开“画出模型的分区”，截下 k=1 和 k=5 两张图，比较分区的边界有什么不同。" },
+          { en: "Change the test method to “在训练数据上测” (test on the training data), see how the scores change, and explain why training data cannot be used for scoring.", zh: "把测法改成“在训练数据上测”，看分数怎么变，说明为什么不能拿训练数据来打分。" },
+          { en: "Use these numbers to describe what overfitting looks like.", zh: "用这些数字说明“过拟合”是什么样子。" },
         ],
       },
       {
@@ -263,7 +285,7 @@ export const homeworks: Homework[] = [
         title: { en: "Part D. Optional, not graded", zh: "Part D　选做，不计分" },
         steps: [
           { en: "Use a text-to-image or OCR tool, mark the errors in its output, and guess where they come from.", zh: "用文生图或 OCR 工具，标注输出里的错误并猜错误来源。" },
-          { en: "Exam warm-up: in the client's prompt practice module, try one round of “state the requirement, get a result, check the result” in the format of the final open test.", zh: "考前适应：在客户端的提示词实践模块里，按期末开放测试的形式体验一次“提出要求、拿到结果、检查结果”的流程。" },
+          { en: "Exam warm-up: following the format of the final open test, use DeepSeek to go through one full round of “state the requirement, get a result, check the result, create a share link and take a screenshot”.", zh: "考前适应：按期末开放测试的形式，用 DeepSeek 完整走一次“提出要求、拿到结果、检查结果、生成分享链接并截图”的流程。" },
         ],
       },
     ],
