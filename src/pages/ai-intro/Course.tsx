@@ -236,6 +236,13 @@ function HomeworkPage({ hw }: { hw: Homework }) {
             {t(task.title)}
             {task.note && <span className="course-task-note">{t(task.note)}</span>}
           </p>
+          {task.link && (
+            <p>
+              <a href={task.link.href} target="_blank" rel="noopener">
+                {t(task.link.label)}
+              </a>
+            </p>
+          )}
           {task.text && <p>{t(task.text)}</p>}
           {task.steps && (
             <ol>

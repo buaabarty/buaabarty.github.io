@@ -4,117 +4,56 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
-  <title>第3讲：机器学习流程练习</title>
-  <link rel="stylesheet" href="../maze/style.css">
-  <link rel="stylesheet" href="ml.css">
+  <title>第3讲：机器学习工作流练习</title>
+  <link rel="stylesheet" href="orange.css">
 </head>
 <body>
-  <main class="app-shell">
-    <header class="topbar">
-      <div>
-        <p class="eyebrow">燕山大学 · 人工智能概论</p>
-        <h1>第3讲：机器学习流程练习</h1>
-      </div>
-      <a class="support-link" href="../../#/tools">返回练习工具</a>
-    </header>
+  <header class="topbar">
+    <div class="brand">
+      <span class="eyebrow">燕山大学 · 人工智能概论</span>
+      <h1>机器学习工作流练习</h1>
+    </div>
+    <nav class="tools">
+      <select id="examples" aria-label="示例工作流"><option value="">示例工作流…</option></select>
+      <button type="button" id="newBtn">新建</button>
+      <label class="filebtn">打开<input type="file" id="openFile" accept=".json"></label>
+      <button type="button" id="saveBtn">保存</button>
+      <button type="button" id="helpBtn">怎么用</button>
+      <a href="../../#/tools" class="back">返回练习工具</a>
+    </nav>
+  </header>
 
-    <ol class="flow" aria-label="练习流程">
-      <li>1 选数据</li><li>2 看数据</li><li>3 选模型</li><li>4 测试与评分</li><li>5 混淆矩阵</li>
-    </ol>
-
-    <section class="workspace" aria-label="机器学习练习区">
-      <aside class="control-panel" aria-label="控制面板">
-        <div class="field-group">
-          <label for="dataSelect">1. 数据集</label>
-          <select id="dataSelect"></select>
-          <p class="hint" id="dataNote"></p>
-        </div>
-
-        <div class="field-group">
-          <span class="field-label">用哪些特征</span>
-          <div id="featureBox" class="check-list"></div>
-        </div>
-
-        <div class="field-group">
-          <span class="field-label">3. 模型（可多选，一起比较）</span>
-          <div class="model-card">
-            <label class="inline-field"><span>决策树</span><input type="checkbox" id="useTree" checked></label>
-            <label for="treeDepth">最大层数：<b id="treeDepthVal"></b></label>
-            <input id="treeDepth" type="range" min="1" max="11" value="11">
-            <label for="treeMin">样本少于几条就不再分：<b id="treeMinVal"></b></label>
-            <input id="treeMin" type="range" min="2" max="20" value="2">
-          </div>
-          <div class="model-card">
-            <label class="inline-field"><span>k 近邻</span><input type="checkbox" id="useKnn" checked></label>
-            <label for="knnK">k（看最近的几个邻居）：<b id="knnKVal"></b></label>
-            <input id="knnK" type="range" min="1" max="15" value="1">
-          </div>
-          <div class="model-card">
-            <label class="inline-field"><span>逻辑回归</span><input type="checkbox" id="useLogit"></label>
-          </div>
-          <div class="model-card">
-            <label class="inline-field"><span>随机森林</span><input type="checkbox" id="useForest"></label>
-            <label for="forestN">树的棵数：<b id="forestNVal"></b></label>
-            <input id="forestN" type="range" min="5" max="50" step="5" value="20">
-          </div>
-        </div>
-
-        <div class="field-group">
-          <label for="evalSelect">4. 怎么测</label>
-          <select id="evalSelect"></select>
-          <button type="button" id="reshuffle">换一种随机划分</button>
-        </div>
-      </aside>
-
-      <section class="maze-area" aria-label="数据视图">
-        <div class="canvas-frame column">
-          <div class="plot-controls">
-            <label>横轴 <select id="xSelect"></select></label>
-            <label>纵轴 <select id="ySelect"></select></label>
-            <label>颜色 <select id="colorSelect">
-              <option value="class">真实类别</option>
-              <option value="kmeans">k-Means 聚类结果</option>
-            </select></label>
-            <label id="kmeansBox">簇数 <input id="kmeansK" type="range" min="2" max="6" value="3"> <b id="kmeansKVal"></b></label>
-          </div>
-          <canvas id="plot" width="720" height="560" aria-label="散点图"></canvas>
-          <label class="inline-field boundary-toggle"><span id="boundaryLabel">画出模型的分区（只勾两个数值特征时可用）</span><input type="checkbox" id="showBoundary"></label>
-          <div class="legend" id="plotLegend"></div>
-          <p class="hint" id="plotNote"></p>
-        </div>
-        <details class="table-box">
-          <summary>2. 数据表（点开查看原始数据）</summary>
-          <div id="dataTable" class="scroll"></div>
-        </details>
-      </section>
-
-      <aside class="info-panel" aria-label="评分结果">
-        <h2 class="panel-title">4. 测试与评分</h2>
-        <table class="score" id="scoreTable"></table>
-        <p class="hint" id="scoreNote"></p>
-
-        <h2 class="panel-title">5. 混淆矩阵</h2>
-        <label for="cmModel" class="sr">看哪个模型</label>
-        <select id="cmModel"></select>
-        <table class="cm" id="cmTable"></table>
-        <p class="hint">每一行是真实类别，每一列是模型的判断。对角线上的数越大越好。</p>
-
-        <div id="clusterBox" hidden>
-          <h2 class="panel-title">聚类结果对照</h2>
-          <table class="cm" id="clusterTable"></table>
-          <p class="hint">聚类时模型看不到真实类别，这张表把两者放在一起比较。</p>
-        </div>
-
-        <div id="treeBox">
-          <h2 class="panel-title">决策树长什么样</h2>
-          <div id="treeView" class="tree"></div>
-        </div>
-      </aside>
+  <main class="layout">
+    <aside id="palette" aria-label="组件"></aside>
+    <section id="canvasWrap" aria-label="画布">
+      <svg id="canvas" width="2400" height="1600"></svg>
+      <p id="emptyHint" hidden>从左边点一下或拖一个组件到这里，从“文件”开始。</p>
     </section>
   </main>
 
+  <div id="windows"></div>
+  <div id="toast" hidden></div>
+
+  <div id="help" hidden>
+    <div class="help-card">
+      <button type="button" id="helpClose" class="ow-close" title="关闭">×</button>
+      <h2>怎么用</h2>
+      <ol>
+        <li>从左边的组件栏点一下，或把组件拖到画布上。</li>
+        <li>从一个组件右侧的小圆点按住拖到另一个组件上，就连上了一条线，数据会沿着线自动流过去。拖到空白处可以直接挑下一个组件。</li>
+        <li>双击组件打开它的窗口，在窗口里改参数、看结果。改完参数，下游的结果会自动更新。</li>
+        <li>点选组件或连线后按 Delete 键删除。右键组件可以重命名。双击连线可以改连接的通道。</li>
+        <li>“示例工作流”里有课上用过的几个流程，可以直接打开改着玩。</li>
+        <li>画布会自动保存在这台电脑的浏览器里。想换电脑继续，就点“保存”下载工作流文件，再用“打开”读回来。</li>
+      </ol>
+      <p>全部计算都在你的浏览器里完成，数据不会上传。</p>
+    </div>
+  </div>
+
   <script src="data_orange.js"></script>
   <script src="data_course.js"></script>
-  <script src="ml.js"></script>
+  <script src="core.js"></script>
+  <script src="widgets.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

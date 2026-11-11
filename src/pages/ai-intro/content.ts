@@ -99,10 +99,10 @@ export const tools: { id: ToolId; href: string; title: L; text: L }[] = [
   {
     id: "ml",
     href: "/teach/ai-intro/tools/ml/",
-    title: { en: "Machine learning workflow", zh: "机器学习流程" },
+    title: { en: "Machine learning workflow", zh: "机器学习工作流练习" },
     text: {
-      en: "Pick data and a model, choose how to test it, and compare training and test accuracy to see overfitting. Lecture 3.",
-      zh: "选数据、选模型、选测法，对比训练准确率和测试准确率，看清过拟合。对应第 3 讲。",
+      en: "Build a workflow on a canvas by connecting data, models, and evaluation widgets, then compare training and test accuracy to see overfitting. Lecture 3.",
+      zh: "在画布上连接数据、模型和测试与评分等组件搭出工作流，对比训练数据和测试数据上的准确率，看清过拟合。对应第 3 讲。",
     },
   },
   {
@@ -124,7 +124,7 @@ export type Homework = {
   out: L;
   due: L;
   overview: L;
-  tasks: { title: L; note?: L; steps?: L[]; text?: L }[];
+  tasks: { title: L; note?: L; link?: { href: string; label: L }; steps?: L[]; text?: L }[];
   submit: L;
   grading: Row[];
   gradingNote?: L;
@@ -198,19 +198,23 @@ export const homeworks: Homework[] = [
     out: { en: "Wed, Dec 2, after class", zh: "12 月 2 日 周三课后" },
     due: { en: "Mon, Dec 7, before class", zh: "12 月 7 日 周一上课前" },
     overview: {
-      en: "First train a classifier in the machine learning workflow tool on this site and deliberately cause overfitting. Then change the structure and learning rate in the neural network playground and watch the loss curve.",
-      zh: "先在课程网站的机器学习练习页里训练分类器，故意制造过拟合。再在神经网络练习页里改结构和学习率，看损失曲线怎么变。",
+      en: "First build a workflow and train a classifier in the machine learning workflow tool on this site, and deliberately cause overfitting. Then change the structure and learning rate in the neural network playground and watch the loss curve.",
+      zh: "先在课程网站的机器学习工作流练习页里搭流程、训练分类器，故意制造过拟合。再在神经网络练习页里改结构和学习率，看损失曲线怎么变。",
     },
     tasks: [
       {
         title: { en: "Part A. Cause overfitting on purpose", zh: "Part A　制造一次过拟合" },
         note: { en: "Lecture 3 task, core", zh: "对应第 3 讲任务，核心" },
+        link: {
+          href: "/teach/ai-intro/tools/ml/?example=4",
+          label: { en: "Open the HW2 example workflow", zh: "打开作业二示例工作流" },
+        },
         steps: [
-          { en: "In the machine learning tool, choose the “西瓜挑选” (watermelon picking) data, tick “k 近邻” (k-nearest neighbors) as the model, and set the test method to “用单独的测试集” (separate test set).", zh: "在机器学习练习页选“西瓜挑选”数据，模型勾选 k 近邻，测法选“用单独的测试集”。" },
-          { en: "Set k to 1 and record the training and test accuracy. Then set k to 5 and record again.", zh: "把 k 调到 1，记下训练准确率和测试准确率。再把 k 调到 5，记一次。" },
-          { en: "Turn on “画出模型的分区” (draw the model's regions), capture the k=1 and k=5 views, and compare how the region boundaries differ.", zh: "打开“画出模型的分区”，截下 k=1 和 k=5 两张图，比较分区的边界有什么不同。" },
-          { en: "Change the test method to “在训练数据上测” (test on the training data), see how the scores change, and explain why training data cannot be used for scoring.", zh: "把测法改成“在训练数据上测”，看分数怎么变，说明为什么不能拿训练数据来打分。" },
-          { en: "Use these numbers to describe what overfitting looks like.", zh: "用这些数字说明“过拟合”是什么样子。" },
+          { en: "Open the machine learning workflow tool and pick “作业二 西瓜数据制造过拟合” (HW2: overfitting with the watermelon data) under “示例工作流” (example workflows).", zh: "打开机器学习工作流练习页，在“示例工作流”里选“作业二 西瓜数据制造过拟合”。" },
+          { en: "Double-click “k近邻” (k-nearest neighbors) and set the number of neighbors to 1. Double-click “测试与评分” (test and score), choose “在测试数据上测试” (test on test data) and then “在训练数据上测试” (test on training data), and record the classification accuracy each time.", zh: "双击“k近邻”，把邻居个数设为 1。双击“测试与评分”，分别选“在测试数据上测试”和“在训练数据上测试”，记下两次的分类准确率。" },
+          { en: "Change the number of neighbors to 5 and record again.", zh: "把邻居个数改成 5，再记一次。" },
+          { en: "Take screenshots of the whole workflow canvas and of the “测试与评分” window.", zh: "截图：整个工作流画布，以及“测试与评分”窗口。" },
+          { en: "Use these numbers to describe what overfitting looks like: why does k=1 score perfectly on the training data but drop on the test data?", zh: "用这些数字说明“过拟合”是什么样子：为什么 k=1 在训练数据上满分，到测试数据上却下降。" },
         ],
       },
       {
