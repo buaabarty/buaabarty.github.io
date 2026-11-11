@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useT } from "@/i18n";
-import { aiRecord, course, grading, lectureDates, lectureTime, homeworks, lectures, policies, scheduleEvents, week, type Homework } from "./content";
+import { aiRecord, course, grading, lectureDates, lectureTime, tools, homeworks, lectures, policies, scheduleEvents, week, type Homework } from "./content";
 
-type Route = "home" | "schedule" | "assignments" | "policies" | `hw${number}`;
+type Route = "home" | "schedule" | "assignments" | "tools" | "policies" | `hw${number}`;
 
 function readRoute(): Route {
   const h = location.hash.replace(/^#\/?/, "");
-  if (/^hw[1-4]$/.test(h) || ["schedule", "assignments", "policies"].includes(h)) return h as Route;
+  if (/^hw[1-4]$/.test(h) || ["schedule", "assignments", "tools", "policies"].includes(h)) return h as Route;
   return "home";
 }
 
@@ -27,6 +27,7 @@ export function Course() {
     { id: "home", label: t({ en: "Home", zh: "首页" }) },
     { id: "schedule", label: t({ en: "Schedule", zh: "日程" }) },
     { id: "assignments", label: t({ en: "Assignments", zh: "作业" }) },
+    { id: "tools", label: t({ en: "Tools", zh: "练习工具" }) },
     { id: "policies", label: t({ en: "Policies", zh: "课程政策" }) },
   ];
   const activeTab = route.startsWith("hw") ? "assignments" : route;
@@ -51,6 +52,7 @@ export function Course() {
       {route === "home" && <CourseHome />}
       {route === "schedule" && <Schedule />}
       {route === "assignments" && <Assignments />}
+      {route === "tools" && <Tools />}
       {route === "policies" && <Policies />}
       {hw && <HomeworkPage hw={hw} />}
     </>
@@ -215,6 +217,19 @@ function HomeworkPage({ hw }: { hw: Homework }) {
       </table>
 
       <h3>{s("Tasks", "任务")}</h3>
+      {hw.tools && (
+        <p>
+          {s("Tool: ", "使用工具：")}
+          {hw.tools.map((id) => {
+            const tool = tools.find((x) => x.id === id)!;
+            return (
+              <a key={id} href={tool.href} target="_blank" rel="noopener">
+                {t(tool.title)}
+              </a>
+            );
+          })}
+        </p>
+      )}
       {hw.tasks.map((task) => (
         <div key={task.title.en} className="course-task">
           <p className="course-task-title">
@@ -278,6 +293,31 @@ function HomeworkPage({ hw }: { hw: Homework }) {
         {hw.id < homeworks.length && <a href={`#/hw${hw.id + 1}`}>HW{hw.id + 1} →</a>}
       </p>
     </article>
+  );
+}
+
+function Tools() {
+  const t = useT();
+  return (
+    <section aria-labelledby="tools">
+      <h2 id="tools">{t({ en: "Tools", zh: "练习工具" })}</h2>
+      <p>
+        {t({
+          en: "Both tools open directly in the browser. Nothing to install.",
+          zh: "两个工具都在浏览器里直接打开，无需安装。",
+        })}
+      </p>
+      {tools.map((tool) => (
+        <div key={tool.id} className="course-task">
+          <p className="course-task-title">
+            <a href={tool.href} target="_blank" rel="noopener">
+              {t(tool.title)}
+            </a>
+          </p>
+          <p>{t(tool.text)}</p>
+        </div>
+      ))}
+    </section>
   );
 }
 

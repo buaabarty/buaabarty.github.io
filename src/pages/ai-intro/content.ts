@@ -76,10 +76,33 @@ export const scheduleEvents: Record<number, { hw: number; kind: "out" | "due" }[
 
 type Row = { item: L; points: string; look: L };
 
+export type ToolId = "maze" | "nn";
+export const tools: { id: ToolId; href: string; title: L; text: L }[] = [
+  {
+    id: "maze",
+    href: "/teach/ai-intro/tools/maze/",
+    title: { en: "Maze search", zh: "迷宫搜索" },
+    text: {
+      en: "Draw a maze, then run breadth-first, depth-first, and A* search step by step, and compare the cells examined and the path length.",
+      zh: "自己画迷宫，逐步运行广度优先、深度优先和 A* 搜索，对比查看过的格子数和路径长度。",
+    },
+  },
+  {
+    id: "nn",
+    href: "/teach/ai-intro/tools/nn/",
+    title: { en: "Neural network playground", zh: "神经网络练习" },
+    text: {
+      en: "Change the data, layers, neurons, and learning rate, then watch the decision boundary and the training and test loss curves.",
+      zh: "调整数据、层数、神经元数和学习率，观察决策边界以及训练损失和测试损失两条曲线。",
+    },
+  },
+];
+
 export type Homework = {
   id: number;
   title: L;
   lectures: [number, number];
+  tools?: ToolId[];
   out: L;
   due: L;
   overview: L;
@@ -96,11 +119,12 @@ export const homeworks: Homework[] = [
     id: 1,
     title: { en: "The world of search", zh: "搜索的世界" },
     lectures: [1, 2],
+    tools: ["maze"],
     out: { en: "Wed, Nov 25, after class", zh: "11 月 25 日 周三课后" },
     due: { en: "Mon, Nov 30, before class", zh: "11 月 30 日 周一上课前" },
     overview: {
-      en: "Use the maze page in the local practice client to compare how many cells different search methods examine in the same maze. Then try an LLM and find an example it clearly gets wrong.",
-      zh: "用本地客户端里的迷宫练习页，比较不同搜索方法在同一个迷宫里查看了多少格子。再体验一次大模型，找一个它明显答错的例子。",
+      en: "Use the maze search tool on this site to compare how many cells different search methods examine in the same maze. Then try an LLM and find an example it clearly gets wrong.",
+      zh: "用本站的迷宫搜索工具，比较不同搜索方法在同一个迷宫里查看了多少格子。再体验一次大模型，找一个它明显答错的例子。",
     },
     tasks: [
       {
@@ -115,7 +139,7 @@ export const homeworks: Homework[] = [
         title: { en: "Part B. One maze, three ways through", zh: "Part B　同一个迷宫，三种走法" },
         note: { en: "Lecture 2 task, core", zh: "对应第 2 讲任务，核心" },
         steps: [
-          { en: "Generate a maze on the maze page and fix the start and goal.", zh: "在迷宫练习页生成一个迷宫，起点和终点固定。" },
+          { en: "Generate a maze in the maze search tool and fix the start and goal.", zh: "在迷宫搜索工具里生成一个迷宫，起点和终点固定。" },
           { en: "Run breadth-first, depth-first, and directed search in turn. For each, record the number of cells examined and the length of the final path.", zh: "依次运行广度优先、深度优先、有方向的搜索，各记一次“查看过的格子数”和“最后路径的长度”。" },
           { en: "Add more obstacles or move the goal, then compare again.", zh: "把障碍加多或移动终点，再对比一次。" },
           { en: "In your own words: which method examines the fewest cells, and why?", zh: "用自己的话回答：哪种方法查看的格子最少，为什么。" },
@@ -149,11 +173,12 @@ export const homeworks: Homework[] = [
     id: 2,
     title: { en: "Letting machines learn from data", zh: "让机器从数据里学" },
     lectures: [3, 4],
+    tools: ["nn"],
     out: { en: "Wed, Dec 2, after class", zh: "12 月 2 日 周三课后" },
     due: { en: "Mon, Dec 7, before class", zh: "12 月 7 日 周一上课前" },
     overview: {
-      en: "First train a classifier in the Orange workflow and deliberately cause overfitting. Then change the structure and learning rate on the neural network page and watch the loss curve.",
-      zh: "先在 Orange 流水线里训练一个分类器，故意制造过拟合。再在神经网络练习页里改结构和学习率，看损失曲线怎么变。",
+      en: "First train a classifier in the Orange workflow and deliberately cause overfitting. Then change the structure and learning rate in the neural network playground and watch the loss curve.",
+      zh: "先在 Orange 流水线里训练一个分类器，故意制造过拟合。再在本站的神经网络练习工具里改结构和学习率，看损失曲线怎么变。",
     },
     tasks: [
       {
@@ -170,7 +195,7 @@ export const homeworks: Homework[] = [
         title: { en: "Part B. Tune a neural network", zh: "Part B　调一次神经网络" },
         note: { en: "Lecture 4 task", zh: "对应第 4 讲任务" },
         steps: [
-          { en: "On the neural network page, pick a dataset, change the number of layers or neurons per layer, and record a loss curve.", zh: "在神经网络练习页里，选一个数据集，改变网络层数或每层神经元数，记一次损失曲线。" },
+          { en: "In the neural network playground, pick a dataset, change the number of layers or neurons per layer, and record a loss curve.", zh: "在神经网络练习工具里，选一个数据集，改变网络层数或每层神经元数，记一次损失曲线。" },
           { en: "Change the learning rate and record again.", zh: "再改学习率，记一次。" },
           { en: "State which change made the clearest difference, with screenshots.", zh: "写明哪一次改动带来的差别最明显，并截图。" },
         ],

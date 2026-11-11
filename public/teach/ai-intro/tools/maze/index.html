@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>第2讲：迷宫搜索可视化练习</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">燕山大学 · 人工智能概论</p>
+        <h1>第2讲：迷宫搜索可视化练习</h1>
+      </div>
+      <a class="support-link" href="mailto:yby@ysu.edu.cn">使用问题：yby@ysu.edu.cn</a>
+    </header>
+
+    <section class="workspace" aria-label="迷宫搜索练习区">
+      <aside class="control-panel" aria-label="控制面板">
+        <div class="field-group">
+          <label for="algorithmSelect">搜索算法</label>
+          <select id="algorithmSelect">
+            <option value="astar">A* 启发式搜索</option>
+            <option value="bfs">BFS 广度优先搜索</option>
+            <option value="dfs">DFS 深度优先搜索</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <span class="field-label">编辑方式</span>
+          <div class="segmented" role="group" aria-label="编辑方式">
+            <button type="button" class="mode-button is-active" data-mode="wall" aria-pressed="true">画墙</button>
+            <button type="button" class="mode-button" data-mode="erase" aria-pressed="false">擦除</button>
+            <button type="button" class="mode-button" data-mode="start" aria-pressed="false">起点</button>
+            <button type="button" class="mode-button" data-mode="target" aria-pressed="false">终点</button>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="sizeSelect">网格大小</label>
+          <select id="sizeSelect">
+            <option value="19">19 × 19</option>
+            <option value="25" selected>25 × 25</option>
+            <option value="31">31 × 31</option>
+          </select>
+        </div>
+
+        <div class="field-group inline-field">
+          <label for="showAnimation">显示动画</label>
+          <input id="showAnimation" type="checkbox" checked>
+        </div>
+
+        <div class="field-group">
+          <label for="speedRange">动画速度</label>
+          <input id="speedRange" type="range" min="1" max="10" value="6">
+        </div>
+
+        <div class="button-grid" aria-label="搜索操作">
+          <button type="button" id="startButton" class="primary">开始搜索</button>
+          <button type="button" id="pauseButton">暂停</button>
+          <button type="button" id="stepButton">单步</button>
+          <button type="button" id="resetButton">重置搜索</button>
+          <button type="button" id="clearButton">清空墙体</button>
+          <button type="button" id="randomButton">随机迷宫</button>
+        </div>
+      </aside>
+
+      <section class="maze-area" aria-label="迷宫画布">
+        <div class="canvas-frame">
+          <canvas id="mazeCanvas" width="720" height="720" aria-label="迷宫搜索网格"></canvas>
+        </div>
+      </section>
+
+      <aside class="info-panel" aria-label="运行状态">
+        <div class="metric-list">
+          <div>
+            <span>当前状态</span>
+            <strong id="statusText">准备就绪</strong>
+          </div>
+          <div>
+            <span>访问节点</span>
+            <strong id="visitedCount">0</strong>
+          </div>
+          <div>
+            <span>候选节点</span>
+            <strong id="frontierCount">0</strong>
+          </div>
+          <div>
+            <span>路径步数</span>
+            <strong id="distanceValue">-</strong>
+          </div>
+        </div>
+
+        <div class="legend" aria-label="颜色图例">
+          <span><i class="legend-start"></i>起点</span>
+          <span><i class="legend-target"></i>终点</span>
+          <span><i class="legend-wall"></i>墙体</span>
+          <span><i class="legend-frontier"></i>候选</span>
+          <span><i class="legend-visited"></i>已访问</span>
+          <span><i class="legend-path"></i>路径</span>
+        </div>
+
+        <div class="tips">
+          <h2>操作提示</h2>
+          <p>先选择编辑方式，再在网格上点击或拖动。起点和终点不能放在墙体上。</p>
+          <p>BFS 适合观察最短路，DFS 适合观察深度探索，A* 会利用到终点的估计距离。</p>
+          <p>本练习只允许上下左右 4 方向移动，路径不会斜穿墙角，便于观察 BFS 的最短路径。</p>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script src="maze.js"></script>
+</body>
+</html>
