@@ -12,7 +12,7 @@ main:
     conference_short: IJSEKE
     ccf: CCF-C
     conference: International Journal of Software Engineering and Knowledge Engineering, 2026.
-    pdf: https://arxiv.org/pdf/2510.20521
+    pdf: https://www.worldscientific.com/doi/10.1142/S021819402650052X
 
   - title: "HELO-APR: Enhancing Low-Resource Program Repair through Cross-Lingual Knowledge Transfer"
     authors: Zhipeng Wang, <strong>Boyang Yang</strong>, Yidong Wan, Liuye Guo, You Lv, Tao Zheng, Zhuowei Wang, Tieke He
