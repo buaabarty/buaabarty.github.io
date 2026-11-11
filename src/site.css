@@ -239,7 +239,7 @@ a:hover { text-decoration: underline; }
 .pub { scroll-margin-top: 80px; }
 .pub:target { background: var(--accent-subtle); border-radius: 12px; margin: 0 -12px; padding-left: 12px; padding-right: 12px; }
 
-.visitors { width: 240px; max-width: 100%; min-height: 240px; }
+.visitors { width: 100%; max-width: 100%; min-height: 120px; overflow: hidden; }
 
 /* Students */
 
