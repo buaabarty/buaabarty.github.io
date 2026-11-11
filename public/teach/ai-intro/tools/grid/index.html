@@ -222,6 +222,8 @@
   $('resetBtn').addEventListener('click', reset);
   $('defaultBtn').addEventListener('click', load);
   load();
+  // 网址带 ?run=1 时打开即算到不变，方便课堂直接展示结果
+  if (/[?&]run=1/.test(location.search)) $('runBtn').click();
 })();
 </script>
 </body>
