@@ -1,5 +1,7 @@
 <h2 id="publications">Publications</h2>
 
+<p class="pub-legend"><sup>#</sup> Corresponding author</p>
+
 <div class="publications">
 <ol class="bibliography">
 {% for link in site.data.publications.main %}

@@ -8,7 +8,7 @@ main:
     pdf: https://dl.acm.org/doi/10.1145/3845995
 
   - title: "Large Language Models for Fault Localization: An Empirical Study"
-    authors: Yingjian Xiao, Weiwei Gong, Jianjun Huang, Rongqun Hu, Hongwei Li, Anquan Jie, <strong>Boyang Yang</strong>
+    authors: Yingjian Xiao, Weiwei Gong, Jianjun Huang, Rongqun Hu, Hongwei Li, Anquan Jie, <strong>Boyang Yang</strong><sup>#</sup>
     conference_short: IJSEKE
     ccf: CCF-C
     conference: International Journal of Software Engineering and Knowledge Engineering, 2026.

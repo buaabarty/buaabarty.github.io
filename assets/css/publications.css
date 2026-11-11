@@ -122,3 +122,9 @@
   text-transform: none;
   letter-spacing: normal;
 }
+
+.pub-legend {
+  font-size: 0.9rem;
+  color: var(--muted, #71757d);
+  margin: 0 0 0.25rem;
+}
