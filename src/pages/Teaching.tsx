@@ -10,7 +10,7 @@ const courses: Entry[] = [
   {
     when: { en: "Fall 2026", zh: "2026 年秋季" },
     role: { en: "Introduction to Artificial Intelligence", zh: "人工智能概论" },
-    roleHref: "/teach/ai100/",
+    roleHref: "/teach/ai-intro/",
     where: { en: "Yanshan University, instructor, undergraduate course", zh: "燕山大学，主讲教师，本科课程" },
   },
 ];
