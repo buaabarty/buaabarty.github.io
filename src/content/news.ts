@@ -1,0 +1,26 @@
+// Newest first. Add new items at the top.
+type L = { en: string; zh: string };
+export const news: { date: L; text: L }[] = [
+  { date: { en: "Oct 2026", zh: "2026.10" }, text: { en: "Invited as a reviewer of WWW'27.", zh: "受邀担任 WWW'27 审稿人。" } },
+  { date: { en: "Sept 2026", zh: "2026.09" }, text: { en: "Invited as a Program Committee of ICPC'27 Research Track.", zh: "受邀担任 ICPC'27 Research Track 程序委员会委员。" } },
+  { date: { en: "Aug 2026", zh: "2026.08" }, text: { en: "One paper was accepted by TOSEM.", zh: "1 篇论文被 TOSEM 录用。" } },
+  { date: { en: "Aug 2026", zh: "2026.08" }, text: { en: "Invited as a Program Committee of FSE'27 Industry Track.", zh: "受邀担任 FSE'27 Industry Track 程序委员会委员。" } },
+  { date: { en: "Aug 2026", zh: "2026.08" }, text: { en: "Invited as a reviewer of TOSEM.", zh: "受邀担任 TOSEM 审稿人。" } },
+  { date: { en: "July 2026", zh: "2026.07" }, text: { en: "Invited as a Shadow PC of ICSE'27.", zh: "受邀担任 ICSE'27 Shadow PC 委员。" } },
+  { date: { en: "July 2026", zh: "2026.07" }, text: { en: "Received the AIware Distinguished Reviewer Award.", zh: "获 AIware 杰出审稿人奖。" } },
+  { date: { en: "June 2026", zh: "2026.06" }, text: { en: "One paper was accepted by IJSEKE.", zh: "1 篇论文被 IJSEKE 录用。" } },
+  { date: { en: "April 2026", zh: "2026.04" }, text: { en: "One paper was accepted by ISSTA'26.", zh: "1 篇论文被 ISSTA'26 录用。" } },
+  { date: { en: "March 2026", zh: "2026.03" }, text: { en: "Invited as a reviewer of TAAS.", zh: "受邀担任 TAAS 审稿人。" } },
+  { date: { en: "Feb 2026", zh: "2026.02" }, text: { en: "Invited as a Program Committee of FSE'26 IVR Track.", zh: "受邀担任 FSE'26 IVR Track 程序委员会委员。" } },
+  { date: { en: "Jan 2026", zh: "2026.01" }, text: { en: "Invited as a reviewer of the EMSE, ASEJ, TOSEM, and TSE.", zh: "受邀担任 EMSE、ASEJ、TOSEM 和 TSE 审稿人。" } },
+  { date: { en: "Jan 2026", zh: "2026.01" }, text: { en: "Invited as a Program Committee of ICST'26 and AIware Research Track.", zh: "受邀担任 ICST'26 和 AIware Research Track 程序委员会委员。" } },
+  { date: { en: "Dec 2025", zh: "2025.12" }, text: { en: "One paper was accepted by ICSE'26.", zh: "1 篇论文被 ICSE'26 录用。" } },
+  { date: { en: "Dec 2025", zh: "2025.12" }, text: { en: "Successfully defended my Ph.D. dissertation.", zh: "顺利通过博士学位论文答辩。" } },
+  { date: { en: "Nov 2025", zh: "2025.11" }, text: { en: "Invited as a Program Committee of ICSME'26 Industry Track.", zh: "受邀担任 ICSME'26 Industry Track 程序委员会委员。" } },
+  { date: { en: "Oct 2025", zh: "2025.10" }, text: { en: "One paper was accepted by ICSE'26.", zh: "1 篇论文被 ICSE'26 录用。" } },
+  { date: { en: "Sept 2025", zh: "2025.09" }, text: { en: "One paper was accepted by ASE'25 Journal First Track.", zh: "1 篇论文入选 ASE'25 Journal First Track。" } },
+  { date: { en: "Sept 2025", zh: "2025.09" }, text: { en: "Invited as a Program Committee of MSR'26 Research Track and Industry Track.", zh: "受邀担任 MSR'26 Research Track 和 Industry Track 程序委员会委员。" } },
+  { date: { en: "June 2025", zh: "2025.06" }, text: { en: "Invited as a reviewer of NeurIPS'25 and ACL'25.", zh: "受邀担任 NeurIPS'25 和 ACL'25 审稿人。" } },
+  { date: { en: "May 2025", zh: "2025.05" }, text: { en: "Two papers were accepted by TOSEM.", zh: "2 篇论文被 TOSEM 录用。" } },
+  { date: { en: "July 2024", zh: "2024.07" }, text: { en: "One paper was accepted by ISSTA'24.", zh: "1 篇论文被 ISSTA'24 录用。" } },
+];

@@ -1,0 +1,54 @@
+import { Badge } from "@/components/arc/badge/badge";
+import data from "@/content/publications.yml";
+import { useT } from "@/i18n";
+
+type Pub = {
+  id: string;
+  tag: string;
+  title: string;
+  authors: string;
+  conference_short?: string;
+  ccf?: string;
+  conference: string;
+  pdf?: string;
+  code?: string;
+  page?: string;
+  bibtex?: string;
+  notes?: string;
+};
+
+const pubs: Pub[] = data.main;
+
+export function PublicationList() {
+  const t = useT();
+  return (
+    <>
+      <p className="legend"><sup>#</sup> {t({ en: "Corresponding author", zh: "通讯作者" })}</p>
+      <ol className="pubs">
+        {pubs.map((p) => (
+          <li key={p.id} id={p.id} className="pub">
+            <p className="pub-title">
+              {p.pdf ? <a href={p.pdf} target="_blank" rel="noopener">{p.title}</a> : p.title}
+            </p>
+            {/* Author strings carry <strong> and <sup> from the site's own data file. */}
+            <p className="pub-authors" dangerouslySetInnerHTML={{ __html: p.authors }} />
+            <p className="pub-venue">
+              {p.conference_short && <Badge size="sm" tone="info">{p.conference_short}</Badge>}
+              {p.ccf && <Badge size="sm" outline>{p.ccf}</Badge>}
+              <span>{p.conference}</span>
+            </p>
+            {(p.pdf || p.code || p.page || p.bibtex || p.notes) && (
+              <p className="pub-links">
+                {p.pdf && <a href={p.pdf} target="_blank" rel="noopener">{t({ en: "Paper", zh: "论文" })}</a>}
+                {p.code && <a href={p.code} target="_blank" rel="noopener">{t({ en: "Code", zh: "代码" })}</a>}
+                {p.page && <a href={p.page} target="_blank" rel="noopener">{t({ en: "Project", zh: "项目主页" })}</a>}
+                {p.bibtex && <a href={p.bibtex} target="_blank" rel="noopener">BibTeX</a>}
+                {p.notes && <span>{p.notes}</span>}
+              </p>
+            )}
+          </li>
+        ))}
+      </ol>
+    </>
+  );
+}

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en" data-accent="blue">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Boyang Yang | Yanshan University</title>
+    <meta name="description" content="This is the researcher homepage of Boyang Yang." />
+    <meta name="keywords" content="Boyang Yang, Researcher, Homepage" />
+    <link rel="canonical" href="https://buaabarty.github.io/" />
+    <link rel="icon" media="(prefers-color-scheme: light)" href="/img/favicon.png" type="image/png" />
+    <link rel="icon" media="(prefers-color-scheme: dark)" href="/img/favicon-dark.png" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Inter:wght@400;500&display=swap" />
+    <script>
+      try {
+        var t = localStorage.getItem("theme");
+        if (!t) t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        document.documentElement.setAttribute("data-theme", t);
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root" data-page="home"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
