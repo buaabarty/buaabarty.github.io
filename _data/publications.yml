@@ -5,7 +5,7 @@ main:
     conference_short: TOSEM
     ccf: CCF-A
     conference: ACM Transactions on Software Engineering and Methodology, 2026.
-    pdf: https://arxiv.org/pdf/2506.23749
+    pdf: https://dl.acm.org/doi/10.1145/3845995
 
   - title: "Large Language Models for Fault Localization: An Empirical Study"
     authors: Yingjian Xiao, Weiwei Gong, Jianjun Huang, Rongqun Hu, Hongwei Li, Anquan Jie, <strong>Boyang Yang</strong>
