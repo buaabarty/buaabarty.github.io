@@ -17,7 +17,7 @@ const courses: Entry[] = [
 const appointments: Entry[] = [
   {
     when: present("2026"),
-    role: { en: "Assistant Professor", zh: "助理教授" },
+    role: { en: "Assistant Professor", zh: "讲师" },
     where: { en: "Yanshan University", zh: "燕山大学" },
     points: [
       { en: "Teach undergraduate courses in artificial intelligence", zh: "讲授人工智能方向本科课程" },
@@ -33,39 +33,6 @@ const appointments: Entry[] = [
       { en: "Design and teach mandatory summer course “Security Maker Practice Training”", zh: "设计并讲授暑期必修课“安全创客实践训练”" },
       { en: "Mentor graduate students in cybersecurity research and practical applications", zh: "指导研究生开展网络安全研究与实践应用" },
       { en: "Develop hands-on training curricula for security engineering practices", zh: "编写安全工程实践训练课程" },
-    ],
-  },
-  {
-    when: present("2023"),
-    role: { en: "External Mentor", zh: "校外导师" },
-    where: { en: "Information Engineering University", zh: "信息工程大学" },
-    points: [
-      { en: "Lead engineering practice training courses", zh: "主持工程实践训练课程" },
-      { en: "Develop practical training programs for military information systems", zh: "设计军事信息系统实践训练项目" },
-      { en: "Supervise capstone projects in information engineering", zh: "指导信息工程方向毕业设计" },
-    ],
-  },
-];
-
-const coaching: Entry[] = [
-  {
-    when: { en: "2012", zh: "2012 年" },
-    role: { en: "Coach", zh: "教练" },
-    where: { en: "Beijing Olympiad in Informatics Winter Camp", zh: "北京市信息学奥林匹克冬令营" },
-    points: [
-      { en: "Trained high school students in competitive programming", zh: "培训高中生程序设计竞赛" },
-      { en: "Developed algorithmic problem-solving curricula", zh: "编写算法解题课程" },
-      { en: "Prepared students for national and international programming contests", zh: "辅导学生备战国内外程序设计竞赛" },
-    ],
-  },
-  {
-    when: { en: "", zh: "" },
-    role: { en: "Chief Teacher", zh: "首席教师" },
-    where: { en: "Jisuanke Online Platform", zh: "计蒜客在线教育平台" },
-    points: [
-      { en: "Lead the development of online programming education platform", zh: "主持在线编程教育平台的研发" },
-      { en: "Design interactive programming courses and assessment systems", zh: "设计交互式编程课程和测评系统" },
-      { en: "Oversee curriculum development for competitive programming training", zh: "负责程序设计竞赛培训课程体系建设" },
     ],
   },
 ];
@@ -111,24 +78,10 @@ export function Teaching() {
         <Entries items={appointments} />
       </section>
 
-      <section aria-labelledby="coaching">
-        <h2 id="coaching">{t({ en: "Competition coaching", zh: "竞赛指导" })}</h2>
-        <Entries items={coaching} />
-      </section>
-
-      <section aria-labelledby="achievements">
-        <h2 id="achievements">{t({ en: "Competition achievements", zh: "竞赛成绩" })}</h2>
-        <ul className="plain-list">
-          <li>{t({ en: "ACM-ICPC coach: led several teams to regional gold medals", zh: "ACM-ICPC 教练：带领多支队伍获区域赛金牌" })}</li>
-          <li>{t({ en: "Blue Bridge Cup: top 1% coach", zh: "蓝桥杯：前 1% 优秀指导教师" })}</li>
-          <li>{t({ en: "Represented Beihang University at the ACM-ICPC World Finals (27th place)", zh: "代表北京航空航天大学参加 ACM-ICPC 全球总决赛，获第 27 名" })}</li>
-        </ul>
-      </section>
-
       <section aria-labelledby="awards">
         <h2 id="awards">{t({ en: "Teaching awards and recognition", zh: "教学奖励与荣誉" })}</h2>
         <ul className="plain-list">
-          <li>{t({ en: "First Prize, MOE Cybersecurity Industry-Academia Cooperation Excellence (2022)", zh: "教育部网络安全产学合作优秀案例一等奖（2022 年）" })}</li>
+          <li><a href="https://csri.scu.edu.cn/info/1016/3409.htm">{t({ en: "First Prize, MOE Cybersecurity Industry-Academia Cooperation Excellence (2022)", zh: "教育部网络安全产学合作优秀案例一等奖（2022 年）" })}</a></li>
         </ul>
       </section>
     </>

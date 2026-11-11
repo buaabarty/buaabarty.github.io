@@ -16,7 +16,7 @@ export function Profile() {
       <div>
         <h1 id="name">{t({ en: "Boyang Yang", zh: "杨博洋" })}</h1>
         <p className="profile-role">
-          {t({ en: "Assistant Professor, ", zh: "助理教授，" })}
+          {t({ en: "Assistant Professor, ", zh: "讲师，" })}
           <a href="https://www.ysu.edu.cn/" rel="noopener">{t({ en: "Yanshan University", zh: "燕山大学" })}</a>
         </p>
         <p className="profile-email">yby@ieee.org</p>

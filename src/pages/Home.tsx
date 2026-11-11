@@ -20,9 +20,10 @@ function AboutEn() {
     <>
       <p>
         I am an Assistant Professor (from 2026) at Yanshan University, and CTO (from 2015) of Beijing Jisuanke Co., Ltd.
-        I obtained Ph.D. (2026) from Yanshan University under the supervision of Prof. <a href={jin}>Shunfu Jin</a> and
-        Prof. <a href={tian}>Haoye Tian</a>. Before that, I obtained bachelor (2013) and master (2018) degree from Beihang
-        University during industry working, under the supervision of Prof. <a href={li}>Zhoujun Li</a>.
+        I obtained my bachelor's degree (2013) from Beihang University. While working in industry, I obtained my master's
+        degree (2018) from Beihang University under the supervision of Prof. <a href={li}>Zhoujun Li</a>, and my Ph.D. (2026)
+        from Yanshan University under the supervision of Prof. <a href={jin}>Shunfu Jin</a> and
+        Prof. <a href={tian}>Haoye Tian</a>.
       </p>
       <p>
         I am a Senior Member of IEEE and CCF, an Executive Committee Member of the CCF Technical Committee on System
@@ -42,9 +43,9 @@ function AboutZh() {
   return (
     <>
       <p>
-        我是燕山大学助理教授（2026 年起），并自 2015 年起担任北京计蒜客 CTO。2026 年在燕山大学获博士学位，导师为
-        <a href={jin}>金顺福</a>教授和<a href={tian}>田昊野</a>教授。此前在工作期间于北京航空航天大学获学士（2013 年）和硕士（2018 年）学位，导师为
-        <a href={li}>李舟军</a>教授。
+        我是燕山大学讲师（2026 年起），并自 2015 年起担任北京计蒜客 CTO。2013 年在北京航空航天大学获学士学位。此后在职攻读硕士和博士学位，
+        2018 年在北京航空航天大学获硕士学位，导师为<a href={li}>李舟军</a>教授，2026 年在燕山大学获博士学位，导师为
+        <a href={jin}>金顺福</a>教授和<a href={tian}>田昊野</a>教授。
       </p>
       <p>
         我是 IEEE 和 CCF 高级会员、CCF 系统软件专委会执行委员，并担任武汉大学校外导师。曾代表北京航空航天大学参加 ACM 国际大学生程序设计竞赛（ICPC）全球总决赛，获第
