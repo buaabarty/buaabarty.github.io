@@ -4,13 +4,14 @@ import { ThemeSwitch, type Theme } from "@/components/arc/theme-switch/theme-swi
 import SegmentedControl from "@/components/arc/segmented-control/segmented-control";
 import { useLang, useT, type Lang } from "./i18n";
 
-export type PageId = "home" | "publications" | "teaching" | "team";
+export type PageId = "home" | "publications" | "teaching" | "team" | "ai100";
 
 const titles: Record<PageId, { en: string; zh: string }> = {
   home: { en: "Boyang Yang | Yanshan University", zh: "杨博洋 | 燕山大学" },
   publications: { en: "Publications | Boyang Yang", zh: "论文 | 杨博洋" },
   teaching: { en: "Teaching | Boyang Yang", zh: "教学 | 杨博洋" },
   team: { en: "Team | Boyang Yang", zh: "团队 | 杨博洋" },
+  ai100: { en: "Introduction to Artificial Intelligence | Boyang Yang", zh: "人工智能概论 | 杨博洋" },
 };
 
 function currentTheme(): Theme {
@@ -55,7 +56,7 @@ export function Layout({ page, children }: { page: PageId; children: ReactNode }
           variant="simple"
           brand={{ name: t({ en: "Boyang Yang", zh: "杨博洋" }), href: "/", mark: <></> }}
           items={items}
-          current={page}
+          current={page === "ai100" ? "teaching" : page}
           secondaryAction={null}
           primaryAction={null}
           label={t({ en: "Main", zh: "主导航" })}

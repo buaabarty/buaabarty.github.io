@@ -2,14 +2,15 @@ import type { ReactNode } from "react";
 import { useT } from "@/i18n";
 
 type L = { en: string; zh: string };
-type Entry = { when: L; role: L; where: L; href?: string; points?: L[] };
+type Entry = { when: L; role: L; where: L; href?: string; roleHref?: string; points?: L[] };
 
 const present = (y: string): L => ({ en: `${y}–present`, zh: `${y} 年至今` });
 
 const courses: Entry[] = [
   {
     when: { en: "Fall 2026", zh: "2026 年秋季" },
-    role: { en: "Introduction to Artificial Intelligence", zh: "人工智能导论" },
+    role: { en: "Introduction to Artificial Intelligence", zh: "人工智能概论" },
+    roleHref: "/teach/ai100/",
     where: { en: "Yanshan University, instructor, undergraduate course", zh: "燕山大学，主讲教师，本科课程" },
   },
 ];
@@ -47,7 +48,7 @@ function Entries({ items }: { items: Entry[] }) {
           <li key={e.role.en + e.when.en + e.where.en} className="entry">
             <span className="entry-when">{t(e.when)}</span>
             <div>
-              <p className="entry-role">{t(e.role)}</p>
+              <p className="entry-role">{e.roleHref ? <a href={e.roleHref}>{t(e.role)}</a> : t(e.role)}</p>
               <p className="entry-where">{where}</p>
               {e.points && (
                 <ul className="entry-points">

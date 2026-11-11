@@ -8,10 +8,11 @@ import { Home } from "./pages/Home";
 import { Publications } from "./pages/Publications";
 import { Teaching } from "./pages/Teaching";
 import { Team } from "./pages/Team";
+import { Course } from "./pages/ai100/Course";
 
 const root = document.getElementById("root")!;
 const page = (root.dataset.page ?? "home") as PageId;
-const Page = { home: Home, publications: Publications, teaching: Teaching, team: Team }[page];
+const Page = { home: Home, publications: Publications, teaching: Teaching, team: Team, ai100: Course }[page];
 
 createRoot(root).render(
   <StrictMode>

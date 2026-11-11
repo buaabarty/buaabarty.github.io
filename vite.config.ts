@@ -10,7 +10,7 @@ export default defineConfig({
   resolve: { alias: { "@": r("./src"), "next/image": r("./src/shims/next-image.tsx") } },
   build: {
     rollupOptions: {
-      input: { index: r("./index.html"), publication: r("./publication.html"), teach: r("./teach.html"), team: r("./team.html") },
+      input: { index: r("./index.html"), publication: r("./publication.html"), teach: r("./teach.html"), team: r("./team.html"), ai100: r("./teach/ai100/index.html") },
     },
   },
 });
