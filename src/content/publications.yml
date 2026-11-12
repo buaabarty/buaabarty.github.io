@@ -90,10 +90,18 @@ earlier:
 
   - id: etm18-training
     tag: "ETM'18"
-    title: "软件工程实践训练设计与实践 (Software Engineering Training Course: Design and Practice in Nankai University)"
-    authors: 俞昊然 (Haoran Yu), <strong>杨博洋 (Boyang Yang)</strong>
-    conference_short: 实验技术与管理
-    conference: 实验技术与管理 (Experimental Technology and Management), 2018(6).
+    title:
+      en: "Software Engineering Training Course: Design and Practice in Nankai University"
+      zh: "软件工程实践训练设计与实践"
+    authors:
+      en: Haoran Yu, <strong>Boyang Yang</strong>
+      zh: 俞昊然，<strong>杨博洋</strong>
+    conference_short:
+      en: ETM
+      zh: 实验技术与管理
+    conference:
+      en: Experimental Technology and Management, 2018(6).
+      zh: 实验技术与管理，2018(6)。
 
   - id: sp17-wastk
     tag: "SP'17"
@@ -114,8 +122,16 @@ books:
 
   - id: book21-cpp
     tag: "Book'21"
-    title: "轻松学编程：中小学 C++ 零基础入门"
-    authors: <strong>杨博洋</strong>、王建元、张登奎
-    conference_short: 清华大学出版社
-    conference: 清华大学出版社 (Tsinghua University Press), 2021. ISBN 978-7-302-54824-9.
+    title:
+      en: "Learning to Program Made Easy: C++ for Absolute Beginners in Primary and Secondary School"
+      zh: "轻松学编程：中小学 C++ 零基础入门"
+    authors:
+      en: <strong>Boyang Yang</strong>, Jianyuan Wang, Dengkui Zhang
+      zh: <strong>杨博洋</strong>、王建元、张登奎
+    conference_short:
+      en: Book
+      zh: 著作
+    conference:
+      en: Tsinghua University Press, 2021. ISBN 978-7-302-54824-9.
+      zh: 清华大学出版社，2021。ISBN 978-7-302-54824-9。
     pdf: https://www.tup.tsinghua.edu.cn/bookscenter/book_08519101.html

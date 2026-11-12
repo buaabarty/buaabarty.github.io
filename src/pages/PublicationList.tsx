@@ -2,14 +2,16 @@ import { Badge } from "@/components/arc/badge/badge";
 import data from "@/content/publications.yml";
 import { useT } from "@/i18n";
 
+type Text = string | { en: string; zh: string };
+
 type Pub = {
   id: string;
   tag: string;
-  title: string;
-  authors: string;
-  conference_short?: string;
+  title: Text;
+  authors: Text;
+  conference_short?: Text;
   ccf?: string;
-  conference: string;
+  conference: Text;
   pdf?: string;
   code?: string;
   page?: string;
@@ -19,6 +21,7 @@ type Pub = {
 
 export function PublicationList({ items = data.main as Pub[], legend = true }: { items?: Pub[]; legend?: boolean }) {
   const t = useT();
+  const L = (v: Text) => (typeof v === "string" ? v : t(v));
   return (
     <>
       {legend && <p className="legend"><sup>#</sup> {t({ en: "Corresponding author", zh: "通讯作者" })}</p>}
@@ -26,14 +29,14 @@ export function PublicationList({ items = data.main as Pub[], legend = true }: {
         {items.map((p) => (
           <li key={p.id} id={p.id} className="pub">
             <p className="pub-title">
-              {p.pdf ? <a href={p.pdf} target="_blank" rel="noopener">{p.title}</a> : p.title}
+              {p.pdf ? <a href={p.pdf} target="_blank" rel="noopener">{L(p.title)}</a> : L(p.title)}
             </p>
             {/* Author strings carry <strong> and <sup> from the site's own data file. */}
-            <p className="pub-authors" dangerouslySetInnerHTML={{ __html: p.authors }} />
+            <p className="pub-authors" dangerouslySetInnerHTML={{ __html: L(p.authors) }} />
             <p className="pub-venue">
-              {p.conference_short && <Badge size="sm" tone="info">{p.conference_short}</Badge>}
+              {p.conference_short && <Badge key={L(p.conference_short)} size="sm" tone="info">{L(p.conference_short)}</Badge>}
               {p.ccf && <Badge size="sm" outline>{p.ccf}</Badge>}
-              <span>{p.conference}</span>
+              <span>{L(p.conference)}</span>
             </p>
             {(p.pdf || p.code || p.page || p.bibtex || p.notes) && (
               <p className="pub-links">
