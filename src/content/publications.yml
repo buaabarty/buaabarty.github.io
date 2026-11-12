@@ -77,3 +77,45 @@ main:
     pdf: https://dl.acm.org/doi/pdf/10.1145/3650212.3680328
     code: https://github.com/buaabarty/CREF
     page: https://tutorcode.org/
+
+# Shown only on the Publications page, not on the homepage.
+earlier:
+
+  - id: ceisee19-training
+    tag: "CEISEE'19"
+    title: "Short Term Undergraduate Software Engineering Training: Course Design and Practice in China"
+    authors: H. Yu, <strong>B. Yang</strong>, Y. Han, M. Fan, W. Xu
+    conference_short: CEISEE
+    conference: 15th China-Europe International Symposium on Software Engineering Education (CEISEE), 2019.
+
+  - id: etm18-training
+    tag: "ETM'18"
+    title: "软件工程实践训练设计与实践 (Software Engineering Training Course: Design and Practice in Nankai University)"
+    authors: 俞昊然 (Haoran Yu), <strong>杨博洋 (Boyang Yang)</strong>
+    conference_short: 实验技术与管理
+    conference: 实验技术与管理 (Experimental Technology and Management), 2018(6).
+
+  - id: sp17-wastk
+    tag: "SP'17"
+    title: "WASTK: A Weighted Abstract Syntax Tree Kernel Method for Source Code Plagiarism Detection"
+    authors: Deqiang Fu, Yanyan Xu, Haoran Yu, <strong>Boyang Yang</strong>
+    conference_short: Scientific Programming
+    conference: Scientific Programming, 2017.
+    pdf: https://doi.org/10.1155/2017/7809047
+
+  - id: cseit16-visual
+    tag: "CSEIT'16"
+    title: "Automated Interactive Visualization on Abstract Concepts in Computer Science"
+    authors: C. Mao, H. Yu, J. Shi, T. Cai, <strong>B. Yang</strong>
+    conference_short: CSEIT
+    conference: International Conference on Computer Science Education Innovation & Technology (CSEIT), 2016.
+
+books:
+
+  - id: book21-cpp
+    tag: "Book'21"
+    title: "轻松学编程：中小学 C++ 零基础入门"
+    authors: <strong>杨博洋</strong>、王建元、张登奎
+    conference_short: 清华大学出版社
+    conference: 清华大学出版社 (Tsinghua University Press), 2021. ISBN 978-7-302-54824-9.
+    pdf: https://www.tup.tsinghua.edu.cn/bookscenter/book_08519101.html

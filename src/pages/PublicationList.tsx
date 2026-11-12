@@ -17,15 +17,13 @@ type Pub = {
   notes?: string;
 };
 
-const pubs: Pub[] = data.main;
-
-export function PublicationList() {
+export function PublicationList({ items = data.main as Pub[], legend = true }: { items?: Pub[]; legend?: boolean }) {
   const t = useT();
   return (
     <>
-      <p className="legend"><sup>#</sup> {t({ en: "Corresponding author", zh: "通讯作者" })}</p>
+      {legend && <p className="legend"><sup>#</sup> {t({ en: "Corresponding author", zh: "通讯作者" })}</p>}
       <ol className="pubs">
-        {pubs.map((p) => (
+        {items.map((p) => (
           <li key={p.id} id={p.id} className="pub">
             <p className="pub-title">
               {p.pdf ? <a href={p.pdf} target="_blank" rel="noopener">{p.title}</a> : p.title}
