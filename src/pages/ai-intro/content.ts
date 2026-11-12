@@ -11,8 +11,8 @@ export const course = {
     zh: "共 8 讲，2026 年 11 月 23 日起连续 4 周。每周一 15:35–17:10，每周三 13:30–15:05，地点里仁 C107",
   },
   summary: {
-    en: "This course builds an intuitive picture of artificial intelligence without code or mathematical derivations. You will work with no-code local tools and large language models to see how search, machine learning, neural networks, LLMs, and agents behave, where they fail, and how to use them responsibly.",
-    zh: "本课程零代码、不讲数学推导，借助本地无代码工具和大模型实践，帮你直观理解人工智能：搜索、机器学习、神经网络、大模型和智能体如何工作，在哪里会出错，以及如何负责任地使用它们。",
+    en: "This course builds an intuitive picture of artificial intelligence without code or mathematical derivations. You will work with no-code web tools and large language models to see how search, machine learning, neural networks, LLMs, and agents behave, where they fail, and how to use them responsibly.",
+    zh: "本课程零代码、不讲数学推导，借助网页上的无代码工具和大模型实践，帮你直观理解人工智能：搜索、机器学习、神经网络、大模型和智能体如何工作，在哪里会出错，以及如何负责任地使用它们。",
   },
   prereqs: {
     en: "None. All LLM work uses the DeepSeek web app, which only needs a free account.",
@@ -76,7 +76,7 @@ export const scheduleEvents: Record<number, { hw: number; kind: "out" | "due" }[
 
 type Row = { item: L; points: string; look: L };
 
-export type ToolId = "maze" | "grid" | "ml" | "nn";
+export type ToolId = "maze" | "puzzle" | "grid" | "ml" | "nn" | "evolve" | "swarm";
 export const tools: { id: ToolId; href: string; title: L; text: L }[] = [
   {
     id: "maze",
@@ -87,7 +87,16 @@ export const tools: { id: ToolId; href: string; title: L; text: L }[] = [
       zh: "自己画迷宫，逐步运行广度优先、深度优先和 A* 搜索，对比查看过的格子数和路径长度。对应第 2 讲。",
     },
   },
- {
+  {
+    id: "puzzle",
+    href: "/teach/ai-intro/tools/puzzle/",
+    title: { en: "Eight-puzzle", zh: "八数码拼图" },
+    text: {
+      en: "Treat a sliding puzzle as search and compare how many positions breadth-first search and A* check. Lecture 2.",
+      zh: "把拼图看成搜索问题，比较广度优先与 A* 查看的局面数。对应第 2 讲。",
+    },
+  },
+  {
     id: "grid",
     href: "/teach/ai-intro/tools/grid/",
     title: { en: "Grid world", zh: "网格世界" },
@@ -112,6 +121,24 @@ export const tools: { id: ToolId; href: string; title: L; text: L }[] = [
     text: {
       en: "Change the data, layers, neurons, and learning rate, then watch the decision boundary and the training and test loss curves. Lecture 4.",
       zh: "调整数据、层数、神经元数和学习率，观察决策边界以及训练损失和测试损失两条曲线。对应第 4 讲。",
+    },
+  },
+  {
+    id: "evolve",
+    href: "/teach/ai-intro/tools/evolve/",
+    title: { en: "Evolving minesweepers", zh: "进化扫雷车" },
+    text: {
+      en: "Cars driven by tiny neural networks evolve, generation by generation, to find mines. Lecture 4.",
+      zh: "小神经网络驾驶的小车，一代代进化出找地雷的本领。对应第 4 讲。",
+    },
+  },
+  {
+    id: "swarm",
+    href: "/teach/ai-intro/tools/swarm/",
+    title: { en: "Swarm intelligence", zh: "群体智能" },
+    text: {
+      en: "Ants find the shortcut by scent, and birds form a flock from three simple rules. Lecture 7.",
+      zh: "蚂蚁靠气味找到近路，鸟群靠三条规则飞出队形。对应第 7 讲。",
     },
   },
 ];

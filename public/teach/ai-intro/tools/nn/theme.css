@@ -1,0 +1,124 @@
+/* Course look for the playground page. Loaded after tool.css and bundle.css.
+   The page chrome (top bar, controls, article, footer) follows the Arc tokens in light and dark.
+   The playground itself (network diagram, heatmaps) stays on a light panel in both themes,
+   because bundle.js draws it with fixed light-theme colors. */
+
+:root { --nn-panel: var(--surface); --nn-panel-border: var(--border); }
+:root[data-theme="dark"] { --nn-panel: #f7f7f5; --nn-panel-border: oklch(40% 0 0); }
+
+html { color: var(--foreground); }
+html, body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.55;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* tool.css styles every <button>/<select>; give the playground's own controls their sizes back. */
+.mdl-button, .basic-button, #top-controls select { min-height: 0; }
+#main-part .mdl-button, .more .mdl-button { border: 0; padding: 0; }
+
+/* ---------- Intro line under the top bar ---------- */
+.nn-intro {
+  margin: 18px auto 0;
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
+/* ---------- Top controls ---------- */
+#top-controls {
+  margin: 14px auto 0;
+  padding: 18px 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-resting);
+  width: 944px;
+}
+@media (min-width: 1180px) { #top-controls { width: 1100px; } }
+@media (min-width: 1400px) { #top-controls { width: 1220px; } }
+#top-controls .container.l--page { width: auto; padding: 0 22px; }
+
+#top-controls .control .label,
+#top-controls .control label { color: var(--text-muted); font-size: var(--text-xs); letter-spacing: .02em; }
+#top-controls .control .value { color: var(--foreground); font-variant-numeric: tabular-nums; }
+#top-controls .control select {
+  color: var(--foreground);
+  background: transparent;
+  border-bottom: 1px solid var(--border-strong);
+  cursor: pointer;
+}
+#top-controls .control select option { background: var(--surface); color: var(--foreground); }
+#top-controls .control select:focus { border-bottom-color: var(--control-on); }
+#top-controls .control .select::after { border-top-color: var(--text-muted); }
+
+#top-controls .timeline-controls .mdl-button {
+  color: var(--foreground);
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+}
+#top-controls .timeline-controls .mdl-button:hover,
+#top-controls .timeline-controls .mdl-button:focus { background: var(--surface-muted); border-color: var(--border-strong); }
+#top-controls .timeline-controls #play-pause-button,
+#top-controls .timeline-controls #play-pause-button:hover,
+#top-controls .timeline-controls #play-pause-button:focus {
+  color: var(--control-glyph);
+  background: var(--control-on);
+  border-color: var(--control-on);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-base);
+  font-weight: 500;
+}
+
+/* ---------- Playground panel (always light) ---------- */
+#main-part {
+  color-scheme: light;
+  color: rgba(0, 0, 0, .87);
+  margin-top: 18px;
+  padding: 26px 22px 24px;
+  background: var(--nn-panel);
+  border: 1px solid var(--nn-panel-border);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-resting);
+}
+@media (min-height: 700px) { #main-part { margin-top: 18px; } }
+/* Long feature labels (sin(X1), 正弦(特征1)) extend left of the diagram; do not clip them. */
+#network svg { overflow: visible; }
+#main-part h4 { color: oklch(23% 0 0); font-family: var(--font-display); font-weight: 500; text-transform: none; }
+#main-part .basic-button { font-family: var(--font-body); border-radius: 10px; background: oklch(95.8% 0 0); border: 1px solid oklch(91.5% 0 0); }
+#main-part .basic-button:hover { background: oklch(91.5% 0 0); }
+.mdl-button--fab.mdl-button--colored,
+.mdl-button--fab.mdl-button--colored:hover,
+.mdl-button--fab.mdl-button--colored:active,
+.mdl-button--fab.mdl-button--colored:focus,
+.mdl-button--fab.mdl-button--colored:focus:not(:active) { background: var(--control-on); }
+
+/* "Guide" button between the panel and the article */
+.more button,
+.more button:hover,
+.more button:active,
+.more button:focus,
+.more button:focus:not(:active) {
+  background: var(--surface-raised);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  font-size: var(--text-sm);
+}
+
+/* ---------- Article and footer ---------- */
+article {
+  margin-top: 40px;
+  padding: 64px 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border-subtle);
+  box-shadow: none;
+}
+article h2, article h3 { color: var(--foreground); font-family: var(--font-display); font-weight: 500; }
+article p { color: var(--text-secondary); font-size: var(--text-base); }
+.l--body { max-width: calc(100% - 40px); width: 640px; }
+
+footer { border-top: 1px solid var(--border-subtle); color: var(--text-muted); background: var(--background); }
+footer .footer-brand { color: var(--text-secondary); font-weight: 500; }

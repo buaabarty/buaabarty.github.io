@@ -21,17 +21,67 @@
 
   const EMPTY = 0;
   const WALL = 1;
+  const T = window.TOOL || { t: (zh) => zh, css: () => "", onLang: () => {} };
   const colors = {
-    empty: "#ffffff",
-    grid: "#d8e0ec",
-    wall: "#2b3444",
-    visited: "#7fb0e6",
-    frontier: "#f5d66e",
-    path: "#d6a11d",
-    current: "#f3a43b",
+    empty: "#fcfcfb",
+    grid: "#d6d6d6",
+    wall: "#2b2b2b",
+    visited: "#9cc0e6",
+    frontier: "#e9cf8f",
+    path: "#b7802a",
+    current: "#a24ea8",
     start: "#1f8a70",
-    target: "#c64646"
+    target: "#c64646",
+    label: "#ffffff"
   };
+  const colorVars = {
+    empty: "--paper",
+    grid: "--border-strong",
+    wall: "--c-wall",
+    visited: "--c-visited",
+    frontier: "--c-frontier",
+    path: "--c-path",
+    current: "--tone-orchid",
+    start: "--c-start",
+    target: "--c-target",
+    label: "--paper"
+  };
+
+  // Resolve CSS colour tokens (oklch / color-mix) to rgb via a probe element and a 1x1 canvas,
+  // so the canvas follows the light and dark themes.
+  const probe = document.createElement("span");
+  const probeCanvas = document.createElement("canvas");
+  probeCanvas.width = probeCanvas.height = 1;
+  const probeCtx = probeCanvas.getContext("2d", { willReadFrequently: true });
+  function resolveColor(cssVar, fallback) {
+    if (!T.css(cssVar)) {
+      return fallback;
+    }
+    probe.style.color = fallback;
+    probe.style.color = `var(${cssVar})`;
+    const computed = getComputedStyle(probe).color;
+    probeCtx.clearRect(0, 0, 1, 1);
+    probeCtx.fillStyle = fallback;
+    probeCtx.fillStyle = computed;
+    probeCtx.fillRect(0, 0, 1, 1);
+    const d = probeCtx.getImageData(0, 0, 1, 1).data;
+    return `rgb(${d[0]}, ${d[1]}, ${d[2]})`;
+  }
+  function readColors() {
+    probe.style.display = "none";
+    document.body.appendChild(probe);
+    Object.keys(colorVars).forEach((name) => {
+      colors[name] = resolveColor(colorVars[name], colors[name]);
+    });
+    probe.remove();
+  }
+  function msg(zh, en) {
+    return { zh, en };
+  }
+  function text(message) {
+    return typeof message === "string" ? message : T.t(message.zh, message.en);
+  }
+  const READY = msg("准备就绪", "Ready");
 
   const state = {
     size: Number(sizeSelect.value),
@@ -46,7 +96,7 @@
     steps: [],
     stepIndex: 0,
     view: emptyView(),
-    message: "准备就绪",
+    message: READY,
     distance: null,
     canvasSize: 720
   };
@@ -87,7 +137,7 @@
     state.steps = [];
     state.stepIndex = 0;
     state.view = emptyView();
-    state.message = message || "准备就绪";
+    state.message = message || READY;
     state.distance = null;
     render();
     updateMetrics();
@@ -101,7 +151,7 @@
     }
     state.running = false;
     state.paused = false;
-    pauseButton.textContent = "暂停";
+    pauseButton.textContent = T.t("暂停", "Pause");
   }
 
   function setMode(mode) {
@@ -120,7 +170,7 @@
     state.start = { row: mid, col: Math.max(1, Math.floor(size * 0.18)) };
     state.target = { row: mid, col: Math.min(size - 2, Math.floor(size * 0.82)) };
     addStarterWalls();
-    resetSearchView("准备就绪");
+    resetSearchView(READY);
   }
 
   function addStarterWalls() {
@@ -153,7 +203,7 @@
     for (let row = 0; row < state.size; row += 1) {
       state.grid[row].fill(EMPTY);
     }
-    resetSearchView("墙体已清空");
+    resetSearchView(msg("墙体已清空", "Walls cleared"));
   }
 
   function randomMaze() {
@@ -165,7 +215,7 @@
     }
     clearAround(state.start);
     clearAround(state.target);
-    resetSearchView("随机迷宫已生成");
+    resetSearchView(msg("随机迷宫已生成", "Random maze generated"));
   }
 
   function clearAround(point) {
@@ -206,7 +256,7 @@
       state.target = { row, col };
     }
 
-    resetSearchView("已更新迷宫");
+    resetSearchView(msg("已更新迷宫", "Maze updated"));
   }
 
   function neighbors(cellKey) {
@@ -298,7 +348,7 @@
       node.key,
       visited,
       [],
-      `已找到路径，共 ${distance} 步`,
+      msg(`已找到路径，共 ${distance} 步`, `Path found: ${distance} steps`),
       { path, distance, final: true }
     );
   }
@@ -308,7 +358,7 @@
       null,
       visited,
       [],
-      "无可达路径，请擦除部分墙体后重试",
+      msg("无可达路径，请擦除部分墙体后重试", "No path. Erase some walls and try again"),
       { final: true }
     );
   }
@@ -353,7 +403,7 @@
         currentNode.key,
         visited,
         uniqueKeys(open, new Set(closed.map((node) => node.key))),
-        "A* 正在优先探索更接近终点的格子"
+        msg("A* 正在优先探索更接近终点的格子", "A* expands the cells closest to the goal first")
       ));
     }
 
@@ -368,7 +418,9 @@
     const explored = [];
     const visited = new Set();
     const steps = [];
-    const message = useStack ? "DFS 正在沿一条分支向深处探索" : "BFS 正在按层扩展候选格子";
+    const message = useStack
+      ? msg("DFS 正在沿一条分支向深处探索", "DFS follows one branch as deep as it can")
+      : msg("BFS 正在按层扩展候选格子", "BFS expands the frontier layer by layer");
 
     while (frontier.length > 0) {
       const current = useStack ? frontier.pop() : frontier.shift();
@@ -409,7 +461,7 @@
     state.distance = null;
     state.steps = buildSteps();
     state.stepIndex = 0;
-    state.message = "搜索已准备";
+    state.message = msg("搜索已准备", "Search prepared");
     updateMetrics();
     updateButtons();
   }
@@ -460,7 +512,7 @@
     if (showAnimation.checked) {
       state.running = true;
       state.paused = false;
-      state.message = "搜索中";
+      state.message = msg("搜索中", "Searching");
       updateButtons();
       runLoop();
     } else if (state.steps.length > 0) {
@@ -477,7 +529,7 @@
     }
     state.running = false;
     state.paused = false;
-    pauseButton.textContent = "暂停";
+    pauseButton.textContent = T.t("暂停", "Pause");
     updateButtons();
   }
 
@@ -486,8 +538,8 @@
       return;
     }
     state.paused = !state.paused;
-    pauseButton.textContent = state.paused ? "继续" : "暂停";
-    state.message = state.paused ? "已暂停" : "搜索中";
+    pauseButton.textContent = state.paused ? T.t("继续", "Resume") : T.t("暂停", "Pause");
+    state.message = state.paused ? msg("已暂停", "Paused") : msg("搜索中", "Searching");
     updateMetrics();
     if (state.paused && state.timerId) {
       window.clearTimeout(state.timerId);
@@ -508,14 +560,14 @@
   }
 
   function updateMetrics() {
-    statusText.textContent = state.message;
+    statusText.textContent = text(state.message);
     visitedCount.textContent = String(state.view.visited.size);
     frontierCount.textContent = String(state.view.frontier.size);
     distanceValue.textContent = state.distance === null ? "-" : String(state.distance);
   }
 
   function updateButtons() {
-    startButton.textContent = state.running ? "重新搜索" : "开始搜索";
+    startButton.textContent = state.running ? T.t("重新搜索", "Restart search") : T.t("开始搜索", "Start search");
     pauseButton.disabled = !state.running;
     stepButton.disabled = state.running && !state.paused;
     clearButton.disabled = state.running;
@@ -597,15 +649,15 @@
       ctx.stroke();
     }
 
-    drawLabel(state.start, "起");
-    drawLabel(state.target, "终");
+    drawLabel(state.start, T.t("起", "S"));
+    drawLabel(state.target, T.t("终", "G"));
   }
 
   function drawLabel(point, text) {
     const cellSize = state.canvasSize / state.size;
     const x = point.col * cellSize + cellSize / 2;
     const y = point.row * cellSize + cellSize / 2;
-    ctx.fillStyle = "#ffffff";
+    ctx.fillStyle = colors.label;
     ctx.font = `700 ${Math.max(12, Math.floor(cellSize * 0.42))}px "Microsoft YaHei", Arial, sans-serif`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
@@ -651,16 +703,25 @@
   startButton.addEventListener("click", startSearch);
   pauseButton.addEventListener("click", togglePause);
   stepButton.addEventListener("click", singleStep);
-  resetButton.addEventListener("click", () => resetSearchView("准备就绪"));
+  resetButton.addEventListener("click", () => resetSearchView(READY));
   clearButton.addEventListener("click", clearWalls);
   randomButton.addEventListener("click", randomMaze);
-  algorithmSelect.addEventListener("change", () => resetSearchView("已切换算法"));
+  algorithmSelect.addEventListener("change", () => resetSearchView(msg("已切换算法", "Algorithm changed")));
 
   window.addEventListener("resize", resizeCanvas);
   if ("ResizeObserver" in window) {
     new ResizeObserver(resizeCanvas).observe(canvas);
   }
 
+  T.onLang(() => {
+    readColors();
+    pauseButton.textContent = state.paused ? T.t("继续", "Resume") : T.t("暂停", "Pause");
+    render();
+    updateMetrics();
+    updateButtons();
+  });
+
+  readColors();
   initializeGrid(state.size);
   resizeCanvas();
 }());

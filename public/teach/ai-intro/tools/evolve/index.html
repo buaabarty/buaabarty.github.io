@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>进化扫雷车</title>
+  <link rel="stylesheet" href="../common/tool.css">
+  <script src="../common/tool.js"></script>
+  <style>
+    .progress { height: 8px; border-radius: var(--radius-pill); background: var(--surface-muted); overflow: hidden; }
+    .progress i { display: block; height: 100%; width: 0; background: var(--control-on); }
+    #chart { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--border-subtle); background: var(--surface); }
+    .key { display: flex; gap: 14px; font-size: var(--text-sm); color: var(--text-secondary); margin-top: 6px; }
+    .key i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 5px; }
+  </style>
+</head>
+<body data-title-zh="进化扫雷车" data-title-en="Evolving Minesweepers">
+  <main class="app-shell">
+    <section class="workspace">
+      <aside class="control-panel">
+        <div class="button-grid">
+          <button type="button" id="runBtn" class="primary"></button>
+          <button type="button" id="resetBtn" data-en="Start over">重新开始</button>
+        </div>
+        <div class="field-group inline-field" style="margin-top:16px">
+          <label for="fast" data-en="Fast-forward (skip drawing)">快进（只算不画）</label>
+          <input id="fast" type="checkbox">
+        </div>
+        <div class="field-group">
+          <label for="speed"><span data-en="Speed:&nbsp;">播放速度：</span><b id="speedV"></b></label>
+          <input id="speed" type="range" min="1" max="20" value="4">
+        </div>
+        <div class="field-group">
+          <label for="mut"><span data-en="Mutation rate:&nbsp;">变异概率：</span><b id="mutV"></b></label>
+          <input id="mut" type="range" min="0" max="30" value="10">
+          <p class="hint" data-en="How often a child's “wiring” gets a small random change.">孩子的“接线”被随机改动一点的机会有多大。</p>
+        </div>
+      </aside>
+
+      <section class="maze-area">
+        <div class="canvas-frame"><canvas id="arena" class="sim" width="800" height="520"></canvas></div>
+      </section>
+
+      <aside class="info-panel">
+        <div class="metric-list">
+          <div><span data-en="Generation">第几代</span><strong id="gen">1</strong></div>
+          <div><span data-en="Best last generation">上一代最好的一辆</span><strong id="best">-</strong></div>
+          <div><span data-en="Average last generation">上一代平均</span><strong id="avg">-</strong></div>
+        </div>
+        <p class="hint" style="margin:12px 0 6px" data-en="Time left in this generation">本代剩余时间</p>
+        <div class="progress"><i id="prog"></i></div>
+        <p class="hint" style="margin:14px 0 6px" data-en="Mines found per car, by generation">每一代每辆车找到的地雷数</p>
+        <canvas id="chart" width="560" height="260"></canvas>
+        <div class="key"><span><i style="background:var(--tone-rose)"></i><span data-en="best">最好</span></span><span><i style="background:var(--tone-sky)"></i><span data-en="average">平均</span></span></div>
+        <div class="tips">
+          <h2 data-en="Nobody teaches them">没有人教它们</h2>
+          <p data-en="Each car is steered by a tiny neural network that sees two things: which way it is facing and where the nearest mine is. At first the wiring is random, so the cars spin aimlessly.">每辆车由一个很小的神经网络驾驶，它只看两样东西：自己朝哪个方向，离它最近的地雷在哪。一开始“接线”是随机的，车子只会乱转。</p>
+          <p data-en="After each generation, the cars that found the most mines become parents. Their children mix the parents' wiring and get small random changes. Red cars are last generation's best.">每过一代，找到地雷最多的车当“父母”，孩子混合父母的接线，再随机改动一点。红色的车是上一代的佼佼者。</p>
+          <h2 data-en="Try this">试试看</h2>
+          <p data-en="Watch generations 1, 10 and 30. When does the behaviour change? What happens with mutation set to 0?">对比第 1 代、第 10 代和第 30 代，车的样子从哪一代开始变了？把变异概率调到 0 会怎样？</p>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var W = 800, H = 520, NCARS = 30, NMINES = 40, TICKS = 2000, IN = 4, HID = 6, OUT = 2;
+  var NW = (IN + 1) * HID + (HID + 1) * OUT;
+  var rand, cars, mines, gen, tick, history, running = false, elites = [];
+
+  function rng(seed) { var a = seed >>> 0; return function () { a = (a + 0x6D2B79F5) >>> 0; var t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  function sig(x) { return 1 / (1 + Math.exp(-x)); }
+  function net(w, inp) {
+    var h = [], k = 0, i, j, s;
+    for (j = 0; j < HID; j++) { s = 0; for (i = 0; i < IN; i++) s += w[k++] * inp[i]; s += w[k++] * -1; h.push(sig(s)); }
+    var o = [];
+    for (j = 0; j < OUT; j++) { s = 0; for (i = 0; i < HID; i++) s += w[k++] * h[i]; s += w[k++] * -1; o.push(sig(s)); }
+    return o;
+  }
+  function newCar(w) { return { w: w, x: rand() * W, y: rand() * H, a: rand() * Math.PI * 2, fit: 0 }; }
+  function newMine() { return { x: 10 + rand() * (W - 20), y: 10 + rand() * (H - 20) }; }
+
+  function reset() {
+    rand = rng(20261112); gen = 1; tick = 0; history = []; elites = [];
+    cars = []; mines = [];
+    for (var i = 0; i < NCARS; i++) { var w = []; for (var k = 0; k < NW; k++) w.push(rand() * 2 - 1); cars.push(newCar(w)); }
+    for (var m = 0; m < NMINES; m++) mines.push(newMine());
+    draw(); stats();
+  }
+
+  function step() {
+    cars.forEach(function (c) {
+      var best = 1e9, bm = null;
+      mines.forEach(function (m) { var d = (m.x - c.x) * (m.x - c.x) + (m.y - c.y) * (m.y - c.y); if (d < best) { best = d; bm = m; } });
+      var dx = bm.x - c.x, dy = bm.y - c.y, dl = Math.hypot(dx, dy) || 1;
+      var o = net(c.w, [Math.cos(c.a), Math.sin(c.a), dx / dl, dy / dl]);
+      var rot = Math.max(-0.3, Math.min(0.3, o[0] - o[1]));
+      c.a += rot;
+      var sp = (o[0] + o[1]) * 1.6;
+      c.x = (c.x + Math.cos(c.a) * sp + W) % W; c.y = (c.y + Math.sin(c.a) * sp + H) % H;
+      if (Math.sqrt(best) < 9) { c.fit++; var idx = mines.indexOf(bm); mines[idx] = newMine(); }
+    });
+    if (++tick >= TICKS) evolve();
+  }
+
+  function evolve() {
+    var fits = cars.map(function (c) { return c.fit; });
+    var bestF = Math.max.apply(null, fits), avgF = fits.reduce(function (a, b) { return a + b; }, 0) / fits.length;
+    history.push([bestF, avgF]);
+    var sorted = cars.slice().sort(function (a, b) { return b.fit - a.fit; });
+    var total = fits.reduce(function (a, b) { return a + b; }, 0) + cars.length * 0.1;
+    function pick() { var r = rand() * total, acc = 0; for (var i = 0; i < cars.length; i++) { acc += cars[i].fit + 0.1; if (acc >= r) return cars[i].w; } return cars[cars.length - 1].w; }
+    var mrate = +$('mut').value / 100, next = [];
+    for (var e = 0; e < 4; e++) next.push(sorted[e].w.slice());
+    while (next.length < NCARS) {
+      var p1 = pick(), p2 = pick(), c1 = p1.slice(), c2 = p2.slice();
+      if (rand() < 0.7) { var cut = 1 + Math.floor(rand() * (NW - 1)); for (var k = cut; k < NW; k++) { c1[k] = p2[k]; c2[k] = p1[k]; } }
+      [c1, c2].forEach(function (c) { for (var k = 0; k < NW; k++) if (rand() < mrate) c[k] += (rand() - 0.5) * 0.6; });
+      next.push(c1); if (next.length < NCARS) next.push(c2);
+    }
+    cars = next.map(newCar);
+    elites = [0, 1, 2, 3];
+    gen++; tick = 0;
+    stats(); chart();
+  }
+
+  function css(n, fb) { return TOOL.css(n) || fb; }
+  function draw() {
+    var g = $('arena').getContext('2d'), dark = TOOL.theme === 'dark';
+    g.fillStyle = dark ? '#1f2329' : '#fbfaf7'; g.fillRect(0, 0, W, H);
+    g.fillStyle = dark ? '#5fd39f' : '#1f8a70';
+    mines.forEach(function (m) { g.beginPath(); g.arc(m.x, m.y, 3.2, 0, 7); g.fill(); });
+    cars.forEach(function (c, i) {
+      var elite = elites.indexOf(i) >= 0;
+      g.save(); g.translate(c.x, c.y); g.rotate(c.a);
+      g.fillStyle = elite ? (dark ? '#ff8a8a' : '#d6334a') : (dark ? '#9aa4b2' : '#5b6575');
+      g.fillRect(-8, -6, 16, 12);
+      g.fillStyle = dark ? '#1f2329' : '#fbfaf7'; g.fillRect(2, -2, 6, 4);
+      g.restore();
+    });
+  }
+  function stats() {
+    $('gen').textContent = gen;
+    var last = history[history.length - 1];
+    $('best').textContent = last ? last[0] : '-';
+    $('avg').textContent = last ? last[1].toFixed(1) : '-';
+    $('prog').style.width = (100 - tick / TICKS * 100) + '%';
+  }
+  function chart() {
+    var cv = $('chart'), g = cv.getContext('2d'), w = cv.width, h = cv.height, pad = 48, dark = TOOL.theme === 'dark';
+    g.clearRect(0, 0, w, h);
+    var maxY = Math.max(5, Math.max.apply(null, history.map(function (p) { return p[0]; }).concat([0]))), n = Math.max(10, history.length);
+    g.strokeStyle = dark ? '#3a3f47' : '#e6e6e6'; g.fillStyle = dark ? '#a8adb5' : '#737373'; g.font = '22px Inter, sans-serif'; g.lineWidth = 1;
+    for (var k = 0; k <= 4; k++) { var y = h - pad - (h - pad - 12) * k / 4; g.beginPath(); g.moveTo(pad, y); g.lineTo(w - 8, y); g.stroke(); g.fillText(Math.round(maxY * k / 4), 6, y + 8); }
+    g.fillText(TOOL.t('代', 'gen'), w - 52, h - 12);
+    function line(idx, col) {
+      g.strokeStyle = col; g.lineWidth = 4; g.beginPath();
+      history.forEach(function (p, i) { var x = pad + (w - pad - 8) * (i + 1) / n, y = h - pad - (h - pad - 12) * p[idx] / maxY; if (i) g.lineTo(x, y); else g.moveTo(x, y); });
+      g.stroke();
+    }
+    line(1, dark ? '#8ec5ff' : '#0562ef'); line(0, dark ? '#ff8a8a' : '#d6334a');
+  }
+
+  function labels() {
+    $('runBtn').textContent = running ? TOOL.t('暂停', 'Pause') : TOOL.t(gen > 1 || tick > 0 ? '继续' : '开始进化', gen > 1 || tick > 0 ? 'Resume' : 'Start evolving');
+    $('speedV').textContent = $('speed').value + '×';
+    $('mutV').textContent = $('mut').value + '%';
+  }
+  function frame() {
+    if (running) {
+      if ($('fast').checked) { var target = gen + 1; var guard = 0; while (gen < target && guard++ < TICKS + 5) step(); }
+      else for (var i = 0; i < +$('speed').value; i++) step();
+      if (!$('fast').checked) draw();
+      stats();
+    }
+    requestAnimationFrame(frame);
+  }
+  $('runBtn').addEventListener('click', function () { running = !running; labels(); });
+  $('resetBtn').addEventListener('click', function () { running = false; reset(); chart(); labels(); });
+  $('speed').addEventListener('input', labels); $('mut').addEventListener('input', labels);
+  $('fast').addEventListener('change', function () { if (!this.checked) draw(); });
+  TOOL.onLang(function () { labels(); chart(); draw(); });
+  reset(); chart(); labels();
+  // 网址带 ?gens=N 时先在后台进化 N 代（课堂演示用）
+  var m = /[?&]gens=(\d+)/.exec(location.search);
+  if (m) { var tgt = Math.min(200, +m[1]) + 1; while (gen < tgt) step(); stats(); chart(); draw(); labels(); }
+  window.EVO = { step: step, get gen() { return gen; }, get history() { return history; } };
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

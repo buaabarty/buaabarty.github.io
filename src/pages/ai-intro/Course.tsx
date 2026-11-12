@@ -310,8 +310,8 @@ function Tools() {
       <h2 id="tools">{t({ en: "Tools", zh: "练习工具" })}</h2>
       <p>
         {t({
-          en: "Both tools open directly in the browser. Nothing to install.",
-          zh: "两个工具都在浏览器里直接打开，无需安装。",
+          en: "All tools open directly in the browser. Nothing to install.",
+          zh: "所有工具都在浏览器里直接打开，无需安装。",
         })}
       </p>
       {tools.map((tool) => (

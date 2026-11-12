@@ -9,6 +9,8 @@ function initialLang(): Lang {
     const s = localStorage.getItem("lang");
     if (s === "en" || s === "zh") return s;
   } catch {}
+  // The course pages follow the browser language, like the practice tools. The rest of the site defaults to English.
+  if (document.getElementById("root")?.dataset.page === "aiIntro" && navigator.language.toLowerCase().startsWith("zh")) return "zh";
   return "en";
 }
 

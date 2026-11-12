@@ -1,0 +1,136 @@
+/* 课程练习工具的共用样式。颜色、圆角、阴影、字体取自课程主页的 Arc 设计令牌（arc-foundation.css），
+   浅色和深色主题跟随主页设置。各工具页沿用同一组类名：app-shell / topbar / workspace / control-panel / info-panel …… */
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Inter:wght@400;500;600&display=swap");
+@import url("arc-foundation.css");
+
+:root {
+  --font-geist: "Geist", "PingFang SC", "Microsoft YaHei", "Noto Sans SC";
+  --font-inter: "Inter", "PingFang SC", "Microsoft YaHei", "Noto Sans SC";
+  /* 画布与图示的语义色（两种主题下都清楚） */
+  --c-start: var(--tone-green);
+  --c-target: var(--tone-rose);
+  --c-path: var(--tone-amber);
+  --c-visited: color-mix(in oklab, var(--tone-sky) 45%, var(--surface));
+  --c-frontier: color-mix(in oklab, var(--tone-amber) 40%, var(--surface));
+  --c-wall: var(--neutral-10);
+  --paper: #fcfcfb;
+}
+:root[data-theme="dark"] { --c-wall: oklch(70% 0 0); --paper: oklch(24% 0 0); }
+
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.55;
+  letter-spacing: var(--tracking-body);
+  -webkit-font-smoothing: antialiased;
+}
+button, select, input { font: inherit; color: inherit; letter-spacing: inherit; }
+a { color: inherit; }
+[hidden] { display: none !important; }
+
+/* ---------- 顶栏 ---------- */
+.topbar {
+  position: sticky; top: 0; z-index: 40;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 14px max(20px, calc((100% - 1440px) / 2 + 20px));
+  background: color-mix(in oklab, var(--background) 86%, transparent);
+  backdrop-filter: saturate(1.4) blur(14px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.topbar .eyebrow { margin: 0 0 2px; font-size: var(--text-xs); color: var(--text-muted); letter-spacing: .02em; }
+.topbar h1 { margin: 0; font-family: var(--font-display); font-weight: 500; font-size: var(--text-xl); letter-spacing: var(--tracking-display); line-height: 1.2; }
+.topbar-tools { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.seg { display: inline-flex; padding: 3px; border-radius: var(--radius-pill); background: var(--surface-muted); border: 1px solid var(--border-subtle); }
+.seg button { border: 0; background: transparent; min-height: 30px; padding: 0 12px; border-radius: var(--radius-pill); color: var(--text-secondary); cursor: pointer; font-size: var(--text-sm); }
+.seg button.on { background: var(--surface-raised); color: var(--foreground); box-shadow: var(--shadow-resting); }
+.icon-btn, .pill-link {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 36px; padding: 0 14px; border-radius: var(--radius-pill);
+  border: 1px solid var(--border); background: var(--surface); color: var(--foreground);
+  text-decoration: none; font-size: var(--text-sm); cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-standard), border-color var(--duration-fast);
+}
+.icon-btn { width: 36px; padding: 0; }
+.icon-btn:hover, .pill-link:hover { background: var(--surface-muted); border-color: var(--border-strong); }
+.icon-btn svg { width: 17px; height: 17px; }
+
+/* ---------- 主体布局 ---------- */
+.app-shell { padding: 22px max(20px, calc((100% - 1440px) / 2 + 20px)) 48px; }
+.intro { max-width: 1440px; margin: 0 auto 16px; color: var(--text-secondary); font-size: var(--text-sm); }
+.workspace {
+  display: grid; gap: 18px; align-items: start; max-width: 1440px; margin: 0 auto;
+  grid-template-columns: minmax(240px, 290px) minmax(0, 1fr) minmax(250px, 310px);
+}
+.control-panel, .info-panel, .canvas-frame, .card {
+  min-width: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-resting);
+}
+.control-panel, .info-panel, .card { padding: 18px; }
+.maze-area { min-width: 0; }
+.canvas-frame { padding: 14px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.canvas-frame canvas, canvas.sim {
+  display: block; width: 100%; height: auto; max-width: 860px;
+  border-radius: calc(var(--radius-panel) - 10px); border: 1px solid var(--border-subtle); background: var(--paper); touch-action: none;
+}
+@media (max-width: 1160px) { .workspace { grid-template-columns: minmax(230px, 290px) minmax(0, 1fr); } .info-panel { grid-column: 1 / -1; } }
+@media (max-width: 820px) {
+  .workspace { grid-template-columns: minmax(0, 1fr); }
+  .topbar { flex-wrap: wrap; }
+  .topbar h1 { font-size: var(--text-lg); }
+}
+
+/* ---------- 表单控件 ---------- */
+.field-group { display: grid; gap: 8px; margin-bottom: 16px; }
+label, .field-label { font-size: var(--text-sm); font-weight: 500; color: var(--foreground); }
+.hint, .tips p, .note { color: var(--text-secondary); font-size: var(--text-sm); line-height: 1.6; margin: 2px 0 0; }
+select {
+  width: 100%; min-height: 40px; padding: 0 12px; border-radius: var(--radius-control);
+  border: 1px solid var(--border); background: var(--surface); cursor: pointer;
+}
+input[type="range"] { width: 100%; accent-color: var(--control-on); }
+input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; accent-color: var(--control-on); }
+.inline-field { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+button {
+  min-height: 40px; padding: 0 14px; border-radius: var(--radius-control);
+  border: 1px solid var(--border); background: var(--surface); cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-standard), border-color var(--duration-fast), transform var(--duration-instant);
+}
+button:hover:not(:disabled) { background: var(--surface-muted); border-color: var(--border-strong); }
+button:active:not(:disabled) { transform: scale(.98); }
+button:disabled { opacity: .45; cursor: not-allowed; }
+button.primary, .mode-button.is-active, .tabs button.on {
+  background: var(--control-on); color: var(--control-glyph); border-color: var(--control-on);
+}
+button.primary:hover:not(:disabled), .mode-button.is-active:hover { background: var(--control-on); opacity: .92; }
+.button-grid, .segmented { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.segmented.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.tabs { display: flex; gap: 8px; max-width: 1440px; margin: 0 auto 16px; flex-wrap: wrap; }
+.tabs button { border-radius: var(--radius-pill); }
+
+/* ---------- 指标与说明 ---------- */
+.metric-list { display: grid; gap: 8px; }
+.metric-list > div {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  min-height: 44px; padding: 0 14px; border-radius: var(--radius-control); background: var(--surface-muted);
+}
+.metric-list span { color: var(--text-secondary); font-size: var(--text-sm); }
+.metric-list strong { font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; }
+.tips { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border-subtle); }
+.tips h2 { margin: 12px 0 6px; font-family: var(--font-display); font-weight: 500; font-size: var(--text-base); }
+.tips h2:first-child { margin-top: 0; }
+.legend { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 12px; margin: 16px 0; font-size: var(--text-sm); color: var(--text-secondary); }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.legend i { width: 12px; height: 12px; border-radius: 4px; }
+.legend-start { background: var(--c-start); } .legend-target { background: var(--c-target); } .legend-wall { background: var(--c-wall); }
+.legend-frontier { background: var(--c-frontier); } .legend-visited { background: var(--c-visited); } .legend-path { background: var(--c-path); }
+table.simple { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+table.simple th, table.simple td { padding: 8px 10px; border-bottom: 1px solid var(--border-subtle); text-align: left; }
+table.simple th { color: var(--text-secondary); font-weight: 500; }
+table.simple td.num { text-align: right; font-variant-numeric: tabular-nums; }

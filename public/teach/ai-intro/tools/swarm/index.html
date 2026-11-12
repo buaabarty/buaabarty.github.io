@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>群体智能练习</title>
+  <link rel="stylesheet" href="../common/tool.css">
+  <script src="../common/tool.js"></script>
+  <style>
+    .bar { height: 10px; border-radius: var(--radius-pill); background: var(--surface-muted); overflow: hidden; display: flex; margin: 6px 0; }
+    .bar i { display: block; height: 100%; transition: width var(--duration-standard) var(--ease-standard); }
+    .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 4px; vertical-align: 1px; }
+  </style>
+</head>
+<body data-title-zh="群体智能练习" data-title-en="Swarm Intelligence Lab">
+  <main class="app-shell">
+    <nav class="tabs">
+      <button type="button" id="tabAnt" class="on" data-en="Ants finding food">蚂蚁找食物</button>
+      <button type="button" id="tabBird" data-en="Flocking birds">鸟群飞行</button>
+    </nav>
+
+    <!-- 蚂蚁 -->
+    <section class="workspace" id="antView" aria-label="蚂蚁找食物">
+      <aside class="control-panel">
+        <div class="field-group">
+          <label for="antMap" data-en="Map">地图</label>
+          <select id="antMap">
+            <option value="bridge" data-en="Short vs. long route">一长一短两条路</option>
+            <option value="open" data-en="Open field (click to add food)">空地（点画面放食物）</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label for="antN"><span data-en="Ants:&nbsp;">蚂蚁数量：</span><b id="antNV"></b></label>
+          <input id="antN" type="range" min="50" max="600" step="50" value="300">
+        </div>
+        <div class="field-group">
+          <label for="evap"><span data-en="Scent fades:&nbsp;">气味消散速度：</span><b id="evapV"></b></label>
+          <input id="evap" type="range" min="1" max="30" value="6">
+          <p class="hint" data-en="Ants leave a scent (pheromone) as they walk. The scent slowly fades.">蚂蚁边走边留下气味（信息素），气味会慢慢变淡。</p>
+        </div>
+        <div class="field-group inline-field">
+          <label for="showPh" data-en="Show scent">显示气味</label>
+          <input id="showPh" type="checkbox" checked>
+        </div>
+        <div class="button-grid">
+          <button type="button" id="antRun" class="primary">暂停</button>
+          <button type="button" id="antReset" data-en="Restart">重新开始</button>
+        </div>
+      </aside>
+      <section class="maze-area">
+        <div class="canvas-frame"><canvas id="antCanvas" class="sim" width="800" height="520"></canvas></div>
+      </section>
+      <aside class="info-panel">
+        <div class="metric-list">
+          <div><span data-en="Time">已经过去</span><strong id="antT">0</strong></div>
+          <div><span data-en="Food brought home">运回的食物</span><strong id="antFood">0</strong></div>
+        </div>
+        <div id="routeBox" style="margin-top:14px">
+          <p class="hint" style="margin-bottom:6px" data-en="Which route the food-carrying ants take:">搬运食物的蚂蚁走哪条路：</p>
+          <div class="bar"><i id="barUp" style="background:var(--tone-green);width:50%"></i><i id="barDown" style="background:var(--tone-rose);width:50%"></i></div>
+          <p class="hint"><span class="dot" style="background:var(--tone-green)"></span><span data-en="Short route (top)">上面短路</span> <b id="upP">-</b>　<span class="dot" style="background:var(--tone-rose)"></span><span data-en="Long route (bottom)">下面长路</span> <b id="downP">-</b></p>
+        </div>
+        <div class="tips">
+          <h2 data-en="Each ant knows only three things">每只蚂蚁只会三件事</h2>
+          <p data-en="Turn a little toward the stronger scent; head home once it finds food; leave scent all the way.">闻到哪边气味浓，就往哪边偏一点；找到食物就往回走；一路留下气味。</p>
+          <p data-en="Ants on the short route make round trips faster, so its scent builds up faster and draws more ants. Nobody is in charge, yet the colony finds the shortcut.">短路上的蚂蚁来回得快，留下的气味积得更快，于是更多蚂蚁走短路。没有谁在指挥，整群蚂蚁却找到了近路。</p>
+          <h2 data-en="Try this">试试看</h2>
+          <p data-en="If the scent fades very slowly, do the ants still pick the short route? What if it fades very fast?">把气味消散调得很慢，蚂蚁还会选短路吗？调得很快又会怎样？</p>
+        </div>
+      </aside>
+    </section>
+
+    <!-- 鸟群 -->
+    <section class="workspace" id="birdView" aria-label="鸟群飞行" hidden>
+      <aside class="control-panel">
+        <div class="field-group">
+          <label class="inline-field"><span data-en="Rule 1: don't collide (separation)">规则一：别撞上（分开）</span><input id="useSep" type="checkbox" checked></label>
+          <input id="wSep" type="range" min="0" max="30" value="15">
+        </div>
+        <div class="field-group">
+          <label class="inline-field"><span data-en="Rule 2: fly the same way (alignment)">规则二：跟着飞（对齐）</span><input id="useAli" type="checkbox" checked></label>
+          <input id="wAli" type="range" min="0" max="30" value="10">
+        </div>
+        <div class="field-group">
+          <label class="inline-field"><span data-en="Rule 3: stay close (cohesion)">规则三：别掉队（靠近）</span><input id="useCoh" type="checkbox" checked></label>
+          <input id="wCoh" type="range" min="0" max="30" value="10">
+        </div>
+        <div class="field-group">
+          <label for="view"><span data-en="How far each bird sees:&nbsp;">每只鸟能看多远：</span><b id="viewV"></b></label>
+          <input id="view" type="range" min="15" max="120" value="50">
+        </div>
+        <div class="field-group">
+          <label for="birdN"><span data-en="Birds:&nbsp;">鸟的数量：</span><b id="birdNV"></b></label>
+          <input id="birdN" type="range" min="20" max="300" step="10" value="150">
+        </div>
+        <div class="field-group inline-field">
+          <label for="hawk" data-en="Mouse is a hawk">鼠标是一只鹰</label>
+          <input id="hawk" type="checkbox" checked>
+        </div>
+        <div class="button-grid">
+          <button type="button" id="birdRun" class="primary">暂停</button>
+          <button type="button" id="birdReset" data-en="Scatter again">重新撒鸟</button>
+        </div>
+      </aside>
+      <section class="maze-area">
+        <div class="canvas-frame"><canvas id="birdCanvas" class="sim" width="800" height="520"></canvas></div>
+      </section>
+      <aside class="info-panel">
+        <div class="metric-list">
+          <div><span data-en="How aligned the flock is">飞行方向的整齐程度</span><strong id="order">-</strong></div>
+        </div>
+        <div class="tips">
+          <h2 data-en="Each bird only watches its neighbours">每只鸟只看身边的同伴</h2>
+          <p data-en="Don't collide: move away if too close. Fly the same way: turn toward the neighbours' average heading. Stay close: move toward the middle of the neighbours.">别撞上：离同伴太近就让开。跟着飞：朝同伴们的平均方向转。别掉队：往同伴们的中间靠。</p>
+          <p data-en="There is no leader and no commander. These three rules alone produce a flock. This is called emergence.">没有领头鸟，也没有总指挥，只靠这三条规则，一群鸟就飞出了队形。这叫“涌现”。</p>
+          <h2 data-en="Try this">试试看</h2>
+          <p data-en="Switch off just one rule. What happens to the flock? Move the mouse over the sky as a hawk and watch the flock dodge.">只关掉其中一条规则，鸟群会变成什么样？把鼠标移进画面当一只鹰，看鸟群怎么躲。</p>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  function rng(seed) { var a = seed >>> 0; return function () { a = (a + 0x6D2B79F5) >>> 0; var t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+
+  // ================= 蚂蚁 =================
+  var GW = 200, GH = 130, CS = 4, DEP = 0.02, DEP_CAP = 4;
+  var ant = {};
+  function antMap(kind) {
+    var wall = new Uint8Array(GW * GH);
+    function box(x0, y0, x1, y1) { for (var y = y0; y <= y1; y++) for (var x = x0; x <= x1; x++) wall[y * GW + x] = 1; }
+    box(0, 0, GW - 1, 2); box(0, GH - 3, GW - 1, GH - 1); box(0, 0, 2, GH - 1); box(GW - 3, 0, GW - 1, GH - 1);
+    var nest = { x: 18, y: 26 }, foods = [];
+    if (kind === 'bridge') {
+      box(36, 18, 164, 112);          // 中间的大障碍：上面一条短路，下面一条长路
+      foods.push({ x: 182, y: 26 });
+    } else {
+      nest = { x: 100, y: 65 };
+      foods.push({ x: 170, y: 30 }, { x: 40, y: 110 });
+    }
+    return { wall: wall, nest: nest, foods: foods, kind: kind };
+  }
+  function antReset() {
+    var m = antMap($('antMap').value), r = rng(7);
+    ant = { m: m, home: new Float32Array(GW * GH), food: new Float32Array(GW * GH), list: [], t: 0, delivered: 0, up: 0, down: 0, r: r };
+    var n = +$('antN').value;
+    for (var i = 0; i < n; i++) ant.list.push({ x: m.nest.x, y: m.nest.y, a: r() * Math.PI * 2, carry: false, clock: 0 });
+  }
+  function isWall(x, y) { x = x | 0; y = y | 0; return x < 0 || y < 0 || x >= GW || y >= GH || ant.m.wall[y * GW + x] === 1; }
+  function sense(field, x, y) { x = x | 0; y = y | 0; if (x < 0 || y < 0 || x >= GW || y >= GH || ant.m.wall[y * GW + x]) return -1; return field[y * GW + x]; }
+  function antStep() {
+    var m = ant.m, r = ant.r, keep = 1 - +$('evap').value / 2000;
+    for (var k = 0; k < ant.home.length; k++) { ant.home[k] *= keep; ant.food[k] *= keep; }
+    ant.list.forEach(function (a) {
+      a.clock++;
+      var field = a.carry ? ant.home : ant.food;
+      var target = null;
+      if (a.carry) { if (Math.hypot(a.x - m.nest.x, a.y - m.nest.y) < 10) target = m.nest; }
+      else m.foods.forEach(function (f) { if (Math.hypot(a.x - f.x, a.y - f.y) < 10) target = f; });
+      if (target) a.a = Math.atan2(target.y - a.y, target.x - a.x);
+      else {
+        var best = -1, turn = 0;
+        [-0.6, 0, 0.6].forEach(function (d) {
+          var v = sense(field, a.x + Math.cos(a.a + d) * 4, a.y + Math.sin(a.a + d) * 4);
+          if (v > best + 1e-4) { best = v; turn = d; }
+        });
+        if (best > 0.01) a.a += turn * 0.5;
+        a.a += (r() - 0.5) * 0.5;
+      }
+      var nx = a.x + Math.cos(a.a), ny = a.y + Math.sin(a.a);
+      if (isWall(nx, ny)) { a.a += Math.PI * (0.5 + r()); return; }
+      a.x = nx; a.y = ny;
+      var idx = (a.y | 0) * GW + (a.x | 0), s = Math.max(0, 1 - a.clock / 900);
+      // 气味叠加：走的蚂蚁越多、来回越快，这条路上的气味积得越浓
+      if (a.carry) ant.food[idx] = Math.min(DEP_CAP, ant.food[idx] + DEP * s); else ant.home[idx] = Math.min(DEP_CAP, ant.home[idx] + DEP * s);
+      if (!a.carry) m.foods.forEach(function (f) { if (Math.hypot(a.x - f.x, a.y - f.y) < 3) { a.carry = true; a.clock = 0; a.a += Math.PI; } });
+      else if (Math.hypot(a.x - m.nest.x, a.y - m.nest.y) < 3) { a.carry = false; a.clock = 0; a.a += Math.PI; ant.delivered++; }
+    });
+    ant.t++;
+  }
+  var antImg = null;
+  function antDraw() {
+    var cv = $('antCanvas'), g = cv.getContext('2d'), m = ant.m;
+    if (!antImg) antImg = g.createImageData(GW, GH);
+    var d = antImg.data, show = $('showPh').checked;
+    for (var i = 0; i < GW * GH; i++) {
+      var o = i * 4;
+      if (m.wall[i]) { d[o] = 60; d[o + 1] = 68; d[o + 2] = 82; d[o + 3] = 255; continue; }
+      var f = show ? Math.min(1, ant.food[i] * 1.6) : 0, h = show ? Math.min(1, ant.home[i] * 0.9) : 0;
+      d[o] = 251 - 170 * f - 40 * h; d[o + 1] = 250 - 40 * f - 30 * h; d[o + 2] = 246 - 120 * f + 0 * h; d[o + 3] = 255;
+    }
+    var off = document.createElement('canvas'); off.width = GW; off.height = GH; off.getContext('2d').putImageData(antImg, 0, 0);
+    g.imageSmoothingEnabled = false; g.drawImage(off, 0, 0, GW * CS, GH * CS);
+    g.fillStyle = '#8a5a2b'; g.beginPath(); g.arc(m.nest.x * CS, m.nest.y * CS, 16, 0, 7); g.fill();
+    g.fillStyle = '#fff'; g.font = '600 13px Inter, sans-serif'; g.textAlign = 'center'; g.fillText(TOOL.t('窝', 'Nest'), m.nest.x * CS, m.nest.y * CS + 5);
+    m.foods.forEach(function (f) { g.fillStyle = '#1f8a70'; g.beginPath(); g.arc(f.x * CS, f.y * CS, 16, 0, 7); g.fill(); g.fillStyle = '#fff'; g.fillText(TOOL.t('食', 'Food'), f.x * CS, f.y * CS + 5); });
+    ant.list.forEach(function (a) { g.fillStyle = a.carry ? '#d6a11d' : '#2b3444'; g.fillRect(a.x * CS - 1.5, a.y * CS - 1.5, 3, 3); });
+    // 统计搬运中的蚂蚁走哪条路（只对“两条路”地图）
+    if (m.kind === 'bridge') {
+      var up = 0, down = 0;
+      ant.list.forEach(function (a) { if (a.carry && a.x > 40 && a.x < 160) { if (a.y < 18) up++; else if (a.y > 112) down++; } });
+      ant.up = ant.up * 0.97 + up * 0.03; ant.down = ant.down * 0.97 + down * 0.03;
+      var tot = ant.up + ant.down;
+      if (tot > 0.5) {
+        var pu = ant.up / tot;
+        $('barUp').style.width = (pu * 100) + '%'; $('barDown').style.width = (100 - pu * 100) + '%';
+        $('upP').textContent = Math.round(pu * 100) + '%'; $('downP').textContent = Math.round(100 - pu * 100) + '%';
+      }
+    }
+    $('routeBox').hidden = m.kind !== 'bridge';
+    $('antT').textContent = Math.round(ant.t / 60) + TOOL.t(' 秒', ' s');
+    $('antFood').textContent = ant.delivered;
+  }
+  $('antCanvas').addEventListener('click', function (e) {
+    if (ant.m.kind !== 'open') return;
+    var r = this.getBoundingClientRect();
+    var x = (e.clientX - r.left) / r.width * GW, y = (e.clientY - r.top) / r.height * GH;
+    if (!isWall(x, y)) ant.m.foods.push({ x: x, y: y });
+  });
+
+  // ================= 鸟群 =================
+  var birds = [], mouse = null, BW = 800, BH = 520, SKY, BIRD;
+  function palette() { var dark = TOOL.theme === 'dark'; SKY = dark ? '#1c2430' : '#eef4fb'; BIRD = dark ? '#8ec5ff' : '#0562ef'; }
+  palette(); TOOL.onLang(function () { palette(); labels(); });
+  function birdReset() {
+    var r = rng(11), n = +$('birdN').value; birds = [];
+    for (var i = 0; i < n; i++) { var a = r() * Math.PI * 2; birds.push({ x: r() * BW, y: r() * BH, vx: Math.cos(a) * 2, vy: Math.sin(a) * 2 }); }
+  }
+  function birdStep() {
+    var R = +$('view').value, R2 = R * R, sepR = 14;
+    var ws = $('useSep').checked ? +$('wSep').value / 10 : 0, wa = $('useAli').checked ? +$('wAli').value / 10 : 0, wc = $('useCoh').checked ? +$('wCoh').value / 10 : 0;
+    var next = birds.map(function (b) {
+      var n = 0, ax = 0, ay = 0, cx = 0, cy = 0, sx = 0, sy = 0;
+      birds.forEach(function (o) {
+        if (o === b) return;
+        var dx = o.x - b.x, dy = o.y - b.y;
+        if (dx > BW / 2) dx -= BW; if (dx < -BW / 2) dx += BW; if (dy > BH / 2) dy -= BH; if (dy < -BH / 2) dy += BH;
+        var d2 = dx * dx + dy * dy;
+        if (d2 > R2) return;
+        n++; ax += o.vx; ay += o.vy; cx += dx; cy += dy;
+        if (d2 < sepR * sepR && d2 > 0) { sx -= dx / d2 * sepR; sy -= dy / d2 * sepR; }
+      });
+      var vx = b.vx, vy = b.vy;
+      if (n) {
+        vx += (ax / n - b.vx) * 0.05 * wa + (cx / n) * 0.002 * wc + sx * 0.08 * ws;
+        vy += (ay / n - b.vy) * 0.05 * wa + (cy / n) * 0.002 * wc + sy * 0.08 * ws;
+      }
+      if (mouse && $('hawk').checked) {
+        var hx = b.x - mouse.x, hy = b.y - mouse.y, hd = Math.hypot(hx, hy);
+        if (hd < 90 && hd > 0) { vx += hx / hd * 0.6; vy += hy / hd * 0.6; }
+      }
+      var sp = Math.hypot(vx, vy), maxS = 3.2, minS = 1.6;
+      if (sp > maxS) { vx *= maxS / sp; vy *= maxS / sp; } else if (sp < minS && sp > 0) { vx *= minS / sp; vy *= minS / sp; }
+      return { x: (b.x + vx + BW) % BW, y: (b.y + vy + BH) % BH, vx: vx, vy: vy };
+    });
+    birds = next;
+  }
+  function birdDraw() {
+    var g = $('birdCanvas').getContext('2d');
+    g.fillStyle = SKY; g.fillRect(0, 0, BW, BH);
+    var sx = 0, sy = 0;
+    birds.forEach(function (b) {
+      var a = Math.atan2(b.vy, b.vx), sp = Math.hypot(b.vx, b.vy); sx += b.vx / sp; sy += b.vy / sp;
+      g.save(); g.translate(b.x, b.y); g.rotate(a);
+      g.fillStyle = BIRD; g.beginPath(); g.moveTo(9, 0); g.lineTo(-6, 5); g.lineTo(-3, 0); g.lineTo(-6, -5); g.closePath(); g.fill();
+      g.restore();
+    });
+    if (mouse && $('hawk').checked) { g.fillStyle = '#c64646'; g.beginPath(); g.arc(mouse.x, mouse.y, 10, 0, 7); g.fill(); }
+    $('order').textContent = birds.length ? Math.round(Math.hypot(sx, sy) / birds.length * 100) + '%' : '-';
+  }
+  var bc = $('birdCanvas');
+  bc.addEventListener('pointermove', function (e) { var r = bc.getBoundingClientRect(); mouse = { x: (e.clientX - r.left) / r.width * BW, y: (e.clientY - r.top) / r.height * BH }; });
+  bc.addEventListener('pointerleave', function () { mouse = null; });
+
+  // ================= 主循环与控件 =================
+  var view = 'ant', running = { ant: true, bird: true };
+  function loop() {
+    if (view === 'ant' && running.ant) { antStep(); antStep(); antStep(); antDraw(); }
+    if (view === 'bird' && running.bird) { birdStep(); birdDraw(); }
+    requestAnimationFrame(loop);
+  }
+  function tab(v) {
+    view = v; $('antView').hidden = v !== 'ant'; $('birdView').hidden = v !== 'bird';
+    $('tabAnt').classList.toggle('on', v === 'ant'); $('tabBird').classList.toggle('on', v === 'bird');
+  }
+  $('tabAnt').addEventListener('click', function () { tab('ant'); });
+  $('tabBird').addEventListener('click', function () { tab('bird'); });
+  function label(id, out, fmt) { var f = function () { $(out).textContent = fmt($(id).value); }; $(id).addEventListener('input', f); f(); }
+  function labels() {
+    label('antN', 'antNV', String); label('evap', 'evapV', function (v) { return v < 4 ? TOOL.t('很慢', 'very slow') : v < 12 ? TOOL.t('适中', 'medium') : v < 22 ? TOOL.t('较快', 'fast') : TOOL.t('很快', 'very fast'); });
+    label('view', 'viewV', function (v) { return v + ' px'; }); label('birdN', 'birdNV', String);
+    $('antRun').textContent = running.ant ? TOOL.t('暂停', 'Pause') : TOOL.t('继续', 'Resume');
+    $('birdRun').textContent = running.bird ? TOOL.t('暂停', 'Pause') : TOOL.t('继续', 'Resume');
+  }
+  labels();
+  $('antN').addEventListener('change', antReset); $('antMap').addEventListener('change', antReset);
+  $('antReset').addEventListener('click', antReset);
+  $('antRun').addEventListener('click', function () { running.ant = !running.ant; labels(); });
+  $('birdN').addEventListener('change', birdReset); $('birdReset').addEventListener('click', birdReset);
+  $('birdRun').addEventListener('click', function () { running.bird = !running.bird; labels(); });
+  antReset(); birdReset();
+  if (/[?&]tab=bird/.test(location.search)) tab('bird');
+  // 网址带 ?warm=N 时先在后台跑 N 步（课堂展示用）
+  var warm = /[?&]warm=(\d+)/.exec(location.search);
+  if (warm) { for (var w = 0; w < Math.min(+warm[1], 20000); w++) { antStep(); if (w % 4 === 0) birdStep(); } antDraw(); birdDraw(); }
+  window.SWARM = { ant: function () { return ant; }, antStep: antStep, antDraw: antDraw, birdStep: birdStep, birdDraw: birdDraw };
+  loop();
+})();
+</script>
+</body>
+</html>

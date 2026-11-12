@@ -2,6 +2,8 @@
    全部在浏览器里计算，不联网，不上传数据。 */
 (function () {
   'use strict';
+  // 提示文字中英双语（tool.js 提供 TOOL.t）
+  function T(zh, en) { return window.TOOL ? window.TOOL.t(zh, en) : zh; }
 
   // ---------- 随机数（固定种子，结果可复现） ----------
   function rng(seed) {
@@ -52,7 +54,7 @@
   // 读入用户自己的 CSV / TSV 文件：第一行是列名，最后一列默认是要预测的类别
   function parseText(text, title) {
     var lines = text.replace(/^﻿/, '').split(/\r?\n/).filter(function (l) { return l.trim(); });
-    if (lines.length < 2) throw new Error('文件里至少要有表头和一行数据');
+    if (lines.length < 2) throw new Error(T('文件里至少要有表头和一行数据', 'The file needs a header row and at least one data row'));
     var sep = lines[0].indexOf('\t') >= 0 ? '\t' : (lines[0].indexOf(';') >= 0 && lines[0].indexOf(',') < 0 ? ';' : ',');
     var split = function (l) { return l.split(sep).map(function (s) { return s.trim().replace(/^"(.*)"$/, '$1'); }); };
     var head = split(lines[0]);
@@ -323,7 +325,7 @@
   function pca(t, nComp) {
     var F = feats(t).filter(function (f) { return t.cols[f].type === 'num'; });
     var d = F.length, n = t.rows.length;
-    if (d < 2) throw new Error('主成分分析至少需要 2 个数值特征');
+    if (d < 2) throw new Error(T('主成分分析至少需要 2 个数值特征', 'PCA needs at least 2 numeric features'));
     var mean = [], sd = [];
     F.forEach(function (f) {
       var m = 0; t.rows.forEach(function (r) { m += r[f] || 0; }); m /= n;

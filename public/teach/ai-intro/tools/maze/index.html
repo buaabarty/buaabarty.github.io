@@ -1,45 +1,42 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta name="robots" content="noindex, nofollow">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>第2讲：迷宫搜索可视化练习</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="robots" content="noindex">
+  <title>迷宫搜索练习</title>
+  <link rel="stylesheet" href="../common/tool.css">
+  <script src="../common/tool.js"></script>
+  <style>
+    #mazeCanvas { width: min(100%, 720px); aspect-ratio: 1 / 1; }
+    .button-grid { margin-top: 4px; }
+  </style>
 </head>
-<body>
+<body data-title-zh="迷宫搜索练习" data-title-en="Maze Search Lab">
   <main class="app-shell">
-    <header class="topbar">
-      <div>
-        <p class="eyebrow">燕山大学 · 人工智能概论</p>
-        <h1>第2讲：迷宫搜索可视化练习</h1>
-      </div>
-      <a class="support-link" href="mailto:yby@ysu.edu.cn">使用问题：yby@ysu.edu.cn</a>
-    </header>
-
-    <section class="workspace" aria-label="迷宫搜索练习区">
-      <aside class="control-panel" aria-label="控制面板">
+    <section class="workspace" aria-label="迷宫搜索练习区" data-en-aria-label="Maze search workspace">
+      <aside class="control-panel" aria-label="控制面板" data-en-aria-label="Controls">
         <div class="field-group">
-          <label for="algorithmSelect">搜索算法</label>
+          <label for="algorithmSelect"><span data-en="Search algorithm">搜索算法</span></label>
           <select id="algorithmSelect">
-            <option value="astar">A* 启发式搜索</option>
-            <option value="bfs">BFS 广度优先搜索</option>
-            <option value="dfs">DFS 深度优先搜索</option>
+            <option value="astar" data-en="A* (heuristic search)">A* 启发式搜索</option>
+            <option value="bfs" data-en="BFS (breadth-first search)">BFS 广度优先搜索</option>
+            <option value="dfs" data-en="DFS (depth-first search)">DFS 深度优先搜索</option>
           </select>
         </div>
 
         <div class="field-group">
-          <span class="field-label">编辑方式</span>
-          <div class="segmented" role="group" aria-label="编辑方式">
-            <button type="button" class="mode-button is-active" data-mode="wall" aria-pressed="true">画墙</button>
-            <button type="button" class="mode-button" data-mode="erase" aria-pressed="false">擦除</button>
-            <button type="button" class="mode-button" data-mode="start" aria-pressed="false">起点</button>
-            <button type="button" class="mode-button" data-mode="target" aria-pressed="false">终点</button>
+          <span class="field-label" data-en="Edit mode">编辑方式</span>
+          <div class="segmented" role="group" aria-label="编辑方式" data-en-aria-label="Edit mode">
+            <button type="button" class="mode-button is-active" data-mode="wall" aria-pressed="true"><span data-en="Draw walls">画墙</span></button>
+            <button type="button" class="mode-button" data-mode="erase" aria-pressed="false"><span data-en="Erase">擦除</span></button>
+            <button type="button" class="mode-button" data-mode="start" aria-pressed="false"><span data-en="Start">起点</span></button>
+            <button type="button" class="mode-button" data-mode="target" aria-pressed="false"><span data-en="Goal">终点</span></button>
           </div>
         </div>
 
         <div class="field-group">
-          <label for="sizeSelect">网格大小</label>
+          <label for="sizeSelect"><span data-en="Grid size">网格大小</span></label>
           <select id="sizeSelect">
             <option value="19">19 × 19</option>
             <option value="25" selected>25 × 25</option>
@@ -48,65 +45,65 @@
         </div>
 
         <div class="field-group inline-field">
-          <label for="showAnimation">显示动画</label>
+          <label for="showAnimation"><span data-en="Show animation">显示动画</span></label>
           <input id="showAnimation" type="checkbox" checked>
         </div>
 
         <div class="field-group">
-          <label for="speedRange">动画速度</label>
+          <label for="speedRange"><span data-en="Animation speed">动画速度</span></label>
           <input id="speedRange" type="range" min="1" max="10" value="6">
         </div>
 
-        <div class="button-grid" aria-label="搜索操作">
+        <div class="button-grid" aria-label="搜索操作" data-en-aria-label="Search actions">
           <button type="button" id="startButton" class="primary">开始搜索</button>
           <button type="button" id="pauseButton">暂停</button>
-          <button type="button" id="stepButton">单步</button>
-          <button type="button" id="resetButton">重置搜索</button>
-          <button type="button" id="clearButton">清空墙体</button>
-          <button type="button" id="randomButton">随机迷宫</button>
+          <button type="button" id="stepButton"><span data-en="Step">单步</span></button>
+          <button type="button" id="resetButton"><span data-en="Reset search">重置搜索</span></button>
+          <button type="button" id="clearButton"><span data-en="Clear walls">清空墙体</span></button>
+          <button type="button" id="randomButton"><span data-en="Random maze">随机迷宫</span></button>
         </div>
       </aside>
 
-      <section class="maze-area" aria-label="迷宫画布">
+      <section class="maze-area" aria-label="迷宫画布" data-en-aria-label="Maze canvas">
         <div class="canvas-frame">
-          <canvas id="mazeCanvas" width="720" height="720" aria-label="迷宫搜索网格"></canvas>
+          <canvas id="mazeCanvas" width="720" height="720" aria-label="迷宫搜索网格" data-en-aria-label="Maze search grid"></canvas>
         </div>
       </section>
 
-      <aside class="info-panel" aria-label="运行状态">
+      <aside class="info-panel" aria-label="运行状态" data-en-aria-label="Run status">
         <div class="metric-list">
           <div>
-            <span>当前状态</span>
+            <span data-en="Status">当前状态</span>
             <strong id="statusText">准备就绪</strong>
           </div>
           <div>
-            <span>访问格子</span>
+            <span data-en="Cells visited">访问格子</span>
             <strong id="visitedCount">0</strong>
           </div>
           <div>
-            <span>候选格子</span>
+            <span data-en="Frontier cells">候选格子</span>
             <strong id="frontierCount">0</strong>
           </div>
           <div>
-            <span>路径步数</span>
+            <span data-en="Path length (steps)">路径步数</span>
             <strong id="distanceValue">-</strong>
           </div>
         </div>
 
-        <div class="legend" aria-label="颜色图例">
-          <span><i class="legend-start"></i>起点</span>
-          <span><i class="legend-target"></i>终点</span>
-          <span><i class="legend-wall"></i>墙体</span>
-          <span><i class="legend-frontier"></i>候选</span>
-          <span><i class="legend-visited"></i>已访问</span>
-          <span><i class="legend-path"></i>路径</span>
+        <div class="legend" aria-label="颜色图例" data-en-aria-label="Color legend">
+          <span><i class="legend-start"></i><span data-en="Start">起点</span></span>
+          <span><i class="legend-target"></i><span data-en="Goal">终点</span></span>
+          <span><i class="legend-wall"></i><span data-en="Wall">墙体</span></span>
+          <span><i class="legend-frontier"></i><span data-en="Frontier">候选</span></span>
+          <span><i class="legend-visited"></i><span data-en="Visited">已访问</span></span>
+          <span><i class="legend-path"></i><span data-en="Path">路径</span></span>
         </div>
 
         <div class="tips">
-          <h2>操作提示</h2>
-          <p>先选择编辑方式，再在网格上点击或拖动。起点和终点不能放在墙体上。</p>
-          <p>BFS 适合观察最短路，DFS 适合观察深度探索，A* 会利用到终点的估计距离。</p>
-          <p>本练习只允许上下左右 4 方向移动，路径不会斜穿墙角，便于观察 BFS 的最短路径。</p>
+          <h2 data-en="Tips">操作提示</h2>
+          <p data-en="Choose an edit mode, then click or drag on the grid. The start and goal cannot sit on a wall.">先选择编辑方式，再在网格上点击或拖动。起点和终点不能放在墙体上。</p>
+          <p data-en="BFS shows the shortest path, DFS shows deep exploration along one branch, and A* uses an estimate of the distance to the goal.">BFS 适合观察最短路，DFS 适合观察深度探索，A* 会利用到终点的估计距离。</p>
+          <p data-en="Moves are limited to up, down, left, and right, and paths never cut a wall corner, so the BFS shortest path is easy to read.">本练习只允许上下左右 4 方向移动，路径不会斜穿墙角，便于观察 BFS 的最短路径。</p>
         </div>
       </aside>
     </section>

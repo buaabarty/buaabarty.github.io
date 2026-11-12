@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>八数码拼图练习</title>
+  <link rel="stylesheet" href="../common/tool.css">
+  <script src="../common/tool.js"></script>
+  <style>
+    .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: min(100%, 420px); margin: 10px auto; }
+    .tile { aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; border-radius: 8px;
+            font-size: clamp(32px, 9vw, 56px); font-weight: 600; font-family: var(--font-display); color: var(--control-glyph); background: var(--control-on); cursor: pointer; box-shadow: var(--shadow-raised);
+            user-select: none; transition: transform var(--duration-fast) var(--ease-spring); border: none; border-radius: var(--radius-control); }
+    .tile:hover { transform: scale(1.03); }
+    .tile.blank { background: var(--surface-muted); box-shadow: none; cursor: default; }
+    .tile.ok { background: var(--tone-green); color: #fff; }
+    :root[data-theme="dark"] .tile.ok { color: oklch(20% .03 162); }
+    .goal { display: grid; grid-template-columns: repeat(3, 26px); gap: 3px; }
+    .goal span { height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 4px; background: var(--surface-muted); font-weight: 600; font-size: 14px; }
+    .goal span.b { background: transparent; border: 1px dashed var(--border-strong); }
+        .compare { margin-top: 14px; }
+    .compare td, .compare th { text-align: center !important; }
+    .status { text-align: center; font-size: var(--text-lg); font-weight: 500; font-family: var(--font-display); min-height: 28px; margin-top: 6px; }
+    .board { margin: 14px auto 18px; }
+  </style>
+</head>
+<body data-title-zh="八数码拼图练习" data-title-en="Eight-Puzzle Lab">
+  <main class="app-shell">
+    <section class="workspace" aria-label="八数码练习区">
+      <aside class="control-panel" aria-label="控制面板">
+        <div class="field-group">
+          <span class="field-label" data-en="Goal">目标局面</span>
+          <div class="goal"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span class="b"></span></div>
+          <p class="hint" data-en="Click a tile next to the gap to slide it in. Arrange the numbers as shown above to win.">点空格旁边的数字，它就滑进空格。把数字排成上面的样子就赢了。</p>
+        </div>
+        <div class="field-group">
+          <label for="shuffleSteps"><span data-en="Shuffle: random slides">打乱程度：随机滑</span> <b id="stepsVal"></b> <span data-en="">步</span></label>
+          <input id="shuffleSteps" type="range" min="6" max="60" step="2" value="20">
+        </div>
+        <div class="button-grid">
+          <button type="button" id="shuffleBtn" class="primary" data-en="Shuffle">打乱</button>
+          <button type="button" id="resetBtn" data-en="Reset">复原</button>
+          <button type="button" id="solveBtn" data-en="Auto-solve">让电脑来解</button>
+          <button type="button" id="playBtn" disabled data-en="Replay">演示解法</button>
+        </div>
+        <div class="field-group" style="margin-top:14px">
+          <label for="speed" data-en="Playback speed">演示速度</label>
+          <input id="speed" type="range" min="1" max="10" value="5">
+        </div>
+      </aside>
+
+      <section class="maze-area" aria-label="拼图">
+        <div class="canvas-frame" style="flex-direction:column">
+          <div class="status" id="status"></div>
+          <div class="board" id="board"></div>
+        </div>
+      </section>
+
+      <aside class="info-panel" aria-label="运行状态">
+        <div class="metric-list">
+          <div><span data-en="Your moves">你已经滑了</span><strong id="moves">0</strong></div>
+          <div><span data-en="Fewest possible">最少需要</span><strong id="best">-</strong></div>
+        </div>
+        <table class="compare simple" id="compare" hidden>
+          <tr><th data-en="Method">电脑的找法</th><th data-en="Positions checked">查看过的局面</th><th data-en="Moves found">找到的步数</th></tr>
+          <tr><td data-en="Breadth-first">广度优先</td><td id="bfsN">-</td><td id="bfsL">-</td></tr>
+          <tr><td data-en="A* (estimates distance to goal)">A*（看离目标多远）</td><td id="astarN">-</td><td id="astarL">-</td></tr>
+        </table>
+        <div class="tips">
+          <h2 data-en="This is search too">这也是搜索</h2>
+          <p data-en="Every arrangement of the numbers is a position. Sliding one tile moves you from one position to another. Solving the puzzle is the same job as finding a way through a maze.">每一种数字摆法就是一个“局面”，滑动一块就从一个局面走到另一个局面。电脑解拼图，和在迷宫里找路是同一件事。</p>
+          <p data-en="How A* estimates the distance left: add up how many squares each number is away from where it belongs.">A* 估算“离目标还差多远”的办法：把每个数字离它该在的位置差几格加起来。</p>
+          <h2 data-en="Try this">试试看</h2>
+          <p data-en="The more you shuffle, the bigger the gap between the two methods in positions checked. Why?">打乱程度越大，两种找法查看的局面数差得越多。为什么？</p>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var GOAL = '123456780';
+  var state = GOAL, moves = 0, plan = null, timer = null;
+  var NB = [[1, 3], [0, 2, 4], [1, 5], [0, 4, 6], [1, 3, 5, 7], [2, 4, 8], [3, 7], [4, 6, 8], [5, 7]];
+
+  var msg = ['先自己玩一会儿', 'Play around first'];
+  function say(zh, en) { msg = [zh, en]; $('status').textContent = TOOL.t(zh, en); }
+  TOOL.onLang(function () { $('status').textContent = TOOL.t(msg[0], msg[1]); });
+  function swap(s, i, j) { var a = s.split(''); var t = a[i]; a[i] = a[j]; a[j] = t; return a.join(''); }
+  function render() {
+    var b = $('board'); b.innerHTML = '';
+    state.split('').forEach(function (ch, i) {
+      var t = document.createElement('button');
+      t.type = 'button';
+      t.className = 'tile' + (ch === '0' ? ' blank' : (ch === GOAL[i] ? ' ok' : ''));
+      t.textContent = ch === '0' ? '' : ch;
+      t.addEventListener('click', function () { tap(i); });
+      b.appendChild(t);
+    });
+    $('moves').textContent = moves;
+    if (state === GOAL && moves > 0) say('拼好了！', 'Solved!');
+  }
+  function tap(i) {
+    if (timer) return;
+    var z = state.indexOf('0');
+    if (NB[z].indexOf(i) < 0) return;
+    state = swap(state, z, i); moves++; plan = null; $('playBtn').disabled = true;
+    say('继续', 'Keep going');
+    render();
+  }
+  function manhattan(s) {
+    var d = 0;
+    for (var i = 0; i < 9; i++) {
+      var v = +s[i]; if (!v) continue;
+      var g = v - 1;
+      d += Math.abs((i / 3 | 0) - (g / 3 | 0)) + Math.abs(i % 3 - g % 3);
+    }
+    return d;
+  }
+  function bfs(start) {
+    var prev = {}; prev[start] = null;
+    var q = [start], head = 0;
+    while (head < q.length) {
+      var s = q[head++];
+      if (s === GOAL) return { seen: head, path: trace(prev, s) };
+      var z = s.indexOf('0');
+      NB[z].forEach(function (j) { var n = swap(s, z, j); if (!(n in prev)) { prev[n] = s; q.push(n); } });
+    }
+    return null;
+  }
+  function astar(start) {
+    // 最小堆
+    var heap = [], prev = {}, g = {}, closed = {}, seen = 0;
+    function push(x) { heap.push(x); var i = heap.length - 1; while (i) { var p = (i - 1) >> 1; if (heap[p][0] <= heap[i][0]) break; var t = heap[p]; heap[p] = heap[i]; heap[i] = t; i = p; } }
+    function pop() { var top = heap[0], last = heap.pop(); if (heap.length) { heap[0] = last; var i = 0; for (;;) { var l = 2 * i + 1, r = l + 1, m = i; if (l < heap.length && heap[l][0] < heap[m][0]) m = l; if (r < heap.length && heap[r][0] < heap[m][0]) m = r; if (m === i) break; var t = heap[m]; heap[m] = heap[i]; heap[i] = t; i = m; } } return top; }
+    g[start] = 0; prev[start] = null; push([manhattan(start), start]);
+    while (heap.length) {
+      var s = pop()[1];
+      if (closed[s]) continue;
+      closed[s] = 1; seen++;
+      if (s === GOAL) return { seen: seen, path: trace(prev, s) };
+      var z = s.indexOf('0');
+      NB[z].forEach(function (j) {
+        var n = swap(s, z, j), ng = g[s] + 1;
+        if (!(n in g) || ng < g[n]) { g[n] = ng; prev[n] = s; push([ng + manhattan(n), n]); }
+      });
+    }
+    return null;
+  }
+  function trace(prev, s) { var p = []; while (s !== null) { p.push(s); s = prev[s]; } return p.reverse(); }
+
+  function shuffle() {
+    stop();
+    var n = +$('shuffleSteps').value, s = GOAL, last = -1;
+    for (var k = 0; k < n; k++) {
+      var z = s.indexOf('0'), opts = NB[z].filter(function (j) { return j !== last; });
+      var j = opts[Math.floor(Math.random() * opts.length)];
+      s = swap(s, z, j); last = z;
+    }
+    if (s === GOAL) return shuffle();
+    state = s; moves = 0; plan = null;
+    $('playBtn').disabled = true; $('best').textContent = '-'; $('compare').hidden = true;
+    say('打乱好了，自己试试', 'Shuffled. Give it a try.');
+    render();
+  }
+  function solve() {
+    stop();
+    if (state === GOAL) { say('已经是目标局面了', 'Already solved'); return; }
+    var a = astar(state), b = bfs(state);
+    $('compare').hidden = false;
+    $('bfsN').textContent = b.seen.toLocaleString(); $('bfsL').textContent = b.path.length - 1;
+    $('astarN').textContent = a.seen.toLocaleString(); $('astarL').textContent = a.path.length - 1;
+    $('best').textContent = a.path.length - 1;
+    plan = a.path; $('playBtn').disabled = false;
+    say('电脑找到了最短解法：' + (a.path.length - 1) + ' 步', 'Shortest solution found: ' + (a.path.length - 1) + ' moves');
+  }
+  function play() {
+    if (!plan) return;
+    stop();
+    var i = 0, delay = 1100 - 100 * +$('speed').value;
+    timer = setInterval(function () {
+      state = plan[i]; render();
+      say('演示第 ' + i + ' 步 / 共 ' + (plan.length - 1) + ' 步', 'Move ' + i + ' of ' + (plan.length - 1));
+      if (++i >= plan.length) { stop(); say('演示完毕', 'Done'); plan = null; $('playBtn').disabled = true; }
+    }, delay);
+  }
+  function stop() { if (timer) { clearInterval(timer); timer = null; } }
+
+  $('shuffleSteps').addEventListener('input', function () { $('stepsVal').textContent = this.value; });
+  $('stepsVal').textContent = $('shuffleSteps').value;
+  $('shuffleBtn').addEventListener('click', shuffle);
+  $('resetBtn').addEventListener('click', function () { stop(); state = GOAL; moves = 0; plan = null; $('compare').hidden = true; $('best').textContent = '-'; $('playBtn').disabled = true; say('先自己玩一会儿', 'Play around first'); render(); });
+  $('solveBtn').addEventListener('click', solve);
+  $('playBtn').addEventListener('click', play);
+  window.PUZZLE = { bfs: bfs, astar: astar, set: function (s) { state = s; render(); } };
+  say(msg[0], msg[1]);
+  render();
+  if (/[?&]demo=1/.test(location.search)) { state = '413726580'; render(); solve(); }
+})();
+</script>
+</body>
+</html>

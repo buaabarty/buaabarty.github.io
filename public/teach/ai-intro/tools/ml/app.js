@@ -1,12 +1,12 @@
 /* 画布：放组件、连线、双击打开组件窗口；数据沿连线自动流动。 */
 (function () {
   'use strict';
-  var OW = window.OW, W = OW.widgets, h = OW.h;
+  var OW = window.OW, W = OW.widgets, h = OW.h, T = OW.T;
   var SVGNS = 'http://www.w3.org/2000/svg';
   var $ = function (id) { return document.getElementById(id); };
   var svg = $('canvas'), wrap = $('canvasWrap'), winLayer = $('windows');
   var state = { nodes: [], links: [], nextId: 1, sel: null };
-  var wins = {}, zTop = 10, lastClick = { id: 0, t: 0 };
+  var wins = {}, zTop = 100, lastClick = { id: 0, t: 0 };
 
   function s(tag, attrs) {
     var e = document.createElementNS(SVGNS, tag);
@@ -60,9 +60,9 @@
   }
   function connect(a, b, px, py, existing) {
     if (a === b) return;
-    if (wouldCycle(a, b)) { toast('不能连成一个圈'); return; }
+    if (wouldCycle(a, b)) { toast(T('不能连成一个圈', 'Links cannot form a loop')); return; }
     var c = candidates(a, b);
-    if (!c.length) { toast('“' + a.title + '”的输出不能接到“' + b.title + '”'); return; }
+    if (!c.length) { toast(T('“' + a.title + '”的输出不能接到“' + b.title + '”', 'The output of "' + OW.title(a.title) + '" cannot go into "' + OW.title(b.title) + '"')); return; }
     var occupied = function (p) { return state.links.some(function (l) { return l.to === b.id && l.toCh === p.to && !(existing && l === existing); }); };
     var free = c.filter(function (p) { return p.multi || !occupied(p); });
     var pool = free.length ? free : c;
@@ -127,7 +127,7 @@
       g.appendChild(s('path', { d: d, class: 'hit' }));
       g.appendChild(s('path', { d: d, class: 'line' }));
       var t = s('text', { x: (x1 + x2) / 2, y: (y1 + y2) / 2 - 7, 'text-anchor': 'middle' });
-      t.textContent = l.fromCh === l.toCh ? l.fromCh : l.fromCh + ' → ' + l.toCh;
+      t.textContent = l.fromCh === l.toCh ? OW.ch(l.fromCh) : OW.ch(l.fromCh) + ' → ' + OW.ch(l.toCh);
       g.appendChild(t);
       g.addEventListener('pointerdown', function (e) {
         e.stopPropagation();
@@ -146,7 +146,7 @@
       g.appendChild(img);
       if (d.inputs.length) { var pi = s('path', { d: 'M -40,-16 A 40 40 0 0 0 -40,16', class: 'port in' }); g.appendChild(pi); }
       if (d.outputs.length) { var po = s('circle', { cx: 42, cy: 0, r: 7, class: 'port out' }); g.appendChild(po); }
-      var lab = s('text', { y: 56, 'text-anchor': 'middle', class: 'title' }); lab.textContent = n.title; g.appendChild(lab);
+      var lab = s('text', { y: 56, 'text-anchor': 'middle', class: 'title' }); lab.textContent = OW.title(n.title); g.appendChild(lab);
       var sm = s('text', { y: 74, 'text-anchor': 'middle', class: 'summary' + (n.error ? ' err' : '') });
       sm.textContent = n.error ? '⚠ ' + n.error : n.summary || '';
       g.appendChild(sm);
@@ -232,23 +232,27 @@
     setTimeout(function () { document.addEventListener('pointerdown', function off(ev) { if (!m.contains(ev.target)) { m.remove(); document.removeEventListener('pointerdown', off); } }); });
   }
   function chooser(pairs, x, y, done) {
-    popup(x, y, [{ head: '选择要连接的通道' }].concat(pairs.map(function (p) { return { text: p.from + ' → ' + p.to, fn: function () { done(p); } }; })));
+    popup(x, y, [{ head: T('选择要连接的通道', 'Choose the channels to connect') }].concat(pairs.map(function (p) { return { text: OW.ch(p.from) + ' → ' + OW.ch(p.to), fn: function () { done(p); } }; })));
   }
   function menu(n, x, y) {
     state.sel = n; render();
     popup(x, y, [
-      { text: '打开', fn: function () { openWin(n); } },
-      { text: '重命名', fn: function () { var t = prompt('新名称', n.title); if (t && t.trim()) { n.title = t.trim(); changed(); } } },
-      { text: '删除', fn: function () { removeNode(n); changed(); } }
+      { text: T('打开', 'Open'), fn: function () { openWin(n); } },
+      { text: T('重命名', 'Rename'), fn: function () {
+        // 名字没改就保留原来的内部标题，默认标题才能继续跟随界面语言
+        var shown = OW.title(n.title), t = prompt(T('新名称', 'New name'), shown);
+        if (t && t.trim() && t.trim() !== shown) { n.title = t.trim(); changed(); }
+      } },
+      { text: T('删除', 'Remove'), fn: function () { removeNode(n); changed(); } }
     ]);
   }
   function quickAdd(src, p, x, y) {
-    var items = [{ head: '接到“' + src.title + '”后面' }];
+    var items = [{ head: T('接到“' + src.title + '”后面', 'Connect after  + OW.title(src.title) + ') }];
     OW.order.forEach(function (c) {
       c[1].forEach(function (type) {
         var probe = { type: type };
         var ok = def(src).outputs.some(function (o) { return W[type].inputs.some(function (i) { return i.type === o.type; }); });
-        if (ok) items.push({ text: W[type].name, icon: W[type].icon, fn: function () { var n = addNode(type, p.x, p.y); connect(src, n, x, y); changed(); } });
+        if (ok) items.push({ text: OW.wname(type), icon: W[type].icon, fn: function () { var n = addNode(type, p.x, p.y); connect(src, n, x, y); changed(); } });
       });
     });
     popup(x, y, items);
@@ -264,14 +268,15 @@
     if (wins[n.id]) { wins[n.id].el.style.zIndex = ++zTop; return; }
     var d = def(n), count = Object.keys(wins).length;
     var ctrl = h('div', { class: 'ow-ctrl' }), view = h('div', { class: 'ow-main' });
-    var title = h('span', { text: n.title });
+    var title = h('span', { text: OW.title(n.title) });
     var bar = h('div', { class: 'ow-bar' }, [h('img', { src: 'icons/' + d.icon, alt: '' }), title,
-      h('button', { type: 'button', class: 'ow-close', title: '关闭', text: '×', onclick: function () { closeWin(n.id); } })]);
+      h('button', { type: 'button', class: 'ow-close', title: T('关闭', 'Close'), 'aria-label': T('关闭', 'Close'), text: '×', onclick: function () { closeWin(n.id); } })]);
     var el = h('div', { class: 'ow-win' }, [bar, h('div', { class: 'ow-body' }, [ctrl, view])]);
     var ww = Math.min(780, innerWidth - 16), wh = Math.min(540, innerHeight - 70);
     el.style.width = ww + 'px'; el.style.height = wh + 'px';
     el.style.left = Math.max(8, Math.min(innerWidth - ww - 8, innerWidth - ww - 24 - count * 28)) + 'px';
-    el.style.top = Math.max(56, Math.min(innerHeight - wh - 8, innerHeight - wh - 24 - count * 28)) + 'px';
+    var topMin = Math.round($('toolrow').getBoundingClientRect().bottom) + 8;
+    el.style.top = Math.max(topMin, Math.min(innerHeight - wh - 8, innerHeight - wh - 24 - count * 28)) + 'px';
     el.style.zIndex = ++zTop;
     el.addEventListener('pointerdown', function () { el.style.zIndex = ++zTop; });
     bar.addEventListener('pointerdown', function (e) {
@@ -282,7 +287,7 @@
       window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up);
     });
     winLayer.appendChild(el);
-    wins[n.id] = { el: el, ctrl: ctrl, view: view, title: title };
+    wins[n.id] = { el: el, ctrl: ctrl, view: view, title: title, close: bar.querySelector('.ow-close') };
     n.ctx = {
       changed: function (rebuild) { changed(rebuild, n.id); },
       redraw: function () { buildView(n); save(); }
@@ -292,7 +297,8 @@
   function closeWin(id) { if (wins[id]) { wins[id].el.remove(); delete wins[id]; } }
   function buildCtrl(n) {
     var w = wins[n.id], d = def(n); if (!w) return;
-    w.title.textContent = n.title;
+    w.title.textContent = OW.title(n.title);
+    w.close.title = T('关闭', 'Close'); w.close.setAttribute('aria-label', w.close.title);
     w.ctrl.innerHTML = '';
     if (d.ui) d.ui(n, w.ctrl, n.ctx);
     w.ctrl.hidden = !w.ctrl.childNodes.length;
@@ -306,19 +312,24 @@
 
   // ---------- 组件栏 ----------
   var pal = $('palette');
-  OW.order.forEach(function (c) {
-    pal.appendChild(h('div', { class: 'pal-head', style: 'border-left-color:' + OW.catColor[c[0]] , text: c[0] }));
-    var grid = h('div', { class: 'pal-grid' });
-    c[1].forEach(function (type) {
-      var d = W[type];
-      var b = h('button', { type: 'button', class: 'pal-item', draggable: 'true', title: d.desc,
-        onclick: function () { var r = wrap.getBoundingClientRect(); var n = addNode(type, wrap.scrollLeft + 120 + (state.nodes.length % 6) * 30, wrap.scrollTop + 100 + (state.nodes.length % 6) * 40); state.sel = n; changed(); } },
-        [h('span', { class: 'pal-ico', style: 'background:' + OW.catColor[d.cat] }, [h('img', { src: 'icons/' + d.icon, alt: '' })]), h('span', { text: d.name })]);
-      b.addEventListener('dragstart', function (e) { e.dataTransfer.setData('text/plain', type); });
-      grid.appendChild(b);
+  function buildPalette() {
+    pal.innerHTML = '';
+    pal.setAttribute('aria-label', T('组件', 'Widgets'));
+    OW.order.forEach(function (c) {
+      pal.appendChild(h('div', { class: 'pal-head' }, [h('i', { style: 'background:' + OW.catColor[c[0]] }), h('span', { text: OW.cat(c[0]) })]));
+      var grid = h('div', { class: 'pal-grid' });
+      c[1].forEach(function (type) {
+        var d = W[type];
+        var b = h('button', { type: 'button', class: 'pal-item', draggable: 'true', title: OW.wdesc(type),
+          onclick: function () { var n = addNode(type, wrap.scrollLeft + 120 + (state.nodes.length % 6) * 30, wrap.scrollTop + 100 + (state.nodes.length % 6) * 40); state.sel = n; changed(); } },
+          [h('span', { class: 'pal-ico', style: 'background:' + OW.catColor[d.cat] }, [h('img', { src: 'icons/' + d.icon, alt: '' })]), h('span', { class: 'pal-name', text: OW.wname(type) })]);
+        b.addEventListener('dragstart', function (e) { e.dataTransfer.setData('text/plain', type); });
+        grid.appendChild(b);
+      });
+      pal.appendChild(grid);
     });
-    pal.appendChild(grid);
-  });
+  }
+  buildPalette();
   wrap.addEventListener('dragover', function (e) { e.preventDefault(); });
   wrap.addEventListener('drop', function (e) {
     e.preventDefault();
@@ -329,19 +340,19 @@
 
   // ---------- 示例工作流 ----------
   var EXAMPLES = [
-    { title: '第3讲 鸢尾花分类入门', nodes: [['file', 90, 230, { src: 'iris' }], ['table', 280, 110], ['scatter', 280, 340], ['tree', 460, 170], ['knn', 460, 300], ['test', 660, 230], ['cm', 860, 230]],
+    { title: '第3讲 鸢尾花分类入门', titleEn: 'Lecture 3: Classifying irises', nodes: [['file', 90, 230, { src: 'iris' }], ['table', 280, 110], ['scatter', 280, 340], ['tree', 460, 170], ['knn', 460, 300], ['test', 660, 230], ['cm', 860, 230]],
       links: [[0, '数据', 1, '数据'], [0, '数据', 2, '数据'], [0, '数据', 5, '数据'], [3, '学习器', 5, '学习器'], [4, '学习器', 5, '学习器'], [5, '评估结果', 6, '评估结果']], open: 5 },
-    { title: '第3讲 分类模型对比', nodes: [['file', 90, 240, { src: 'iris' }], ['table', 280, 100], ['scatter', 280, 380], ['logit', 460, 140], ['tree', 460, 250], ['forest', 460, 360], ['test', 660, 250], ['cm', 860, 250]],
+    { title: '第3讲 分类模型对比', titleEn: 'Lecture 3: Comparing classifiers', nodes: [['file', 90, 240, { src: 'iris' }], ['table', 280, 100], ['scatter', 280, 380], ['logit', 460, 140], ['tree', 460, 250], ['forest', 460, 360], ['test', 660, 250], ['cm', 860, 250]],
       links: [[0, '数据', 1, '数据'], [0, '数据', 2, '数据'], [0, '数据', 6, '数据'], [3, '学习器', 6, '学习器'], [4, '学习器', 6, '学习器'], [5, '学习器', 6, '学习器'], [6, '评估结果', 7, '评估结果']], open: 6 },
-    { title: '第3讲 PCA 降维观察', nodes: [['file', 100, 220, { src: 'iris' }], ['pca', 300, 220], ['scatter', 500, 140], ['table', 500, 310]],
+    { title: '第3讲 PCA 降维观察', titleEn: 'Lecture 3: Looking at data with PCA', nodes: [['file', 100, 220, { src: 'iris' }], ['pca', 300, 220], ['scatter', 500, 140], ['table', 500, 310]],
       links: [[0, '数据', 1, '数据'], [1, '转换后数据', 2, '数据'], [1, '转换后数据', 3, '数据']], open: 2 },
-    { title: '第3讲 K 均值聚类', nodes: [['file', 100, 220, { src: 'iris' }], ['kmeans', 300, 220], ['scatter', 500, 110], ['table', 500, 230], ['box', 500, 350]],
+    { title: '第3讲 K 均值聚类', titleEn: 'Lecture 3: k-Means clustering', nodes: [['file', 100, 220, { src: 'iris' }], ['kmeans', 300, 220], ['scatter', 500, 110], ['table', 500, 230], ['box', 500, 350]],
       links: [[0, '数据', 1, '数据'], [1, '数据', 2, '数据'], [1, '数据', 3, '数据'], [1, '数据', 4, '数据']], open: 1 },
-    { title: '作业二 西瓜数据制造过拟合', nodes: [['file', 100, 200, { src: 'melon_train' }, '西瓜-训练集'], ['file', 100, 380, { src: 'melon_test' }, '西瓜-测试集'], ['scatter', 300, 80], ['knn', 440, 130, { k: 1 }], ['tree', 440, 470], ['test', 640, 300, { method: 'test' }], ['cm', 840, 300]],
+    { title: '作业二 西瓜数据制造过拟合', titleEn: 'Assignment 2: Causing overfitting with melons', nodes: [['file', 100, 200, { src: 'melon_train' }, '西瓜-训练集'], ['file', 100, 380, { src: 'melon_test' }, '西瓜-测试集'], ['scatter', 300, 80], ['knn', 440, 130, { k: 1 }], ['tree', 440, 470], ['test', 640, 300, { method: 'test' }], ['cm', 840, 300]],
       links: [[0, '数据', 2, '数据'], [0, '数据', 5, '数据'], [1, '数据', 5, '测试数据'], [3, '学习器', 5, '学习器'], [4, '学习器', 5, '学习器'], [5, '评估结果', 6, '评估结果']], open: 5 },
-    { title: '第3讲 贷款审批决策树', nodes: [['file', 100, 220, { src: 'loan' }], ['table', 300, 110], ['tree', 300, 300], ['treeview', 500, 300]],
+    { title: '第3讲 贷款审批决策树', titleEn: 'Lecture 3: Loan approval tree', nodes: [['file', 100, 220, { src: 'loan' }], ['table', 300, 110], ['tree', 300, 300], ['treeview', 500, 300]],
       links: [[0, '数据', 1, '数据'], [0, '数据', 2, '数据'], [2, '模型', 3, '树模型']], open: 3 },
-    { title: '训练集与测试集：数据抽样', nodes: [['file', 90, 230, { src: 'iris' }], ['sampler', 280, 230], ['tree', 280, 400], ['test', 500, 230, { method: 'test' }], ['pred', 500, 400], ['cm', 700, 230]],
+    { title: '训练集与测试集：数据抽样', titleEn: 'Training and test sets: Data Sampler', nodes: [['file', 90, 230, { src: 'iris' }], ['sampler', 280, 230], ['tree', 280, 400], ['test', 500, 230, { method: 'test' }], ['pred', 500, 400], ['cm', 700, 230]],
       links: [[0, '数据', 1, '数据'], [1, '数据样本', 3, '数据'], [1, '剩余数据', 3, '测试数据'], [2, '学习器', 3, '学习器'], [1, '数据样本', 2, '数据'], [2, '模型', 4, '模型'], [1, '剩余数据', 4, '数据'], [3, '评估结果', 5, '评估结果']], open: 3 }
   ];
   function loadExample(ex) {
@@ -353,10 +364,15 @@
     if (ex.open !== undefined) openWin(made[ex.open]);
   }
   var exSel = $('examples');
-  EXAMPLES.forEach(function (ex, i) { exSel.appendChild(h('option', { value: i, text: ex.title })); });
+  function fillExamples() {
+    exSel.innerHTML = '';
+    exSel.appendChild(h('option', { value: '', text: T('示例工作流…', 'Example workflows…') }));
+    EXAMPLES.forEach(function (ex, i) { exSel.appendChild(h('option', { value: i, text: T(ex.title, ex.titleEn) })); });
+  }
+  fillExamples();
   exSel.addEventListener('change', function () {
     if (exSel.value === '') return;
-    if (state.nodes.length && !confirm('打开示例会替换当前画布上的内容，继续吗？')) { exSel.value = ''; return; }
+    if (state.nodes.length && !confirm(T('打开示例会替换当前画布上的内容，继续吗？', 'Opening an example replaces everything on the canvas. Continue?'))) { exSel.value = ''; return; }
     loadExample(EXAMPLES[+exSel.value]); exSel.value = '';
   });
 
@@ -375,13 +391,13 @@
   }
   function save() { try { localStorage.setItem('ysu-ml-workflow', JSON.stringify(serialize())); } catch (e) { /* 浏览器不允许存储时忽略 */ } }
   $('newBtn').addEventListener('click', function () {
-    if (state.nodes.length && !confirm('清空画布上的全部组件吗？')) return;
+    if (state.nodes.length && !confirm(T('清空画布上的全部组件吗？', 'Remove all widgets from the canvas?'))) return;
     Object.keys(wins).forEach(function (id) { closeWin(+id); });
     state.nodes = []; state.links = []; changed();
   });
   $('saveBtn').addEventListener('click', function () {
     var blob = new Blob([JSON.stringify(serialize(), null, 1)], { type: 'application/json' });
-    var a = h('a', { href: URL.createObjectURL(blob), download: '我的工作流.json' });
+    var a = h('a', { href: URL.createObjectURL(blob), download: T('我的工作流.json', 'my-workflow.json') });
     document.body.appendChild(a); a.click(); a.remove();
   });
   $('openFile').addEventListener('change', function () {
@@ -389,7 +405,7 @@
     var rd = new FileReader();
     rd.onload = function () {
       try { var o = JSON.parse(String(rd.result)); if (!o.nodes) throw new Error(); restore(o); }
-      catch (e) { alert('这个文件不是本页保存的工作流。'); }
+      catch (e) { alert(T('这个文件不是本页保存的工作流。', 'This file is not a workflow saved from this page.')); }
     };
     rd.readAsText(f, 'utf-8'); this.value = '';
   });
@@ -406,5 +422,14 @@
     if (qs.get('open') && qs.get('open') !== 'none') openWin(state.nodes[+qs.get('open')]);
   } else if (saved && saved.nodes && saved.nodes.length) restore(saved);
   else loadExample(Object.assign({}, EXAMPLES[0], { open: undefined }));
+  // 切换语言：组件栏、示例列表、画布和打开的窗口都换成新语言；工作流本身（参数、连线、内部标题）不变。
+  // 摘要和报错文字在计算时生成，所以按同样的参数重算一遍，结果与切换前完全相同。
+  // 切换主题：只重画窗口里的图（散点图画在 canvas 上，颜色要重新取）。
+  if (window.TOOL) TOOL.onLang(function (l, kind) {
+    closePopups();
+    if (kind === 'theme') { Object.keys(wins).forEach(function (id) { var n = node(+id); if (n) buildView(n); }); return; }
+    buildPalette(); fillExamples();
+    changed(true);
+  });
   window.OWAPP = { state: state, loadExample: loadExample, EXAMPLES: EXAMPLES, openWin: openWin, changed: changed, node: node };
 })();
