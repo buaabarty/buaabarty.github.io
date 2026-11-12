@@ -14,6 +14,7 @@ type Pub = {
   conference: Text;
   pdf?: string;
   code?: string;
+  slides?: string;
   page?: string;
   bibtex?: string;
   notes?: string;
@@ -38,10 +39,11 @@ export function PublicationList({ items = data.main as Pub[], legend = true }: {
               {p.ccf && <Badge size="sm" outline>{p.ccf}</Badge>}
               <span>{L(p.conference)}</span>
             </p>
-            {(p.pdf || p.code || p.page || p.bibtex || p.notes) && (
+            {(p.pdf || p.code || p.slides || p.page || p.bibtex || p.notes) && (
               <p className="pub-links">
                 {p.pdf && <a href={p.pdf} target="_blank" rel="noopener">{t({ en: "Paper", zh: "论文" })}</a>}
                 {p.code && <a href={p.code} target="_blank" rel="noopener">{t({ en: "Code", zh: "代码" })}</a>}
+                {p.slides && <a href={p.slides} target="_blank" rel="noopener">{t({ en: "Slides", zh: "幻灯片" })}</a>}
                 {p.page && <a href={p.page} target="_blank" rel="noopener">{t({ en: "Project", zh: "项目主页" })}</a>}
                 {p.bibtex && <a href={p.bibtex} target="_blank" rel="noopener">BibTeX</a>}
                 {p.notes && <span>{p.notes}</span>}
