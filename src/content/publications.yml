@@ -87,8 +87,8 @@ earlier:
     authors: H. Yu, <strong>B. Yang</strong>, Y. Han, M. Fan, W. Xu
     conference_short: CEISEE
     conference: 15th China-Europe International Symposium on Software Engineering Education (CEISEE), 2019.
-    pdf: https://haoranyu.com/static/ceisee2019/paper.pdf
-    slides: https://haoranyu.com/static/ceisee2019/slides.pdf
+    pdf: /files/pubs/ceisee2019-paper.pdf
+    slides: /files/pubs/ceisee2019-slides.pdf
 
   - id: etm18-training
     tag: "ETM'18"
@@ -105,7 +105,7 @@ earlier:
       en: Experimental Technology and Management, 2018(6).
       zh: 实验技术与管理，2018(6)。
     pdf: https://www.cnki.com.cn/Article/CJFDTotal-SYJL201806055.htm
-    slides: https://haoranyu.com/static/etm2018/slides.pdf
+    slides: /files/pubs/etm2018-slides.pdf
 
   - id: sp17-wastk
     tag: "SP'17"
