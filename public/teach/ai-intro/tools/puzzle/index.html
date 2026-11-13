@@ -61,6 +61,7 @@
         <div class="metric-list">
           <div><span data-en="Your moves">你已经滑了</span><strong id="moves">0</strong></div>
           <div><span data-en="Fewest possible">最少需要</span><strong id="best">-</strong></div>
+          <div><span data-en="Position code">局面编码</span><strong id="code" style="font-family:Consolas,monospace;letter-spacing:.08em"></strong></div>
         </div>
         <table class="compare simple" id="compare" hidden>
           <tr><th data-en="Method">电脑的找法</th><th data-en="Positions checked">查看过的局面</th><th data-en="Moves found">找到的步数</th></tr>
@@ -101,6 +102,7 @@
       b.appendChild(t);
     });
     $('moves').textContent = moves;
+    $('code').textContent = state;
     if (state === GOAL && moves > 0) say('拼好了！', 'Solved!');
   }
   function tap(i) {
@@ -199,6 +201,14 @@
   say(msg[0], msg[1]);
   render();
   if (/[?&]demo=1/.test(location.search)) { state = '413726580'; render(); solve(); }
+  // 网址带 ?state=九位编码（按行读，0 表示空格）时直接摆出该局面，方便复现与阅卷
+  var sq = /[?&]state=([0-8]{9})/.exec(location.search);
+  if (sq && sq[1].split('').sort().join('') === '012345678') {
+    var inv = 0, t = sq[1].replace('0', '');
+    for (var a = 0; a < 8; a++) for (var b = a + 1; b < 8; b++) if (t[a] > t[b]) inv++;
+    if (inv % 2 === 0) { state = sq[1]; render(); say('已载入指定局面', 'Position loaded'); }
+    else say('这个局面无解', 'This position cannot be solved');
+  }
 })();
 </script>
 </body>
