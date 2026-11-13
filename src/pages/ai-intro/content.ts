@@ -76,69 +76,127 @@ export const scheduleEvents: Record<number, { hw: number; kind: "out" | "due" }[
 
 type Row = { item: L; points: string; look: L };
 
-export type ToolId = "maze" | "puzzle" | "grid" | "ml" | "nn" | "evolve" | "swarm";
-export const tools: { id: ToolId; href: string; title: L; text: L }[] = [
+export type ToolId = "circles" | "maze" | "puzzle" | "grid" | "ml" | "nn" | "evolve" | "prompt" | "denoise" | "agent" | "swarm" | "factcheck";
+/** Every lecture has at least one tool. `lecture` is the lecture it belongs to. */
+export const tools: { id: ToolId; lecture: number; href: string; title: L; text: L }[] = [
   {
     id: "maze",
+    lecture: 2,
     href: "/teach/ai-intro/tools/maze/",
     title: { en: "Maze search", zh: "迷宫搜索" },
     text: {
-      en: "Draw a maze, then run breadth-first, depth-first, and A* search step by step, and compare the cells examined and the path length. Lecture 2.",
-      zh: "自己画迷宫，逐步运行广度优先、深度优先和 A* 搜索，对比查看过的格子数和路径长度。对应第 2 讲。",
+      en: "Draw a maze, then run breadth-first, depth-first, and A* search step by step, and compare the cells examined and the path length.",
+      zh: "自己画迷宫，逐步运行广度优先、深度优先和 A* 搜索，对比查看过的格子数和路径长度。",
     },
   },
   {
     id: "puzzle",
+    lecture: 2,
     href: "/teach/ai-intro/tools/puzzle/",
     title: { en: "Eight-puzzle", zh: "八数码拼图" },
     text: {
-      en: "Treat a sliding puzzle as search and compare how many positions breadth-first search and A* check. Lecture 2.",
-      zh: "把拼图看成搜索问题，比较广度优先与 A* 查看的局面数。对应第 2 讲。",
+      en: "Treat a sliding puzzle as search and compare how many positions breadth-first search and A* check.",
+      zh: "把拼图看成搜索问题，比较广度优先与 A* 查看的局面数。",
     },
   },
   {
     id: "grid",
+    lecture: 2,
     href: "/teach/ai-intro/tools/grid/",
     title: { en: "Grid world", zh: "网格世界" },
     text: {
-      en: "Watch a robot learn where to go from rewards and traps, and see how changing the reward per step changes its route. Lecture 2.",
-      zh: "看机器人怎样根据奖励和陷阱学会往哪走，调整每一步的奖励，观察路线怎么变。对应第 2 讲。",
+      en: "Watch a robot learn where to go from rewards and traps, and see how changing the reward per step changes its route.",
+      zh: "看机器人怎样根据奖励和陷阱学会往哪走，调整每一步的奖励，观察路线怎么变。",
     },
   },
   {
     id: "ml",
+    lecture: 3,
     href: "/teach/ai-intro/tools/ml/",
     title: { en: "Machine learning workflow", zh: "机器学习工作流练习" },
     text: {
-      en: "Build a workflow on a canvas by connecting data, models, and evaluation widgets, then compare training and test accuracy to see overfitting. Lecture 3.",
-      zh: "在画布上连接数据、模型和测试与评分等组件搭出工作流，对比训练数据和测试数据上的准确率，看清过拟合。对应第 3 讲。",
+      en: "Build a workflow on a canvas by connecting data, models, and evaluation widgets, then compare training and test accuracy to see overfitting.",
+      zh: "在画布上连接数据、模型和测试与评分等组件搭出工作流，对比训练数据和测试数据上的准确率，看清过拟合。",
     },
   },
   {
     id: "nn",
+    lecture: 4,
     href: "/teach/ai-intro/tools/nn/",
     title: { en: "Neural network playground", zh: "神经网络练习" },
     text: {
-      en: "Change the data, layers, neurons, and learning rate, then watch the decision boundary and the training and test loss curves. Lecture 4.",
-      zh: "调整数据、层数、神经元数和学习率，观察决策边界以及训练损失和测试损失两条曲线。对应第 4 讲。",
+      en: "Change the data, layers, neurons, and learning rate, then watch the decision boundary and the training and test loss curves.",
+      zh: "调整数据、层数、神经元数和学习率，观察决策边界以及训练损失和测试损失两条曲线。",
     },
   },
   {
     id: "evolve",
+    lecture: 4,
     href: "/teach/ai-intro/tools/evolve/",
     title: { en: "Evolving minesweepers", zh: "进化扫雷车" },
     text: {
-      en: "Cars driven by tiny neural networks evolve, generation by generation, to find mines. Lecture 4.",
-      zh: "小神经网络驾驶的小车，一代代进化出找地雷的本领。对应第 4 讲。",
+      en: "Cars driven by tiny neural networks evolve, generation by generation, to find mines.",
+      zh: "小神经网络驾驶的小车，一代代进化出找地雷的本领。",
     },
   },
   {
     id: "swarm",
+    lecture: 7,
     href: "/teach/ai-intro/tools/swarm/",
     title: { en: "Swarm intelligence", zh: "群体智能" },
     text: {
-      en: "Ants find the shortcut by scent, and birds form a flock from three simple rules. Lecture 7.",
-      zh: "蚂蚁靠气味找到近路，鸟群靠三条规则飞出队形。对应第 7 讲。",
+      en: "Ants find the shortcut by scent, and birds form a flock from three simple rules.",
+      zh: "蚂蚁靠气味找到近路，鸟群靠三条规则飞出队形。",
+    },
+  },
+  {
+    id: "circles",
+    lecture: 1,
+    href: "/teach/ai-intro/tools/circles/",
+    title: { en: "Three circles of AI", zh: "AI 的三个圆圈" },
+    text: {
+      en: "Sort everyday examples into AI, machine learning, and deep learning, then check the reasons.",
+      zh: "把生活中的例子归进 AI、机器学习、深度学习三个圆圈，再看每一题的理由。",
+    },
+  },
+  {
+    id: "prompt",
+    lecture: 5,
+    href: "/teach/ai-intro/tools/prompt/",
+    title: { en: "Prompt builder", zh: "提示词拼装" },
+    text: {
+      en: "Build a prompt from task, background, constraints, example, and format, then compare a weak and a strong version in DeepSeek.",
+      zh: "按任务、背景、约束、示例、格式拼一条提示词，再在 DeepSeek 里对比差的和好的两版。",
+    },
+  },
+  {
+    id: "denoise",
+    lecture: 6,
+    href: "/teach/ai-intro/tools/denoise/",
+    title: { en: "From noise to image", zh: "从噪声到图像" },
+    text: {
+      en: "Watch a picture emerge from pure noise one step at a time, the idea behind image generators.",
+      zh: "看一张图怎样从纯噪声里一步步出现，理解生成图片的基本思路。",
+    },
+  },
+  {
+    id: "agent",
+    lecture: 7,
+    href: "/teach/ai-intro/tools/agent/",
+    title: { en: "Agent task chain", zh: "智能体执行链" },
+    text: {
+      en: "Step through an agent completing a real task, see which component acts at each step, and find the failure and the risk point.",
+      zh: "一步步看智能体完成一件真实任务，每一步是哪个部分在起作用，并找出出错点和风险点。",
+    },
+  },
+  {
+    id: "factcheck",
+    lecture: 8,
+    href: "/teach/ai-intro/tools/factcheck/",
+    title: { en: "Sentence-by-sentence fact check", zh: "逐句核查" },
+    text: {
+      en: "Label each sentence of an AI-written text as correct, needs checking, wrong, or fake source, then check your labels.",
+      zh: "把一段 AI 写的文字逐句标为正确、需核查、错误或无来源，再对答案。",
     },
   },
 ];

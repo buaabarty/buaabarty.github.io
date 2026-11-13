@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>逐句核查</title>
+  <link rel="stylesheet" href="../common/tool.css">
+  <script src="../common/tool.js"></script>
+  <style>
+    .legend-list { display: grid; gap: 8px; margin: 0; }
+    .legend-list div { display: grid; grid-template-columns: 60px 1fr; gap: 8px; font-size: var(--text-sm); }
+    .legend-list dt { font-weight: 500; }
+    .legend-list dd { margin: 0; color: var(--text-secondary); }
+    .items { list-style: none; margin: 0; padding: 0; counter-reset: n; }
+    .items li { padding: 14px 4px; border-top: 1px solid var(--border-subtle); counter-increment: n; }
+    .items li:first-child { border-top: 0; padding-top: 4px; }
+    .items .text { margin: 0 0 8px; line-height: 1.7; }
+    .items .text::before { content: counter(n) ". "; color: var(--text-muted); }
+    .items .seg { flex-wrap: wrap; }
+    .why { margin: 8px 0 0; font-size: var(--text-sm); }
+    li.ok .why { color: var(--success); }
+    li.bad .why { color: var(--danger); }
+  </style>
+</head>
+<body data-title-zh="逐句核查" data-title-en="Sentence-by-Sentence Fact Check">
+  <main class="app-shell">
+    <section class="workspace">
+      <aside class="control-panel" aria-label="控制面板">
+        <div class="field-group">
+          <span class="field-label" data-en="The text">这段文字</span>
+          <p class="hint" data-en="A chatbot wrote this short history of AI. Before you trust it, label every sentence.">下面这段 AI 简史是聊天机器人写的。相信它之前，先给每一句做标注。</p>
+        </div>
+        <div class="field-group">
+          <span class="field-label" data-en="Labels">四种标注</span>
+          <dl class="legend-list" id="legend"></dl>
+        </div>
+        <div class="button-grid">
+          <button type="button" class="primary" id="checkBtn" disabled data-en="Check answers">对答案</button>
+          <button type="button" id="resetBtn" data-en="Start over">重来</button>
+        </div>
+      </aside>
+
+      <section class="maze-area">
+        <div class="card"><ol class="items" id="items"></ol></div>
+      </section>
+
+      <aside class="info-panel" aria-label="结果">
+        <div class="metric-list">
+          <div><span data-en="Labelled">已标注</span><strong id="done">0 / 7</strong></div>
+          <div><span data-en="Correct">答对</span><strong id="right">-</strong></div>
+        </div>
+        <div class="tips">
+          <h2 data-en="How to check">怎么核查</h2>
+          <p data-en="For each claim, ask three things: who says so, where it was published, and whether you can find the original yourself.">每一条说法问三件事：谁说的？发表在哪？你自己能不能找到原文？</p>
+          <p data-en="Fluent writing and a confident tone are not evidence. Made-up references are one of the most common errors of large language models.">文字流畅、语气笃定都不是证据。编造参考文献是大语言模型最常见的错误之一。</p>
+          <h2 data-en="Academic integrity">学术诚信</h2>
+          <p data-en="Using AI to help is fine. Letting it replace your own work, or copying its claims without checking, is not.">用 AI 辅助可以，让它替代你自己的工作、不核查就照抄它的说法，不行。</p>
+        </div>
+      </aside>
+    </section>
+  </main>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var TAGS = [
+    ['true', '正确', 'Correct', '能在可靠来源中确认。', 'You can confirm it from a reliable source.'],
+    ['check', '需核查', 'Check', '说法很具体，但没给出处，使用前要查证。', 'A specific claim with no source. Look it up before using it.'],
+    ['false', '错误', 'Wrong', '与事实不符。', 'Contradicts the facts.'],
+    ['nosource', '无来源', 'Fake source', '引用的论文或出处查不到。', 'Cites a paper or person that cannot be found.']
+  ];
+  var ITEMS = [
+    ['1950 年，图灵发表论文《计算机器与智能》，提出了后来被称为“图灵测试”的模仿游戏。', 'In 1950, Alan Turing published “Computing Machinery and Intelligence” and proposed the imitation game, later called the Turing test.', 'true', '这是有据可查的史实。', 'This is well documented.'],
+    ['1956 年的达特茅斯会议通常被看作人工智能这门学科的起点。', 'The Dartmouth workshop in 1956 is usually seen as the start of AI as a field.', 'true', '主流的人工智能史都这样记载。', 'Standard histories of AI say so.'],
+    ['1997 年，IBM 的“深蓝”击败了国际象棋世界冠军卡斯帕罗夫。', 'In 1997, IBM’s Deep Blue beat world chess champion Garry Kasparov.', 'true', '年份和人物都对。', 'Correct year and people.'],
+    ['2016 年，AlphaGo 以 5:0 战胜了围棋世界冠军李世石。', 'In 2016, AlphaGo beat Go champion Lee Sedol 5 to 0.', 'false', '比分是 4:1，李世石赢了第四局。', 'The score was 4 to 1. Lee Sedol won the fourth game.'],
+    ['张明远等人 2021 年发表在《自然》上的论文证明，大语言模型已经能够完全理解人类情感。', 'A 2021 paper in Nature by Zhang Mingyuan et al. proved that large language models fully understand human emotions.', 'nosource', '查不到这篇论文。编造参考文献是大模型的常见错误，这个结论本身也说过了头。', 'No such paper exists. Invented references are a common LLM error, and the claim itself is exaggerated.'],
+    ['据统计，目前超过 90% 的高校已经全面禁止学生使用 AI 工具。', 'Over 90% of universities have now banned students from using AI tools.', 'check', '数字很精确，却没有出处。找到来源之前不要引用。', 'A precise number with no source. Do not repeat it until you find where it comes from.'],
+    ['大语言模型的回答即使读起来很流畅，也可能包含编造的内容。', 'Even when an LLM’s answer reads fluently, it can still contain made-up content.', 'true', '这正是做这道练习的原因。', 'This is the reason for this exercise.']
+  ];
+  var picks = {}, checked = false;
+  function tag(v) { return TAGS.filter(function (x) { return x[0] === v; })[0]; }
+
+  function render() {
+    var dl = $('legend'); dl.innerHTML = '';
+    TAGS.forEach(function (x) { var d = document.createElement('div'); d.innerHTML = '<dt></dt><dd></dd>'; d.firstChild.textContent = TOOL.t(x[1], x[2]); d.lastChild.textContent = TOOL.t(x[3], x[4]); dl.appendChild(d); });
+    var ol = $('items'); ol.innerHTML = '';
+    ITEMS.forEach(function (it, i) {
+      var li = document.createElement('li');
+      if (checked) li.className = picks[i] === it[2] ? 'ok' : 'bad';
+      var p = document.createElement('p'); p.className = 'text'; p.textContent = TOOL.t(it[0], it[1]); li.appendChild(p);
+      var seg = document.createElement('div'); seg.className = 'seg'; seg.setAttribute('role', 'group'); seg.setAttribute('aria-label', TOOL.t('第 ' + (i + 1) + ' 句', 'Sentence ' + (i + 1)));
+      TAGS.forEach(function (x) {
+        var b = document.createElement('button'); b.type = 'button'; b.textContent = TOOL.t(x[1], x[2]);
+        b.className = picks[i] === x[0] ? 'on' : ''; b.setAttribute('aria-pressed', picks[i] === x[0] ? 'true' : 'false');
+        b.addEventListener('click', function () { picks[i] = x[0]; checked = false; render(); });
+        seg.appendChild(b);
+      });
+      li.appendChild(seg);
+      if (checked) {
+        var w = document.createElement('p'); w.className = 'why'; var a = tag(it[2]);
+        w.textContent = (picks[i] === it[2] ? '✓ ' : TOOL.t('✗ 答案：' + a[1] + '。', '✗ Answer: ' + a[2] + '. ')) + TOOL.t(it[3], it[4]);
+        li.appendChild(w);
+      }
+      ol.appendChild(li);
+    });
+    var n = Object.keys(picks).length;
+    $('done').textContent = n + ' / ' + ITEMS.length;
+    $('checkBtn').disabled = n < ITEMS.length;
+    $('right').textContent = checked ? ITEMS.filter(function (it, i) { return picks[i] === it[2]; }).length + ' / ' + ITEMS.length : '-';
+  }
+  $('checkBtn').addEventListener('click', function () { checked = true; render(); });
+  $('resetBtn').addEventListener('click', function () { picks = {}; checked = false; render(); });
+  TOOL.onLang(render);
+  render();
+})();
+</script>
+</body>
+</html>

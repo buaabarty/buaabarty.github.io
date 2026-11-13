@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>智能体执行链</title>
+  <link rel="stylesheet" href="../common/tool.css">
+  <script src="../common/tool.js"></script>
+  <style>
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+    .chips li { padding: 3px 12px; border-radius: var(--radius-pill); border: 1px solid var(--border); font-size: var(--text-sm); color: var(--text-muted); transition: all .15s ease; }
+    .chips li.on { color: var(--accent); background: var(--accent-subtle); border-color: transparent; }
+    .goal { margin: 0 0 14px; padding: 12px 14px; border-radius: var(--radius-control); background: var(--surface-muted); }
+    .steps { list-style: none; margin: 0; padding: 0; }
+    .steps li { display: grid; grid-template-columns: 70px 1fr; gap: 12px; padding: 10px 2px; border-top: 1px solid var(--border-subtle); color: var(--text-secondary); font-size: var(--text-sm); line-height: 1.6; }
+    .steps li.now { color: var(--foreground); }
+    .steps li.fail { color: var(--danger); }
+    .steps .part { color: var(--accent); font-weight: 500; }
+    .risk { display: block; margin-top: 6px; padding: 8px 10px; border-radius: 10px; color: var(--warning); background: color-mix(in oklab, var(--warning) 12%, transparent); }
+    .empty { color: var(--text-muted); font-size: var(--text-sm); }
+  </style>
+</head>
+<body data-title-zh="智能体执行链" data-title-en="Agent Task Chain">
+  <main class="app-shell">
+    <section class="workspace">
+      <aside class="control-panel" aria-label="控制面板">
+        <div class="field-group">
+          <span class="field-label" data-en="Weather tool">天气工具</span>
+          <div class="segmented">
+            <button type="button" class="mode-button is-active" data-mode="ok" data-en="Works">正常</button>
+            <button type="button" class="mode-button" data-mode="fail" data-en="Fails once">第一次出错</button>
+          </div>
+        </div>
+        <div class="field-group">
+          <span class="field-label" data-en="Agent = LLM + memory + tools + planning + feedback">智能体＝大模型＋记忆＋工具＋规划＋反馈</span>
+          <ul class="chips" id="chips"></ul>
+        </div>
+        <div class="button-grid">
+          <button type="button" class="primary" id="nextBtn" data-en="Next step">下一步</button>
+          <button type="button" id="backBtn" data-en="Back">上一步</button>
+        </div>
+        <div class="button-grid" style="margin-top:8px">
+          <button type="button" id="resetBtn" data-en="Start over">重来</button>
+          <button type="button" id="allBtn" data-en="Show all">全部显示</button>
+        </div>
+      </aside>
+
+      <section class="maze-area">
+        <div class="card">
+          <p class="goal"><b data-en="Task">任务</b>　<span data-en="Check tomorrow’s weather in Qinhuangdao. If it will rain, add an umbrella reminder to my calendar and tell me.">查一下明天秦皇岛的天气，如果下雨，就在我的日程里加一条带伞提醒，并告诉我。</span></p>
+          <ol class="steps" id="steps"></ol>
+        </div>
+      </section>
+
+      <aside class="info-panel" aria-label="说明">
+        <div class="metric-list">
+          <div><span data-en="Step">步骤</span><strong id="count">0 / 0</strong></div>
+        </div>
+        <div class="tips">
+          <h2 data-en="Answering versus doing">只会答和能干活</h2>
+          <p data-en="A chatbot only produces text. An agent can also call tools, remember what happened, follow a plan, and react to results, so it can change things in the world.">聊天机器人只输出文字。智能体还能调用工具、记住发生过什么、按计划行事、根据结果调整，所以它能真的改动外部世界。</p>
+          <h2 data-en="Try this">试试看</h2>
+          <p data-en="Switch the weather tool to “fails once”. Which component notices the problem, and what stops the agent from retrying forever?">把天气工具切到“第一次出错”。是哪个部分发现了问题？又是什么让它不会无限重试？</p>
+          <p data-en="Find the risk point. What could go wrong if the agent had permission to your whole account instead of only the calendar?">找到风险点。如果智能体拿到的是你整个账号的权限，而不只是日程，可能出什么事？</p>
+        </div>
+      </aside>
+    </section>
+  </main>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var PARTS = [['llm', '大模型', 'LLM'], ['memory', '记忆', 'Memory'], ['tools', '工具', 'Tools'], ['planning', '规划', 'Planning'], ['feedback', '反馈', 'Feedback']];
+  function S(part, zh, en, extra) { var s = { part: part, zh: zh, en: en }; for (var k in extra || {}) s[k] = extra[k]; return s; }
+  function steps(fail) {
+    var s = [
+      S('llm', '理解任务：一个关于天气的问题，加一个可能要做的日程操作。', 'Understand the request: one question about the weather, one possible action on the calendar.'),
+      S('planning', '制定计划：1. 查天气。2. 判断会不会下雨。3. 下雨就加提醒。4. 回复结果。', 'Plan: 1. look up the weather. 2. decide whether it will rain. 3. if so, add a reminder. 4. report back.'),
+      S('tools', '调用天气工具，城市＝秦皇岛，日期＝明天。', 'Call the weather tool with city = Qinhuangdao, day = tomorrow.')
+    ];
+    if (fail) s.push(
+      S('feedback', '工具超时了。智能体发现了错误，而不是自己编一个答案。', 'The tool times out. The agent notices the error instead of guessing an answer.', { fail: true }),
+      S('memory', '记下第一次失败，避免无限重试，再试一次。', 'Note that the first attempt failed, so it does not loop forever. Try once more.'),
+      S('tools', '再次调用天气工具。', 'Call the weather tool again.')
+    );
+    s.push(
+      S('feedback', '得到结果：明天小雨，降水概率 80%。', 'Result: light rain tomorrow, 80% chance of rain.'),
+      S('memory', '记住：天气已经查过，用户明天需要带伞。', 'Remember: the weather is checked, and the user needs an umbrella.'),
+      S('llm', '做判断：大概率下雨，执行计划第 3 步。', 'Decide: rain is likely, so step 3 of the plan applies.'),
+      S('tools', '准备在日程里写入“明早 7:30 带伞”。', 'Prepare to add “Take an umbrella” at 7:30 tomorrow to the calendar.', {
+        riskZh: '风险点：这一步会改动你的数据。可靠的智能体会先请你确认，而且只拿日程的权限，不拿全部权限。',
+        riskEn: 'Risk point: this changes your data. A careful agent asks you to confirm first, and only gets permission to the calendar, not to everything.' }),
+      S('feedback', '你确认后，日程返回“提醒已保存”。', 'You confirm. The calendar replies that the reminder was saved.'),
+      S('llm', '回复你：“明天有小雨，已在 7:30 加了带伞提醒。”', 'Reply: “Light rain tomorrow. I added an umbrella reminder at 7:30.”')
+    );
+    return s;
+  }
+  var fail = false, n = 0, list = steps(false);
+  function name(k) { var p = PARTS.filter(function (x) { return x[0] === k; })[0]; return TOOL.t(p[1], p[2]); }
+
+  function render() {
+    var cur = n ? list[n - 1] : null;
+    var chips = $('chips'); chips.innerHTML = '';
+    PARTS.forEach(function (p) { var li = document.createElement('li'); li.textContent = TOOL.t(p[1], p[2]); if (cur && cur.part === p[0]) li.className = 'on'; chips.appendChild(li); });
+    var ol = $('steps'); ol.innerHTML = '';
+    if (!n) { var e = document.createElement('li'); e.className = 'empty'; e.style.display = 'block'; e.textContent = TOOL.t('点“下一步”，看智能体怎么干活。', 'Press “Next step” to watch the agent work.'); ol.appendChild(e); }
+    list.slice(0, n).forEach(function (s, i) {
+      var li = document.createElement('li');
+      li.className = (s.fail ? 'fail ' : '') + (i === n - 1 ? 'now' : '');
+      var a = document.createElement('span'); a.className = 'part'; a.textContent = name(s.part);
+      var b = document.createElement('span'); b.textContent = TOOL.t(s.zh, s.en);
+      if (s.riskZh) { var r = document.createElement('span'); r.className = 'risk'; r.textContent = TOOL.t(s.riskZh, s.riskEn); b.appendChild(r); }
+      li.appendChild(a); li.appendChild(b); ol.appendChild(li);
+    });
+    $('count').textContent = n + ' / ' + list.length;
+    $('nextBtn').disabled = n >= list.length; $('allBtn').disabled = n >= list.length; $('backBtn').disabled = n === 0;
+  }
+  document.querySelectorAll('[data-mode]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('[data-mode]').forEach(function (x) { x.classList.toggle('is-active', x === b); });
+      fail = b.getAttribute('data-mode') === 'fail'; list = steps(fail); n = 0; render();
+    });
+  });
+  $('nextBtn').addEventListener('click', function () { if (n < list.length) n++; render(); });
+  $('backBtn').addEventListener('click', function () { if (n > 0) n--; render(); });
+  $('resetBtn').addEventListener('click', function () { n = 0; render(); });
+  $('allBtn').addEventListener('click', function () { n = list.length; render(); });
+  TOOL.onLang(render);
+  render();
+})();
+</script>
+</body>
+</html>

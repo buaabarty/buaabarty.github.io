@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>AI 三个圆圈</title>
+  <link rel="stylesheet" href="../common/tool.css">
+  <script src="../common/tool.js"></script>
+  <style>
+    .rings { width: min(100%, 300px); margin: 6px auto 0; display: block; }
+    .rings circle { fill: none; stroke: var(--border-strong); stroke-width: 1.5; }
+    .rings .dl { fill: var(--accent-subtle); stroke: var(--accent); }
+    .rings text { font-size: 12px; fill: var(--text-secondary); text-anchor: middle; font-family: var(--font-body); }
+    .items { list-style: none; margin: 0; padding: 0; }
+    .items li { padding: 14px 4px; border-top: 1px solid var(--border-subtle); }
+    .items li:first-child { border-top: 0; padding-top: 4px; }
+    .items .name { margin: 0 0 8px; font-weight: 500; }
+    .items .seg { flex-wrap: wrap; }
+    .why { margin: 8px 0 0; font-size: var(--text-sm); }
+    li.ok .why { color: var(--success); }
+    li.bad .why { color: var(--danger); }
+  </style>
+</head>
+<body data-title-zh="AI 的三个圆圈" data-title-en="Three Circles of AI">
+  <main class="app-shell">
+    <section class="workspace">
+      <aside class="control-panel" aria-label="控制面板">
+        <div class="field-group">
+          <span class="field-label" data-en="How to play">怎么玩</span>
+          <p class="hint" data-en="AI contains machine learning, and machine learning contains deep learning. Put each example in the innermost circle it belongs to, then check your answers.">AI 包含机器学习，机器学习又包含深度学习。把每个例子放进它所属的最内层圆圈，再对答案。</p>
+        </div>
+        <svg class="rings" viewBox="0 0 240 240" role="img" aria-label="AI ⊃ ML ⊃ DL">
+          <circle cx="120" cy="120" r="112"></circle>
+          <circle cx="120" cy="140" r="78"></circle>
+          <circle cx="120" cy="160" r="44" class="dl"></circle>
+          <text x="120" y="36" id="tAI"></text>
+          <text x="120" y="88" id="tML"></text>
+          <text x="120" y="164" id="tDL"></text>
+        </svg>
+        <div class="button-grid" style="margin-top:16px">
+          <button type="button" class="primary" id="checkBtn" disabled data-en="Check answers">对答案</button>
+          <button type="button" id="resetBtn" data-en="Start over">重来</button>
+        </div>
+      </aside>
+
+      <section class="maze-area">
+        <div class="card"><ol class="items" id="items"></ol></div>
+      </section>
+
+      <aside class="info-panel" aria-label="结果">
+        <div class="metric-list">
+          <div><span data-en="Placed">已归类</span><strong id="done">0 / 8</strong></div>
+          <div><span data-en="Correct">答对</span><strong id="right">-</strong></div>
+        </div>
+        <div class="tips">
+          <h2 data-en="Things to notice">注意</h2>
+          <p data-en="Deep Blue and route planning are AI but learn nothing from data. Many useful systems are AI without machine learning.">深蓝和路线规划都算 AI，却不从数据里学习。很多有用的系统是 AI，但不是机器学习。</p>
+          <h2 data-en="Discuss">讨论</h2>
+          <p data-en="A chatbot answers like a person. Does that make it intelligent? Which circle does it sit in, and what does that tell you about how it works?">聊天机器人的回答很像人，这能说明它有智能吗？它在哪个圆圈里，这又说明它是怎么工作的？</p>
+        </div>
+      </aside>
+    </section>
+  </main>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var RINGS = [['none', '不是 AI', 'Not AI'], ['ai', 'AI', 'AI'], ['ml', '机器学习', 'Machine learning'], ['dl', '深度学习', 'Deep learning']];
+  var ITEMS = [
+    ['计算器算两个数相加', 'A calculator adds two numbers', 'none', '按固定步骤算，没有判断，也没有学习。', 'It follows fixed steps. Nothing is decided or learned.'],
+    ['电子表格把一列数字从小到大排序', 'A spreadsheet sorts a column of numbers', 'none', '固定的步骤，每次结果都一样。', 'A fixed procedure that gives the same result every time.'],
+    ['深蓝下国际象棋（1997）', 'Deep Blue plays chess (1997)', 'ai', '靠人写的规则推演可能的走法，有智能行为，但不从数据中学习。', 'It searches through possible moves with rules people wrote. Intelligent behaviour, but nothing is learned from data.'],
+    ['地图软件规划最快路线', 'A map app plans the fastest route', 'ai', '路线规划本身是搜索，属于经典 AI 方法。里面的路况预测可能用到机器学习。', 'Route planning is search, a classic AI method. The traffic forecast inside may use machine learning.'],
+    ['垃圾邮件过滤器从你标记的邮件里学习', 'A spam filter learns from emails you mark', 'ml', '没有人写规则，规则是从标好的例子里学出来的。', 'Nobody writes the rules. It learns them from labelled examples.'],
+    ['商店根据历史销量预测下周销量', 'A shop predicts next week\'s sales from past sales', 'ml', '从历史数据里学规律，通常用小模型就够，不需要深层网络。', 'It learns a pattern from past data. A small model is often enough.'],
+    ['手机刷脸解锁', 'A phone unlocks by recognising your face', 'dl', '从像素里认出人脸，需要深层神经网络。', 'Recognising faces from pixels needs a deep neural network.'],
+    ['聊天机器人写一篇文章', 'A chatbot writes an essay', 'dl', '大语言模型就是规模很大的深层神经网络。', 'Large language models are very large deep neural networks.']
+  ];
+  var picks = {}, checked = false;
+
+  function ringName(v) { var r = RINGS.filter(function (x) { return x[0] === v; })[0]; return TOOL.t(r[1], r[2]); }
+  function count(v) { return Object.keys(picks).filter(function (k) { return picks[k] === v; }).length; }
+
+  function render() {
+    var ol = $('items'); ol.innerHTML = '';
+    ITEMS.forEach(function (it, i) {
+      var li = document.createElement('li');
+      if (checked) li.className = picks[i] === it[2] ? 'ok' : 'bad';
+      var p = document.createElement('p'); p.className = 'name'; p.textContent = TOOL.t(it[0], it[1]); li.appendChild(p);
+      var seg = document.createElement('div'); seg.className = 'seg'; seg.setAttribute('role', 'group'); seg.setAttribute('aria-label', TOOL.t(it[0], it[1]));
+      RINGS.forEach(function (r) {
+        var b = document.createElement('button'); b.type = 'button'; b.textContent = TOOL.t(r[1], r[2]);
+        if (picks[i] === r[0]) { b.className = 'on'; b.setAttribute('aria-pressed', 'true'); } else b.setAttribute('aria-pressed', 'false');
+        b.addEventListener('click', function () { picks[i] = r[0]; checked = false; render(); });
+        seg.appendChild(b);
+      });
+      li.appendChild(seg);
+      if (checked) {
+        var w = document.createElement('p'); w.className = 'why';
+        w.textContent = (picks[i] === it[2] ? '✓ ' : TOOL.t('✗ 答案：' + ringName(it[2]) + '。', '✗ Answer: ' + ringName(it[2]) + '. ')) + TOOL.t(it[3], it[4]);
+        li.appendChild(w);
+      }
+      ol.appendChild(li);
+    });
+    var n = Object.keys(picks).length;
+    $('done').textContent = n + ' / ' + ITEMS.length;
+    $('checkBtn').disabled = n < ITEMS.length;
+    $('right').textContent = checked ? ITEMS.filter(function (it, i) { return picks[i] === it[2]; }).length + ' / ' + ITEMS.length : '-';
+    $('tAI').textContent = 'AI · ' + count('ai');
+    $('tML').textContent = TOOL.t('机器学习', 'Machine learning') + ' · ' + count('ml');
+    $('tDL').textContent = TOOL.t('深度学习', 'Deep learning') + ' · ' + count('dl');
+  }
+  $('checkBtn').addEventListener('click', function () { checked = true; render(); });
+  $('resetBtn').addEventListener('click', function () { picks = {}; checked = false; render(); });
+  TOOL.onLang(render);
+  render();
+})();
+</script>
+</body>
+</html>

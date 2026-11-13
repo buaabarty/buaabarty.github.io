@@ -126,6 +126,11 @@ function Schedule() {
               </td>
               <td>
                 <span className="course-num">{i + 1}</span> {t(title)}
+                <div className="course-tools">
+                  {tools.filter((x) => x.lecture === i + 1).map((x) => (
+                    <a key={x.id} href={x.href} target="_blank" rel="noopener">{t(x.title)}</a>
+                  ))}
+                </div>
               </td>
               <td>
                 {(scheduleEvents[i] ?? []).map((e) => (
@@ -310,18 +315,25 @@ function Tools() {
       <h2 id="tools">{t({ en: "Tools", zh: "练习工具" })}</h2>
       <p>
         {t({
-          en: "All tools open directly in the browser. Nothing to install.",
-          zh: "所有工具都在浏览器里直接打开，无需安装。",
+          en: "Every lecture has at least one tool. All tools open directly in the browser. Nothing to install.",
+          zh: "每一讲都配有至少一个练习工具。所有工具都在浏览器里直接打开，无需安装。",
         })}
       </p>
-      {tools.map((tool) => (
-        <div key={tool.id} className="course-task">
-          <p className="course-task-title">
-            <a href={tool.href} target="_blank" rel="noopener">
-              {t(tool.title)}
-            </a>
-          </p>
-          <p>{t(tool.text)}</p>
+      {lectures.map((title, i) => (
+        <div key={title.en} className="course-tool-group">
+          <h3>
+            <span className="course-num">{i + 1}</span> {t(title)}
+          </h3>
+          {tools.filter((x) => x.lecture === i + 1).map((tool) => (
+            <div key={tool.id} className="course-task">
+              <p className="course-task-title">
+                <a href={tool.href} target="_blank" rel="noopener">
+                  {t(tool.title)}
+                </a>
+              </p>
+              <p>{t(tool.text)}</p>
+            </div>
+          ))}
         </div>
       ))}
     </section>

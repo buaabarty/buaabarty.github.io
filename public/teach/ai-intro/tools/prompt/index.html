@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>提示词拼装</title>
+  <link rel="stylesheet" href="../common/tool.css">
+  <script src="../common/tool.js"></script>
+  <style>
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+    .chips li { padding: 3px 12px; border-radius: var(--radius-pill); border: 1px solid var(--border); font-size: var(--text-sm); color: var(--text-muted); transition: all var(--duration-fast, .15s) ease; }
+    .chips li.on { color: var(--accent); background: var(--accent-subtle); border-color: transparent; }
+    .fields { display: grid; gap: 14px; }
+    .fields label { display: grid; gap: 6px; }
+    .fields .hint-inline { color: var(--text-muted); font-weight: 400; margin-left: 6px; }
+    textarea { width: 100%; box-sizing: border-box; resize: vertical; min-height: 60px; padding: 10px 12px; font: inherit; font-size: var(--text-sm); line-height: 1.6;
+               color: var(--foreground); background: var(--background); border: 1px solid var(--border-strong); border-radius: var(--radius-control); }
+    .preview { margin-top: 18px; padding: 14px 16px; border-radius: var(--radius-control); background: var(--surface-muted); }
+    .preview pre { margin: 6px 0 0; white-space: pre-wrap; font-family: var(--font-body); font-size: var(--text-sm); line-height: 1.7; }
+  </style>
+</head>
+<body data-title-zh="提示词拼装" data-title-en="Prompt Builder">
+  <main class="app-shell">
+    <section class="workspace">
+      <aside class="control-panel" aria-label="控制面板">
+        <div class="field-group">
+          <span class="field-label" data-en="A good prompt has">好提示词＝</span>
+          <ul class="chips" id="chips"></ul>
+          <p class="hint" data-en="Each part lights up once you fill it in.">填好一项，就亮起一项。</p>
+        </div>
+        <div class="field-group">
+          <span class="field-label" data-en="Compare two versions">对比两版</span>
+          <div class="button-grid">
+            <button type="button" id="weakBtn" data-en="Weak prompt">填入差的</button>
+            <button type="button" id="strongBtn" data-en="Strong prompt">填入好的</button>
+          </div>
+        </div>
+        <div class="button-grid">
+          <button type="button" class="primary" id="copyBtn" disabled data-en="Copy prompt">复制提示词</button>
+          <button type="button" id="clearBtn" data-en="Clear">清空</button>
+        </div>
+      </aside>
+
+      <section class="maze-area">
+        <div class="card">
+          <div class="fields" id="fields"></div>
+          <div class="preview">
+            <span class="field-label" id="previewTitle"></span>
+            <pre id="preview"></pre>
+          </div>
+        </div>
+      </section>
+
+      <aside class="info-panel" aria-label="说明">
+        <div class="metric-list">
+          <div><span data-en="Parts filled in">已填写</span><strong id="count">0 / 5</strong></div>
+        </div>
+        <div class="tips">
+          <h2 data-en="Try this">试试看</h2>
+          <p data-en="Fill in the weak version and paste it into DeepSeek. Before you press enter, predict what will be missing from the answer. Then do the same with the strong version and compare.">先填入差的那版，复制到 DeepSeek。按回车之前，先猜猜回答会缺什么。再用好的那版做一遍，对比两次的结果。</p>
+          <p data-en="Remove one part at a time from the strong version. Which part changes the answer the most?">从好的那版里每次删掉一项，哪一项对回答影响最大？</p>
+          <h2 data-en="Remember">记住</h2>
+          <p data-en="Constraints such as “do not make up facts” reduce errors, but do not remove them. You still have to check the answer.">“不要编造信息”这类约束能减少出错，但不能杜绝，回答仍要自己核对。</p>
+        </div>
+      </aside>
+    </section>
+  </main>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var PARTS = [
+    ['task', '任务', 'Task', '要它做什么？', 'What should it do?', '帮我写一封向老师请假一天的邮件。', 'Write an email asking my teacher for one day of leave.'],
+    ['context', '背景', 'Background', '写给谁？是什么情况？', 'Who is it for, and what is going on?', '我是大一学生，发烧了，有医院证明。请假的是周四上午的《人工智能概论》。', 'I am a first-year student. I have a fever and a doctor’s note. The class is Introduction to AI on Thursday morning.'],
+    ['limits', '约束', 'Constraints', '长度、语气、不能做什么', 'Length, tone, things to avoid', '不超过 150 字，语气礼貌，不要编造我没提供的信息。', 'Under 120 words, polite, and do not make up any facts I did not give you.'],
+    ['example', '示例', 'Example', '给一段你想要的样子', 'Show the style you want', '开头类似：“李老师您好，我是人工智能 1 班的某某，想向您请假……”', 'Open like: “Dear Professor Li, I am writing to ask for leave on ...”'],
+    ['format', '格式', 'Format', '答案长什么样？', 'How should the answer look?', '先给邮件标题，再给正文，正文分 3 段。', 'Give a subject line first, then the body in 3 short paragraphs.']
+  ];
+  var val = {};
+  PARTS.forEach(function (p) { val[p[0]] = ''; });
+  var areas = {};
+
+  function buildFields() {
+    var box = $('fields'); box.innerHTML = '';
+    PARTS.forEach(function (p) {
+      var lab = document.createElement('label');
+      var head = document.createElement('span'); head.className = 'field-label';
+      head.innerHTML = '';
+      head.appendChild(document.createTextNode(TOOL.t(p[1], p[2])));
+      var h = document.createElement('span'); h.className = 'hint-inline'; h.textContent = TOOL.t(p[3], p[4]); head.appendChild(h);
+      var ta = document.createElement('textarea'); ta.rows = 2; ta.value = val[p[0]];
+      ta.addEventListener('input', function () { val[p[0]] = ta.value; update(); });
+      areas[p[0]] = ta;
+      lab.appendChild(head); lab.appendChild(ta); box.appendChild(lab);
+    });
+  }
+  function prompt() {
+    return PARTS.filter(function (p) { return val[p[0]].trim(); })
+      .map(function (p) { return TOOL.t(p[1], p[2]) + TOOL.t('：', ': ') + val[p[0]].trim(); }).join('\n');
+  }
+  function update() {
+    var n = PARTS.filter(function (p) { return val[p[0]].trim(); }).length;
+    var chips = $('chips'); chips.innerHTML = '';
+    PARTS.forEach(function (p) { var li = document.createElement('li'); li.textContent = TOOL.t(p[1], p[2]); if (val[p[0]].trim()) li.className = 'on'; chips.appendChild(li); });
+    $('count').textContent = n + ' / 5';
+    $('previewTitle').textContent = TOOL.t('你的提示词', 'Your prompt');
+    var text = prompt();
+    $('preview').textContent = text || TOOL.t('在上面开始填写。', 'Start typing above.');
+    $('copyBtn').disabled = !text;
+  }
+  function fill(all) {
+    PARTS.forEach(function (p, i) { val[p[0]] = all || i === 0 ? TOOL.t(p[5], p[6]) : ''; areas[p[0]].value = val[p[0]]; });
+    update();
+  }
+  $('weakBtn').addEventListener('click', function () { fill(false); });
+  $('strongBtn').addEventListener('click', function () { fill(true); });
+  $('clearBtn').addEventListener('click', function () { PARTS.forEach(function (p) { val[p[0]] = ''; areas[p[0]].value = ''; }); update(); });
+  $('copyBtn').addEventListener('click', function () {
+    var b = $('copyBtn');
+    navigator.clipboard.writeText(prompt()).then(function () {
+      b.textContent = TOOL.t('已复制', 'Copied');
+      setTimeout(function () { b.textContent = TOOL.t('复制提示词', 'Copy prompt'); }, 1500);
+    }, function () {});
+  });
+  TOOL.onLang(function () { buildFields(); update(); });
+  buildFields(); update();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>从噪声到图像</title>
+  <link rel="stylesheet" href="../common/tool.css">
+  <script src="../common/tool.js"></script>
+  <style>
+    #art { max-width: 420px; aspect-ratio: 1; image-rendering: pixelated; }
+    .step-label { font-family: var(--font-display); font-size: var(--text-lg); font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body data-title-zh="从噪声到图像" data-title-en="From Noise to Image">
+  <main class="app-shell">
+    <section class="workspace">
+      <aside class="control-panel" aria-label="控制面板">
+        <div class="field-group">
+          <span class="field-label" data-en="Picture">图片</span>
+          <div class="segmented">
+            <button type="button" class="mode-button is-active" data-pic="house" data-en="House">小房子</button>
+            <button type="button" class="mode-button" data-pic="face" data-en="Smiley">笑脸</button>
+          </div>
+        </div>
+        <div class="field-group">
+          <label for="step"><span data-en="Denoising step">去噪步数</span> <b id="stepVal"></b></label>
+          <input id="step" type="range" min="0" max="20" step="1" value="0">
+        </div>
+        <div class="button-grid">
+          <button type="button" class="primary" id="playBtn"></button>
+          <button type="button" id="resetBtn" data-en="Back to noise">回到纯噪声</button>
+        </div>
+      </aside>
+
+      <section class="maze-area">
+        <div class="canvas-frame">
+          <div class="step-label" id="label"></div>
+          <canvas id="art" width="64" height="64"></canvas>
+        </div>
+      </section>
+
+      <aside class="info-panel" aria-label="说明">
+        <div class="tips" style="margin-top:0;padding-top:0;border-top:0">
+          <h2 data-en="What you are seeing">你看到的是什么</h2>
+          <p data-en="An image generator starts from pure noise and removes a little at each step until a picture appears.">生成图片的模型从一团纯噪声出发，每一步去掉一点噪声，直到图像出现。</p>
+          <p data-en="This demo blends toward a picture we already know, so you can see the idea. A real model never sees the answer. It has learned from millions of images to predict which noise to remove at each step.">这里朝一张事先画好的图逐步混合，用来示意这个过程。真实的模型看不到答案，它是从海量图片中学会了预测每一步该去掉哪些噪声。</p>
+          <h2 data-en="Discuss">讨论</h2>
+          <p data-en="At which step can you first tell what the picture is? Real generators often get text, hands, and counts wrong. Why might small details come out wrong when an image grows out of noise?">第几步你开始认出是什么？真实的生成模型常把文字、手指、数量画错。图像从噪声里“长出来”时，为什么小细节容易出错？</p>
+        </div>
+      </aside>
+    </section>
+  </main>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var N = 64, STEPS = 20, pic = 'house', timer = null, clean = null, bg = [0, 0, 0];
+
+  function color(name) {
+    var p = document.createElement('span'); p.style.color = 'var(' + name + ')'; p.style.display = 'none';
+    document.body.appendChild(p); var c = getComputedStyle(p).color; p.remove(); return c;
+  }
+  function rgb(c) { var cv = document.createElement('canvas'); cv.width = cv.height = 1; var x = cv.getContext('2d'); x.fillStyle = c; x.fillRect(0, 0, 1, 1); var d = x.getImageData(0, 0, 1, 1).data; return [d[0], d[1], d[2]]; }
+  function rand(seed) { var s = seed >>> 0; return function () { s = (s + 0x6d2b79f5) >>> 0; var t = s; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+
+  function drawTarget() {
+    var cv = document.createElement('canvas'); cv.width = cv.height = N;
+    var g = cv.getContext('2d');
+    var sky = color('--surface-muted'), sun = color('--tone-amber'), grass = color('--tone-green'), wall = color('--tone-sky'), roof = color('--tone-rose'), win = color('--surface'), ink = color('--foreground');
+    g.fillStyle = sky; g.fillRect(0, 0, N, N);
+    if (pic === 'house') {
+      g.fillStyle = sun; g.beginPath(); g.arc(50, 13, 7, 0, Math.PI * 2); g.fill();
+      g.fillStyle = grass; g.fillRect(0, 50, N, 14);
+      g.fillStyle = wall; g.fillRect(16, 30, 30, 22);
+      g.fillStyle = roof; g.beginPath(); g.moveTo(12, 31); g.lineTo(31, 16); g.lineTo(50, 31); g.fill();
+      g.fillStyle = win; g.fillRect(27, 39, 8, 13); g.fillRect(19, 35, 6, 6); g.fillRect(38, 35, 6, 6);
+    } else {
+      g.fillStyle = sun; g.beginPath(); g.arc(32, 32, 24, 0, Math.PI * 2); g.fill();
+      g.fillStyle = ink; g.beginPath(); g.arc(24, 26, 3.5, 0, Math.PI * 2); g.arc(40, 26, 3.5, 0, Math.PI * 2); g.fill();
+      g.strokeStyle = ink; g.lineWidth = 3; g.beginPath(); g.arc(32, 34, 11, 0.15 * Math.PI, 0.85 * Math.PI); g.stroke();
+    }
+    clean = g.getImageData(0, 0, N, N).data;
+    bg = rgb(sky);
+  }
+
+  function render() {
+    var step = +$('step').value;
+    var ctx = $('art').getContext('2d'), img = ctx.createImageData(N, N), r = rand(step * 97 + 5);
+    var keep = Math.pow(step / STEPS, 1.6);
+    for (var i = 0; i < N * N * 4; i += 4) {
+      for (var k = 0; k < 3; k++) img.data[i + k] = keep * clean[i + k] + (1 - keep) * (0.85 * r() * 255 + 0.15 * bg[k]);
+      img.data[i + 3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+    $('stepVal').textContent = step + ' / ' + STEPS;
+    $('label').textContent = step === 0 ? TOOL.t('第 0 步：纯噪声', 'Step 0: pure noise') : step === STEPS ? TOOL.t('第 20 步：去噪完成', 'Step 20: done') : TOOL.t('第 ' + step + ' 步', 'Step ' + step);
+  }
+  function stop() { if (timer) { clearInterval(timer); timer = null; } $('playBtn').textContent = TOOL.t('逐步去噪', 'Denoise step by step'); }
+  function play() {
+    if (timer) { stop(); return; }
+    if (+$('step').value >= STEPS) $('step').value = 0;
+    $('playBtn').textContent = TOOL.t('暂停', 'Pause');
+    timer = setInterval(function () {
+      var s = +$('step').value;
+      if (s >= STEPS) { stop(); return; }
+      $('step').value = s + 1; render();
+    }, 180);
+  }
+  document.querySelectorAll('[data-pic]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('[data-pic]').forEach(function (x) { x.classList.toggle('is-active', x === b); });
+      pic = b.getAttribute('data-pic'); drawTarget(); render();
+    });
+  });
+  $('step').addEventListener('input', function () { stop(); render(); });
+  $('playBtn').addEventListener('click', play);
+  $('resetBtn').addEventListener('click', function () { stop(); $('step').value = 0; render(); });
+  TOOL.onLang(function (l, what) { if (what === 'theme') drawTarget(); render(); $('playBtn').textContent = timer ? TOOL.t('暂停', 'Pause') : TOOL.t('逐步去噪', 'Denoise step by step'); });
+  drawTarget(); render(); stop();
+})();
+</script>
+</body>
+</html>
