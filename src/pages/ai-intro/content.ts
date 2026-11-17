@@ -175,8 +175,8 @@ export const tools: { id: ToolId; lecture: number; href: string; title: L; text:
     href: "/teach/ai-intro/tools/denoise/",
     title: { en: "From noise to image", zh: "从噪声到图像" },
     text: {
-      en: "Watch a picture emerge from pure noise one step at a time, the idea behind image generators.",
-      zh: "看一张图怎样从纯噪声里一步步出现，理解生成图片的基本思路。",
+      en: "Watch 8 pictures, from a cat to a Van Gogh painting, emerge from pure noise one step at a time: rough colors and shapes first, details last.",
+      zh: "看猫、熊猫、梵高名画等 8 张图怎样从纯噪声里一步步出现：先有大致的颜色和轮廓，细节最后才出现。",
     },
   },
   {
