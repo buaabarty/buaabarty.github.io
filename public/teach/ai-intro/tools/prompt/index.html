@@ -7,17 +7,36 @@
   <title>提示词拼装</title>
   <link rel="stylesheet" href="../common/tool.css">
   <script src="../common/tool.js"></script>
+  <script src="answers.js"></script>
   <style>
-    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
-    .chips li { padding: 3px 12px; border-radius: var(--radius-pill); border: 1px solid var(--border); font-size: var(--text-sm); color: var(--text-muted); transition: all var(--duration-fast, .15s) ease; }
-    .chips li.on { color: var(--accent); background: var(--accent-subtle); border-color: transparent; }
-    .fields { display: grid; gap: 14px; }
-    .fields label { display: grid; gap: 6px; }
-    .fields .hint-inline { color: var(--text-muted); font-weight: 400; margin-left: 6px; }
-    textarea { width: 100%; box-sizing: border-box; resize: vertical; min-height: 60px; padding: 10px 12px; font: inherit; font-size: var(--text-sm); line-height: 1.6;
-               color: var(--foreground); background: var(--background); border: 1px solid var(--border-strong); border-radius: var(--radius-control); }
-    .preview { margin-top: 18px; padding: 14px 16px; border-radius: var(--radius-control); background: var(--surface-muted); }
-    .preview pre { margin: 6px 0 0; white-space: pre-wrap; font-family: var(--font-body); font-size: var(--text-sm); line-height: 1.7; }
+    .parts { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .part { display: grid; grid-template-columns: 22px 64px 1fr; gap: 10px; align-items: start; width: 100%; text-align: left; padding: 10px 12px;
+            border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--background); color: var(--text-muted);
+            font: inherit; font-size: var(--text-sm); line-height: 1.6; cursor: pointer; transition: all .15s ease; }
+    .part:hover { border-color: var(--border-strong); }
+    .part[aria-pressed="true"] { color: var(--foreground); border-color: var(--accent); background: var(--accent-subtle); }
+    .part[disabled] { cursor: default; opacity: 1; }
+    .part .box { width: 16px; height: 16px; margin-top: 3px; border-radius: 4px; border: 1.5px solid var(--border-strong); display: grid; place-items: center; font-size: 12px; line-height: 1; }
+    .part[aria-pressed="true"] .box { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .part .name { font-weight: 600; }
+    .part[aria-pressed="true"] .name { color: var(--accent); }
+    .part .body { text-decoration: line-through; text-decoration-color: color-mix(in oklab, currentColor 40%, transparent); }
+    .part[aria-pressed="true"] .body { text-decoration: none; }
+    .chat { margin-top: 18px; display: grid; gap: 12px; }
+    .bubble { padding: 12px 16px; border-radius: var(--radius-control); font-size: var(--text-sm); line-height: 1.75; }
+    .bubble .who { display: block; margin-bottom: 4px; font-size: var(--text-xs); color: var(--text-muted); }
+    .bubble.me { background: var(--surface-muted); white-space: pre-wrap; }
+    .bubble.ai { border: 1px solid var(--border); min-height: 3em; }
+    .bubble.ai p { margin: 0 0 8px; }
+    .bubble.ai h3, .bubble.ai h4 { margin: 10px 0 6px; font-size: var(--text-base); font-weight: 600; }
+    .bubble.ai ul, .bubble.ai ol { margin: 0 0 8px; padding-left: 1.4em; }
+    .bubble.ai hr { border: 0; border-top: 1px solid var(--border-subtle); margin: 10px 0; }
+    .bubble.ai table { border-collapse: collapse; margin: 4px 0 10px; width: 100%; font-size: var(--text-sm); }
+    .bubble.ai th, .bubble.ai td { border: 1px solid var(--border); padding: 6px 8px; vertical-align: top; text-align: left; }
+    .bubble.ai th { background: var(--surface-muted); font-weight: 600; }
+    .bubble.ai td:first-child, .bubble.ai th:first-child { white-space: nowrap; }
+    .bubble.ai .waiting { color: var(--text-muted); }
+    .tablewrap { overflow-x: auto; }
   </style>
 </head>
 <body data-title-zh="提示词拼装" data-title-en="Prompt Builder">
@@ -25,43 +44,49 @@
     <section class="workspace">
       <aside class="control-panel" aria-label="控制面板">
         <div class="field-group">
-          <span class="field-label" data-en="A good prompt has">好提示词＝</span>
-          <ul class="chips" id="chips"></ul>
-          <p class="hint" data-en="Each part lights up once you fill it in.">填好一项，就亮起一项。</p>
+          <span class="field-label" data-en="Scenario">场景</span>
+          <div class="segmented" id="scenes" style="grid-template-columns:1fr"></div>
         </div>
         <div class="field-group">
-          <span class="field-label" data-en="Compare two versions">对比两版</span>
+          <span class="field-label" data-en="Quick fill">一键填入</span>
           <div class="button-grid">
-            <button type="button" id="weakBtn" data-en="Weak prompt">填入差的</button>
-            <button type="button" id="strongBtn" data-en="Strong prompt">填入好的</button>
+            <button type="button" id="weakBtn" data-en="Task only">只写任务</button>
+            <button type="button" id="strongBtn" data-en="All 5 parts">5 项全写</button>
           </div>
+          <p class="hint" data-en="Click a part on the right to add or remove it. The task is always included.">点右侧的某一项，可以加上或去掉它。任务一项必须保留。</p>
         </div>
         <div class="button-grid">
-          <button type="button" class="primary" id="copyBtn" disabled data-en="Copy prompt">复制提示词</button>
-          <button type="button" id="clearBtn" data-en="Clear">清空</button>
+          <button type="button" class="primary" id="sendBtn" data-en="Send">发送</button>
+          <button type="button" id="againBtn" disabled data-en="Another answer">换一个回答</button>
+        </div>
+        <div class="button-grid" style="margin-top:8px">
+          <button type="button" id="copyBtn" data-en="Copy prompt">复制提示词</button>
         </div>
       </aside>
 
       <section class="maze-area">
         <div class="card">
-          <div class="fields" id="fields"></div>
-          <div class="preview">
-            <span class="field-label" id="previewTitle"></span>
-            <pre id="preview"></pre>
+          <ul class="parts" id="parts"></ul>
+          <div class="chat">
+            <div class="bubble me"><span class="who" data-en="Your prompt">你的提示词</span><span id="prompt"></span></div>
+            <div class="bubble ai" id="aiBox"><span class="who" id="aiWho"></span><div id="answer"></div></div>
           </div>
         </div>
       </section>
 
       <aside class="info-panel" aria-label="说明">
         <div class="metric-list">
-          <div><span data-en="Parts filled in">已填写</span><strong id="count">0 / 5</strong></div>
+          <div><span data-en="Parts included">已写</span><strong id="count">1 / 5</strong></div>
+          <div><span data-en="Answer length">回答长度</span><strong id="len">-</strong></div>
         </div>
         <div class="tips">
           <h2 data-en="Try this">试试看</h2>
-          <p data-en="Fill in the weak version and paste it into DeepSeek. Before you press enter, predict what will be missing from the answer. Then do the same with the strong version and compare.">先填入差的那版，复制到 DeepSeek。按回车之前，先猜猜回答会缺什么。再用好的那版做一遍，对比两次的结果。</p>
-          <p data-en="Remove one part at a time from the strong version. Which part changes the answer the most?">从好的那版里每次删掉一项，哪一项对回答影响最大？</p>
+          <p data-en="Send “task only” first and look at what the answer is missing. Then send “all 5 parts” and compare.">先发送“只写任务”，看回答缺了什么。再发送“5 项全写”，对比两次的回答。</p>
+          <p data-en="Start from all 5 parts and remove one at a time. Which part changes the answer the most?">从 5 项全写开始，每次去掉一项。去掉哪一项，回答变化最大？</p>
+          <p data-en="Press “Another answer” a few times. The same prompt does not always give the same answer.">多按几次“换一个回答”。同一条提示词，AI 每次的回答并不完全一样。</p>
           <h2 data-en="Remember">记住</h2>
           <p data-en="Constraints such as “do not make up facts” reduce errors, but do not remove them. You still have to check the answer.">“不要编造信息”这类约束能减少出错，但不能杜绝，回答仍要自己核对。</p>
+          <p class="note" id="source"></p>
         </div>
       </aside>
     </section>
@@ -70,52 +95,119 @@
 (function () {
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
-  var PARTS = [
-    ['task', '任务', 'Task', '要它做什么？', 'What should it do?', '帮我写一封向老师请假一天的邮件。', 'Write an email asking my teacher for one day of leave.'],
-    ['context', '背景', 'Background', '写给谁？是什么情况？', 'Who is it for, and what is going on?', '我是大一学生，发烧了，有医院证明。请假的是周四上午的《人工智能概论》。', 'I am a first-year student. I have a fever and a doctor’s note. The class is Introduction to AI on Thursday morning.'],
-    ['limits', '约束', 'Constraints', '长度、语气、不能做什么', 'Length, tone, things to avoid', '不超过 150 字，语气礼貌，不要编造我没提供的信息。', 'Under 120 words, polite, and do not make up any facts I did not give you.'],
-    ['example', '示例', 'Example', '给一段你想要的样子', 'Show the style you want', '开头类似：“李老师您好，我是人工智能 1 班的某某，想向您请假……”', 'Open like: “Dear Professor Li, I am writing to ask for leave on ...”'],
-    ['format', '格式', 'Format', '答案长什么样？', 'How should the answer look?', '先给邮件标题，再给正文，正文分 3 段。', 'Give a subject line first, then the body in 3 short paragraphs.']
-  ];
-  var val = {};
-  PARTS.forEach(function (p) { val[p[0]] = ''; });
-  var areas = {};
+  var D = window.PROMPT_DATA;
+  var scene = 0, on = {}, sent = null, timer = null;
 
-  function buildFields() {
-    var box = $('fields'); box.innerHTML = '';
-    PARTS.forEach(function (p) {
-      var lab = document.createElement('label');
-      var head = document.createElement('span'); head.className = 'field-label';
-      head.innerHTML = '';
-      head.appendChild(document.createTextNode(TOOL.t(p[1], p[2])));
-      var h = document.createElement('span'); h.className = 'hint-inline'; h.textContent = TOOL.t(p[3], p[4]); head.appendChild(h);
-      var ta = document.createElement('textarea'); ta.rows = 2; ta.value = val[p[0]];
-      ta.addEventListener('input', function () { val[p[0]] = ta.value; update(); });
-      areas[p[0]] = ta;
-      lab.appendChild(head); lab.appendChild(ta); box.appendChild(lab);
+  function lang() { return TOOL.t('zh', 'en'); }
+  function li() { return lang() === 'zh' ? 0 : 1; }
+  function sc() { return D.scenarios[scene]; }
+  function combo() { return D.optional.map(function (k) { return on[k] ? '1' : '0'; }).join(''); }
+  // Must match build_prompt() in scripts/gen_prompt_answers.py.
+  function prompt() {
+    var sep = lang() === 'zh' ? '：' : ': ';
+    return D.parts.filter(function (p) { return p.key === 'task' || on[p.key]; })
+      .map(function (p) { return p[lang()] + sep + sc().text[p.key][li()]; }).join('\n');
+  }
+
+  function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function inline(s) { return esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/(^|[^*])\*([^*\s][^*]*?)\*(?!\*)/g, '$1<i>$2</i>').replace(/`([^`]+)`/g, '$1'); }
+  function cells(line) { return line.trim().replace(/^\||\|$/g, '').split('|').map(function (c) { return c.trim(); }); }
+  // A small Markdown renderer for the stored answers: headings, lists, tables, rules, bold.
+  function md(text) {
+    var lines = text.split('\n'), out = [], list = null, i = 0;
+    function close() { if (list) { out.push('</' + list + '>'); list = null; } }
+    while (i < lines.length) {
+      var l = lines[i], m;
+      if (/^\s*\|/.test(l) && i + 1 < lines.length && /^\s*\|?\s*:?-{2,}/.test(lines[i + 1])) {
+        close();
+        var h = cells(l), rows = []; i += 2;
+        while (i < lines.length && /^\s*\|/.test(lines[i])) { rows.push(cells(lines[i])); i++; }
+        out.push('<div class="tablewrap"><table><thead><tr>' + h.map(function (c) { return '<th>' + inline(c) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+          rows.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + inline(c).replace(/&lt;br\s*\/?&gt;/g, '<br>') + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>');
+        continue;
+      }
+      l = l.replace(/^\s*>\s?/, '');
+      if (/^\s*(-{3,}|\*{3,})\s*$/.test(l)) { close(); out.push('<hr>'); }
+      else if ((m = l.match(/^\s*#{1,6}\s+(.*)/))) { close(); out.push('<h4>' + inline(m[1]) + '</h4>'); }
+      else if ((m = l.match(/^\s*[-*•]\s+(.*)/))) { if (list !== 'ul') { close(); out.push('<ul>'); list = 'ul'; } out.push('<li>' + inline(m[1]) + '</li>'); }
+      else if ((m = l.match(/^\s*\d+[.、)]\s+(.*)/))) { if (list !== 'ol') { close(); out.push('<ol>'); list = 'ol'; } out.push('<li>' + inline(m[1]) + '</li>'); }
+      else if (l.trim()) { close(); out.push('<p>' + inline(l) + '</p>'); }
+      else close();
+      i++;
+    }
+    close();
+    return out.join('');
+  }
+
+  function renderScenes() {
+    var box = $('scenes'); box.innerHTML = '';
+    D.scenarios.forEach(function (s, i) {
+      var b = document.createElement('button'); b.type = 'button';
+      b.className = 'mode-button' + (i === scene ? ' is-active' : '');
+      b.textContent = s[lang()];
+      b.addEventListener('click', function () { scene = i; reset(); });
+      box.appendChild(b);
     });
   }
-  function prompt() {
-    return PARTS.filter(function (p) { return val[p[0]].trim(); })
-      .map(function (p) { return TOOL.t(p[1], p[2]) + TOOL.t('：', ': ') + val[p[0]].trim(); }).join('\n');
+  function renderParts() {
+    var ul = $('parts'); ul.innerHTML = '';
+    D.parts.forEach(function (p) {
+      var item = document.createElement('li');
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'part';
+      var lit = p.key === 'task' || !!on[p.key];
+      b.setAttribute('aria-pressed', lit ? 'true' : 'false');
+      if (p.key === 'task') b.disabled = true;
+      b.innerHTML = '<span class="box">' + (lit ? '✓' : '') + '</span><span class="name"></span><span class="body"></span>';
+      b.querySelector('.name').textContent = p[lang()];
+      b.querySelector('.body').textContent = sc().text[p.key][li()];
+      b.addEventListener('click', function () { on[p.key] = !on[p.key]; clearAnswer(); render(); });
+      item.appendChild(b); ul.appendChild(item);
+    });
   }
-  function update() {
-    var n = PARTS.filter(function (p) { return val[p[0]].trim(); }).length;
-    var chips = $('chips'); chips.innerHTML = '';
-    PARTS.forEach(function (p) { var li = document.createElement('li'); li.textContent = TOOL.t(p[1], p[2]); if (val[p[0]].trim()) li.className = 'on'; chips.appendChild(li); });
-    $('count').textContent = n + ' / 5';
-    $('previewTitle').textContent = TOOL.t('你的提示词', 'Your prompt');
-    var text = prompt();
-    $('preview').textContent = text || TOOL.t('在上面开始填写。', 'Start typing above.');
-    $('copyBtn').disabled = !text;
+  function render() {
+    renderScenes(); renderParts();
+    $('prompt').textContent = prompt();
+    $('count').textContent = (1 + D.optional.filter(function (k) { return on[k]; }).length) + ' / 5';
+    $('source').textContent = TOOL.t('这里的回答是事先把每一种提示词发给 DeepSeek（' + D.model + '）得到的，每种保存了 3 个回答，生成于 ' + D.generated + '。',
+      'The answers were generated in advance by sending every prompt to DeepSeek (' + D.model + '). Each prompt has 3 stored answers, generated in ' + D.generated + '.');
+    showAnswer(false);
   }
-  function fill(all) {
-    PARTS.forEach(function (p, i) { val[p[0]] = all || i === 0 ? TOOL.t(p[5], p[6]) : ''; areas[p[0]].value = val[p[0]]; });
-    update();
+
+  function clearAnswer() { sent = null; if (timer) { clearInterval(timer); timer = null; } }
+  function reset() { on = {}; clearAnswer(); render(); }
+  function showAnswer(animate) {
+    var box = $('answer');
+    if (timer) { clearInterval(timer); timer = null; }
+    $('againBtn').disabled = !sent;
+    if (!sent) {
+      $('aiWho').textContent = 'DeepSeek';
+      box.innerHTML = '<p class="waiting">' + esc(TOOL.t('点“发送”，看 AI 怎么回答。', 'Press “Send” to see the answer.')) + '</p>';
+      $('len').textContent = '-';
+      return;
+    }
+    var list = sc().answers[lang()][sent.combo], text = list[sent.v];
+    $('aiWho').textContent = TOOL.t('DeepSeek · 回答 ' + (sent.v + 1) + ' / ' + list.length, 'DeepSeek · answer ' + (sent.v + 1) + ' of ' + list.length);
+    $('len').textContent = lang() === 'zh' ? text.length + ' 字' : text.split(/\s+/).length + ' words';
+    if (!animate) { box.innerHTML = md(text); return; }
+    var n = 0, step = Math.max(6, Math.ceil(text.length / 90));
+    timer = setInterval(function () {
+      n = Math.min(text.length, n + step);
+      box.innerHTML = md(text.slice(0, n));
+      if (n >= text.length) { clearInterval(timer); timer = null; }
+    }, 30);
   }
-  $('weakBtn').addEventListener('click', function () { fill(false); });
-  $('strongBtn').addEventListener('click', function () { fill(true); });
-  $('clearBtn').addEventListener('click', function () { PARTS.forEach(function (p) { val[p[0]] = ''; areas[p[0]].value = ''; }); update(); });
+  function send(next) {
+    var c = combo(), k = sc().answers[lang()][c].length, v;
+    if (next && sent && sent.combo === c) v = (sent.v + 1) % k;
+    else v = Math.floor(Math.random() * k);
+    sent = { combo: c, v: v };
+    showAnswer(true);
+  }
+
+  $('weakBtn').addEventListener('click', function () { on = {}; clearAnswer(); render(); });
+  $('strongBtn').addEventListener('click', function () { D.optional.forEach(function (k) { on[k] = true; }); clearAnswer(); render(); });
+  $('sendBtn').addEventListener('click', function () { send(false); });
+  $('againBtn').addEventListener('click', function () { send(true); });
   $('copyBtn').addEventListener('click', function () {
     var b = $('copyBtn');
     navigator.clipboard.writeText(prompt()).then(function () {
@@ -123,8 +215,8 @@
       setTimeout(function () { b.textContent = TOOL.t('复制提示词', 'Copy prompt'); }, 1500);
     }, function () {});
   });
-  TOOL.onLang(function () { buildFields(); update(); });
-  buildFields(); update();
+  TOOL.onLang(render);
+  render();
 })();
 </script>
 </body>

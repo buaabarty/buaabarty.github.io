@@ -165,8 +165,8 @@ export const tools: { id: ToolId; lecture: number; href: string; title: L; text:
     href: "/teach/ai-intro/tools/prompt/",
     title: { en: "Prompt builder", zh: "提示词拼装" },
     text: {
-      en: "Build a prompt from task, background, constraints, example, and format, then compare a weak and a strong version in DeepSeek.",
-      zh: "按任务、背景、约束、示例、格式拼一条提示词，再在 DeepSeek 里对比差的和好的两版。",
+      en: "Assemble a prompt from task, background, constraints, example, and format, send it, and compare the answers DeepSeek gives with and without each part.",
+      zh: "按任务、背景、约束、示例、格式选择拼出一条提示词，发送后对比 DeepSeek 在少写和写全时的回答。",
     },
   },
   {
