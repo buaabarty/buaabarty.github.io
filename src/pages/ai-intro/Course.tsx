@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { useT } from "@/i18n";
+import { KnowledgeMap } from "./KnowledgeMap";
+import { learningGoals } from "./knowledge";
 import { aiRecord, course, grading, lectureDates, lectureTime, tools, homeworks, lectures, policies, scheduleEvents, week, type Homework } from "./content";
 
-type Route = "home" | "schedule" | "assignments" | "tools" | "policies" | `hw${number}`;
+type Route = "home" | "schedule" | "assignments" | "tools" | "policies" | "knowledge" | `knowledge/${number}` | `hw${number}`;
 
 function readRoute(): Route {
   const h = location.hash.replace(/^#\/?/, "");
-  if (/^hw[1-4]$/.test(h) || ["schedule", "assignments", "tools", "policies"].includes(h)) return h as Route;
+  if (/^hw[1-4]$/.test(h) || /^knowledge\/[1-8]$/.test(h) || ["schedule", "assignments", "tools", "policies", "knowledge"].includes(h)) return h as Route;
   return "home";
 }
 
@@ -26,11 +28,12 @@ export function Course() {
   const tabs: { id: Route; label: string }[] = [
     { id: "home", label: t({ en: "Home", zh: "首页" }) },
     { id: "schedule", label: t({ en: "Schedule", zh: "日程" }) },
+    { id: "knowledge", label: t({ en: "Knowledge map", zh: "知识图谱" }) },
     { id: "assignments", label: t({ en: "Assignments", zh: "作业" }) },
     { id: "tools", label: t({ en: "Tools", zh: "练习工具" }) },
     { id: "policies", label: t({ en: "Policies", zh: "课程政策" }) },
   ];
-  const activeTab = route.startsWith("hw") ? "assignments" : route;
+  const activeTab = route.startsWith("hw") ? "assignments" : route.startsWith("knowledge") ? "knowledge" : route;
   const hw = route.startsWith("hw") ? homeworks.find((h) => `hw${h.id}` === route) : undefined;
 
   return (
@@ -51,6 +54,7 @@ export function Course() {
 
       {route === "home" && <CourseHome />}
       {route === "schedule" && <Schedule />}
+      {route.startsWith("knowledge") && <KnowledgeMap key={route} initialTopic={Number(route.split("/")[1]) || 1} />}
       {route === "assignments" && <Assignments />}
       {route === "tools" && <Tools />}
       {route === "policies" && <Policies />}
@@ -71,6 +75,15 @@ function CourseHome() {
       <section aria-labelledby="prereqs">
         <h2 id="prereqs">{t({ en: "Prerequisites", zh: "先修要求" })}</h2>
         <p>{t(course.prereqs)}</p>
+      </section>
+      <section aria-labelledby="learning-goals">
+        <h2 id="learning-goals">{t({ en: "Learning goals", zh: "学习目标" })}</h2>
+        <ol>{learningGoals.map((goal) => <li key={goal.en}>{t(goal)}</li>)}</ol>
+        <p><a href="#/knowledge">{t({ en: "Explore the eight-lecture knowledge map →", zh: "查看八讲知识图谱与学习路径 →" })}</a></p>
+      </section>
+      <section aria-labelledby="how-to-study">
+        <h2 id="how-to-study">{t({ en: "How to study", zh: "学习建议" })}</h2>
+        <p>{t({ en: "Before class, use the knowledge map to read the guiding question. In class, predict a tool's behavior, change one condition, then compare the result. After class, keep evidence, explain the differences, and complete the weekly assignment on Xuexitong. Use the review questions to check your understanding.", zh: "课前借助知识图谱了解本讲要回答的问题；课上先预测，再改变一个条件观察结果；课后保留过程证据、解释差异，在学习通完成周作业，并用自测问题检查理解。" })}</p>
       </section>
       <section aria-labelledby="grading">
         <h2 id="grading">{t({ en: "Grading", zh: "成绩构成" })}</h2>
@@ -127,6 +140,7 @@ function Schedule() {
               <td>
                 <span className="course-num">{i + 1}</span> {t(title)}
                 <div className="course-tools">
+                  <a href={`#/knowledge/${i + 1}`}>{t({ en: "Concepts & review", zh: "知识要点与自测" })}</a>
                   {tools.filter((x) => x.lecture === i + 1).map((x) => (
                     <a key={x.id} href={x.href} target="_blank" rel="noopener">{t(x.title)}</a>
                   ))}
@@ -182,6 +196,8 @@ function Assignments() {
           ))}
         </tbody>
       </table>
+      <h3>{t({ en: "Group report · 20 points", zh: "分组报告 · 20 分" })}</h3>
+      <p>{t({ en: "Combine your individual HW4 agent-task-chain drafts into a group analysis of one real AI agent product. Explain its tools, information sources, decisions and feedback, with evidence, sources, AI-use disclosure and member contributions. Present the report and prepare for individual questions and within-group peer review. Submission and presentation arrangements will be announced on Xuexitong.", zh: "合并 HW4 中的个人智能体任务链草稿，小组选择一个真实 AI 智能体产品，分析工具调用、信息获取、决策与反馈过程。报告须包含证据、来源、AI 使用声明和成员贡献，结合小组展示、个人化答辩与组内互评。具体提交与展示安排见学习通通知。" })}</p>
     </section>
   );
 }
@@ -195,7 +211,7 @@ function HomeworkPage({ hw }: { hw: Homework }) {
         HW{hw.id} {t(hw.title)}
       </h2>
 
-      <h3>Overview</h3>
+      <h3>{s("Overview", "作业概览")}</h3>
       <p>{t(hw.overview)}</p>
 
       <h3>{s("Lectures covered", "对应讲次")}</h3>
