@@ -20,6 +20,15 @@ export const course = {
   },
 };
 
+export const demoSite = {
+  href: "http://173.208.167.168:8110/",
+  replays: "http://173.208.167.168:8110/#/replays",
+  text: {
+    en: "In class the instructor runs live demos on the course demo site: a model arena, next-word prediction, image recognition, text-to-image, fine-tuning, and prompt attacks. Every demo is recorded. After class, watch the recordings by date under Class replays, where you can pause, scrub, and change speed. Students do not run the models themselves.",
+    zh: "课上老师会在课堂演示站现场演示模型擂台、逐词接龙、图片识别、文生图、模型微调和提示词攻防等内容，每次演示都自动录制。课后在“课堂回放”里按日期观看，可以暂停、拖动和倍速播放。学生不需要自己调用模型。",
+  },
+};
+
 export const grading: { item: L; weight: string; parts?: { item: L; weight: string }[] }[] = [
   {
     item: { en: "Coursework", zh: "平时成绩" },

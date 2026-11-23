@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useT } from "@/i18n";
-import { aiRecord, course, exam, grading, lectureDates, lectureTime, tools, homeworks, lectures, policies, project, projectPrompt, scheduleEvents, week, type Homework } from "./content";
+import { aiRecord, course, demoSite, exam, grading, lectureDates, lectureTime, tools, homeworks, lectures, policies, project, projectPrompt, scheduleEvents, week, type Homework } from "./content";
 
 type Route = "home" | "schedule" | "assignments" | "final" | "tools" | "policies" | `hw${number}`;
 
@@ -69,6 +69,15 @@ function CourseHome() {
         <h2 id="about">{t({ en: "About this course", zh: "课程简介" })}</h2>
         <p>{t(course.summary)}</p>
         <p>{t(course.when)}</p>
+      </section>
+      <section aria-labelledby="demos">
+        <h2 id="demos">{t({ en: "Class demos and replays", zh: "课堂演示与回放" })}</h2>
+        <p>{t(demoSite.text)}</p>
+        <p>
+          <a href={demoSite.href} target="_blank" rel="noopener">{t({ en: "Demo site", zh: "课堂演示站" })}</a>
+          {" · "}
+          <a href={demoSite.replays} target="_blank" rel="noopener">{t({ en: "Class replays", zh: "课堂回放" })}</a>
+        </p>
       </section>
       <section aria-labelledby="prereqs">
         <h2 id="prereqs">{t({ en: "Prerequisites", zh: "先修要求" })}</h2>
