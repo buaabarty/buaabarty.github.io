@@ -316,7 +316,7 @@ function Final() {
   return (
     <>
       <section aria-labelledby="exam">
-        <h2 id="exam">{s("Closed-book exam (25 points)", "闭卷考试（25 分）")}</h2>
+        <h2 id="exam">{s("Closed-book exam (30 points)", "闭卷考试（30 分）")}</h2>
         <p>{t(exam.when)}</p>
         <table className="course-table">
           <thead>
@@ -345,7 +345,7 @@ function Final() {
         </ul>
       </section>
       <section aria-labelledby="project">
-        <h2 id="project">{s("Final project (25 points): ", "期末大作业（25 分）：")}{t(project.title)}</h2>
+        <h2 id="project">{s("Final project (30 points): ", "期末大作业（30 分）：")}{t(project.title)}</h2>
         <p>{t(project.overview)}</p>
         <p>
           <strong>{s("Due: ", "截止：")}</strong>
