@@ -360,6 +360,7 @@ function Final() {
             <p>{t(x.text)}</p>
           </div>
         ))}
+        <p>{t(project.prototype)}</p>
         <h3>{s("Rubric", "评分量规")}</h3>
         <table className="course-table">
           <tbody>
