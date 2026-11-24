@@ -94,8 +94,8 @@ export const tools: { id: ToolId; lecture: number; href: string; title: L; text:
     href: "/teach/ai-intro/tools/maze/",
     title: { en: "Maze search", zh: "迷宫搜索" },
     text: {
-      en: "Draw a maze, then run breadth-first, depth-first, and A* search step by step, and compare the cells examined and the path length.",
-      zh: "自己画迷宫，逐步运行广度优先、深度优先和 A* 搜索，对比查看过的格子数和路径长度。",
+      en: "Draw a maze, then run breadth-first, depth-first, and A* search step by step. For A*, switch between six heuristics, and compare the cells examined and the path length.",
+      zh: "自己画迷宫，逐步运行广度优先、深度优先和 A* 搜索。A* 还能在 6 种启发策略之间切换，对比查看过的格子数和路径长度。",
     },
   },
   {

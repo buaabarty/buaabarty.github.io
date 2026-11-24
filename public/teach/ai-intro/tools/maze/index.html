@@ -10,6 +10,7 @@
   <style>
     #mazeCanvas { width: min(100%, 720px); aspect-ratio: 1 / 1; }
     .button-grid { margin-top: 4px; }
+    .hint, .tips p { text-wrap: pretty; }
   </style>
 </head>
 <body data-title-zh="迷宫搜索练习" data-title-en="Maze Search Lab">
@@ -23,6 +24,19 @@
             <option value="bfs" data-en="BFS (breadth-first search)">BFS 广度优先搜索</option>
             <option value="dfs" data-en="DFS (depth-first search)">DFS 深度优先搜索</option>
           </select>
+        </div>
+
+        <div class="field-group" id="heuristicGroup">
+          <label for="heuristicSelect"><span data-en="Heuristic (estimated distance to the goal)">启发策略（估计离终点还有多远）</span></label>
+          <select id="heuristicSelect">
+            <option value="manhattan" data-en="Manhattan distance (default)">曼哈顿距离（默认）</option>
+            <option value="euclidean" data-en="Straight-line distance">直线距离</option>
+            <option value="chebyshev" data-en="Chebyshev distance">切比雪夫距离（斜走一步也算一步）</option>
+            <option value="zero" data-en="No estimate (h = 0)">不估计（h = 0）</option>
+            <option value="weighted" data-en="Weighted: 2 × Manhattan">加权：曼哈顿距离 × 2</option>
+            <option value="greedy" data-en="Greedy: look at h only">贪婪：只看估计距离</option>
+          </select>
+          <p class="hint" id="heuristicHint"></p>
         </div>
 
         <div class="field-group">

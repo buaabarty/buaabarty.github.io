@@ -4,6 +4,9 @@
   const canvas = document.getElementById("mazeCanvas");
   const ctx = canvas.getContext("2d");
   const algorithmSelect = document.getElementById("algorithmSelect");
+  const heuristicSelect = document.getElementById("heuristicSelect");
+  const heuristicGroup = document.getElementById("heuristicGroup");
+  const heuristicHint = document.getElementById("heuristicHint");
   const sizeSelect = document.getElementById("sizeSelect");
   const showAnimation = document.getElementById("showAnimation");
   const speedRange = document.getElementById("speedRange");
@@ -364,9 +367,38 @@
     );
   }
 
+  // 启发策略：h 估计这一格离终点还有多远；f 决定先展开哪一格
+  const HEURISTIC_HINTS = {
+    manhattan: msg("横向格数加纵向格数。只走上下左右时从不高估，A* 一定找到最短路。", "Horizontal plus vertical distance. With 4-way moves it never overestimates, so A* finds a shortest path."),
+    euclidean: msg("两格之间的直线距离，比曼哈顿距离小。仍保证最短路，但方向感弱一些，查看的格子更多。", "The straight-line distance, smaller than Manhattan. Still a shortest path, but a weaker sense of direction, so more cells are checked."),
+    chebyshev: msg("横纵距离取较大的一个，估得更保守。仍保证最短路，查看的格子通常更多。", "The larger of the horizontal and vertical distances, a more cautious estimate. Still a shortest path, usually with more cells checked."),
+    zero: msg("完全不估计，h 一律为 0，只看已经走了多远。A* 退化成一圈一圈往外找，和广度优先一样。", "No estimate at all: h is always 0, so only the distance walked counts. A* falls back to searching ring by ring, like breadth-first search."),
+    weighted: msg("把估计距离放大 2 倍再加上已走步数。查看的格子更少、更快，但可能高估，找到的路不一定最短。", "The estimate is doubled before adding the steps walked. Fewer cells and faster, but it may overestimate, so the path may not be the shortest."),
+    greedy: msg("只看估计距离、不管已经走了多远，一路朝终点冲。遇到墙容易绕远，路径不保证最短。", "Only the estimate counts, not the steps walked, so it rushes toward the goal. Walls can send it the long way round, and the path may not be the shortest."),
+  };
+  function heuristicMode() {
+    return heuristicSelect ? heuristicSelect.value : "manhattan";
+  }
   function heuristic(cellKey) {
     const cell = parseKey(cellKey);
-    return Math.abs(cell.row - state.target.row) + Math.abs(cell.col - state.target.col);
+    const dr = Math.abs(cell.row - state.target.row);
+    const dc = Math.abs(cell.col - state.target.col);
+    switch (heuristicMode()) {
+      case "euclidean": return Math.sqrt(dr * dr + dc * dc);
+      case "chebyshev": return Math.max(dr, dc);
+      case "zero": return 0;
+      default: return dr + dc;
+    }
+  }
+  function priority(g, h) {
+    const mode = heuristicMode();
+    if (mode === "weighted") return g + 2 * h;
+    if (mode === "greedy") return h;
+    return g + h;
+  }
+  function updateHeuristicUI() {
+    if (heuristicGroup) heuristicGroup.style.display = algorithmSelect.value === "astar" ? "" : "none";
+    if (heuristicHint) heuristicHint.textContent = text(HEURISTIC_HINTS[heuristicMode()] || HEURISTIC_HINTS.manhattan);
   }
 
   function buildAStarSteps() {
@@ -400,7 +432,7 @@
           return;
         }
         const h = heuristic(nextKey);
-        open.push(makeNode(nextKey, currentNode, { g: nextG, h, f: nextG + h }));
+        open.push(makeNode(nextKey, currentNode, { g: nextG, h, f: priority(nextG, h) }));
       });
 
       steps.push(snapshot(
@@ -710,7 +742,16 @@
   resetButton.addEventListener("click", () => resetSearchView(READY));
   clearButton.addEventListener("click", clearWalls);
   randomButton.addEventListener("click", randomMaze);
-  algorithmSelect.addEventListener("change", () => resetSearchView(msg("已切换算法", "Algorithm changed")));
+  algorithmSelect.addEventListener("change", () => {
+    updateHeuristicUI();
+    resetSearchView(msg("已切换算法", "Algorithm changed"));
+  });
+  if (heuristicSelect) {
+    heuristicSelect.addEventListener("change", () => {
+      updateHeuristicUI();
+      resetSearchView(msg("已切换启发策略", "Heuristic changed"));
+    });
+  }
 
   window.addEventListener("resize", resizeCanvas);
   if ("ResizeObserver" in window) {
@@ -723,9 +764,11 @@
     render();
     updateMetrics();
     updateButtons();
+    updateHeuristicUI();
   });
 
   readColors();
+  updateHeuristicUI();
   initializeGrid(state.size);
   resizeCanvas();
 }());
