@@ -292,11 +292,17 @@
     return explored.some((node) => node.key === cellKey);
   }
 
+  // 选 f 最小的格子。f 相同时先选 h 小的（离终点更近），再相同时选最后加入的。
+  // 这是 A* 的常见做法：开阔地上大量格子 f 相同，按先来后到会一层层铺开、像广度优先；
+  // 按上面的顺序打破平局，搜索会沿一个方向一路深入，直奔终点。
   function lowestCostNode(open) {
+    const EPS = 1e-9;
     let current = open[0];
     let currentIndex = 0;
     open.forEach((node, index) => {
-      if (node.f < current.f) {
+      const df = node.f - current.f;
+      const dh = node.h - current.h;
+      if (df < -EPS || (Math.abs(df) <= EPS && (dh < -EPS || (Math.abs(dh) <= EPS && index > currentIndex)))) {
         current = node;
         currentIndex = index;
       }
@@ -373,7 +379,7 @@
     euclidean: msg("两格之间的直线距离，比曼哈顿距离小。仍保证最短路，但方向感弱一些，查看的格子更多。", "The straight-line distance, smaller than Manhattan. Still a shortest path, but a weaker sense of direction, so more cells are checked."),
     chebyshev: msg("横纵距离取较大的一个，估得更保守。仍保证最短路，查看的格子通常更多。", "The larger of the horizontal and vertical distances, a more cautious estimate. Still a shortest path, usually with more cells checked."),
     zero: msg("完全不估计，h 一律为 0，只看已经走了多远。A* 退化成一圈一圈往外找，和广度优先一样。", "No estimate at all: h is always 0, so only the distance walked counts. A* falls back to searching ring by ring, like breadth-first search."),
-    weighted: msg("把估计距离放大 2 倍再加上已走步数。查看的格子更少、更快，但可能高估，找到的路不一定最短。", "The estimate is doubled before adding the steps walked. Fewer cells and faster, but it may overestimate, so the path may not be the shortest."),
+    weighted: msg("把估计距离放大 2 倍再加上已走步数。查看的格子通常更少，但可能高估，找到的路不一定最短。", "The estimate is doubled before adding the steps walked. Usually fewer cells, but it may overestimate, so the path may not be the shortest."),
     greedy: msg("只看估计距离、不管已经走了多远，一路朝终点冲。遇到墙容易绕远，路径不保证最短。", "Only the estimate counts, not the steps walked, so it rushes toward the goal. Walls can send it the long way round, and the path may not be the shortest."),
   };
   function heuristicMode() {
