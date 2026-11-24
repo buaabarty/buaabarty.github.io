@@ -348,12 +348,14 @@
       links: [[0, '数据', 1, '数据'], [1, '转换后数据', 2, '数据'], [1, '转换后数据', 3, '数据']], open: 2 },
     { title: '第3讲 K 均值聚类', titleEn: 'Lecture 3: k-Means clustering', nodes: [['file', 100, 220, { src: 'iris' }], ['kmeans', 300, 220], ['scatter', 500, 110], ['table', 500, 230], ['box', 500, 350]],
       links: [[0, '数据', 1, '数据'], [1, '数据', 2, '数据'], [1, '数据', 3, '数据'], [1, '数据', 4, '数据']], open: 1 },
-    { title: '作业二 西瓜数据制造过拟合', titleEn: 'Assignment 2: Causing overfitting with melons', nodes: [['file', 100, 200, { src: 'melon_train' }, '西瓜-训练集'], ['file', 100, 380, { src: 'melon_test' }, '西瓜-测试集'], ['scatter', 300, 80], ['knn', 440, 130, { k: 1 }], ['tree', 440, 470], ['test', 640, 300, { method: 'test' }], ['cm', 840, 300]],
+    { title: '第3讲 西瓜数据制造过拟合', titleEn: 'Lecture 3: Causing overfitting with melons', nodes: [['file', 100, 200, { src: 'melon_train' }, '西瓜-训练集'], ['file', 100, 380, { src: 'melon_test' }, '西瓜-测试集'], ['scatter', 300, 80], ['knn', 440, 130, { k: 1 }], ['tree', 440, 470], ['test', 640, 300, { method: 'test' }], ['cm', 840, 300]],
       links: [[0, '数据', 2, '数据'], [0, '数据', 5, '数据'], [1, '数据', 5, '测试数据'], [3, '学习器', 5, '学习器'], [4, '学习器', 5, '学习器'], [5, '评估结果', 6, '评估结果']], open: 5 },
     { title: '第3讲 贷款审批决策树', titleEn: 'Lecture 3: Loan approval tree', nodes: [['file', 100, 220, { src: 'loan' }], ['table', 300, 110], ['tree', 300, 300], ['treeview', 500, 300]],
       links: [[0, '数据', 1, '数据'], [0, '数据', 2, '数据'], [2, '模型', 3, '树模型']], open: 3 },
     { title: '训练集与测试集：数据抽样', titleEn: 'Training and test sets: Data Sampler', nodes: [['file', 90, 230, { src: 'iris' }], ['sampler', 280, 230], ['tree', 280, 400], ['test', 500, 230, { method: 'test' }], ['pred', 500, 400], ['cm', 700, 230]],
-      links: [[0, '数据', 1, '数据'], [1, '数据样本', 3, '数据'], [1, '剩余数据', 3, '测试数据'], [2, '学习器', 3, '学习器'], [1, '数据样本', 2, '数据'], [2, '模型', 4, '模型'], [1, '剩余数据', 4, '数据'], [3, '评估结果', 5, '评估结果']], open: 3 }
+      links: [[0, '数据', 1, '数据'], [1, '数据样本', 3, '数据'], [1, '剩余数据', 3, '测试数据'], [2, '学习器', 3, '学习器'], [1, '数据样本', 2, '数据'], [2, '模型', 4, '模型'], [1, '剩余数据', 4, '数据'], [3, '评估结果', 5, '评估结果']], open: 3 },
+    { title: '作业三 动物园 k 近邻', titleEn: 'Assignment 3: k-NN on the zoo data', nodes: [['file', 100, 230, { src: 'zoo' }], ['table', 300, 110], ['knn', 300, 350, { k: 1 }], ['test', 520, 230], ['cm', 740, 230]],
+      links: [[0, '数据', 1, '数据'], [0, '数据', 3, '数据'], [2, '学习器', 3, '学习器'], [3, '评估结果', 4, '评估结果']], open: 3 }
   ];
   function loadExample(ex) {
     Object.keys(wins).forEach(function (id) { closeWin(+id); });

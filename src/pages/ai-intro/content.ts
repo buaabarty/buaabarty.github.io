@@ -85,7 +85,7 @@ export const scheduleEvents: Record<number, { hw: number; kind: "out" | "due" }[
 };
 type Row = { item: L; points: string; look: L };
 
-export type ToolId = "circles" | "maze" | "puzzle" | "grid" | "ml" | "nn" | "evolve" | "prompt" | "denoise" | "agent" | "swarm" | "factcheck";
+export type ToolId = "circles" | "maze" | "puzzle" | "grid" | "rl" | "ml" | "nn" | "evolve" | "prompt" | "denoise" | "agent" | "swarm" | "factcheck";
 /** Every lecture has at least one tool. `lecture` is the lecture it belongs to. */
 export const tools: { id: ToolId; lecture: number; href: string; title: L; text: L }[] = [
   {
@@ -116,6 +116,16 @@ export const tools: { id: ToolId; lecture: number; href: string; title: L; text:
     text: {
       en: "Watch a robot learn where to go from rewards and traps, and see how changing the reward per step changes its route.",
       zh: "看机器人怎样根据奖励和陷阱学会往哪走，调整每一步的奖励，观察路线怎么变。",
+    },
+  },
+  {
+    id: "rl",
+    lecture: 2,
+    href: "/teach/ai-intro/tools/rl/",
+    title: { en: "Reinforcement learning lab", zh: "强化学习练习" },
+    text: {
+      en: "Train a robot by trial and error to find the gem and avoid the trap. Change the rewards and watch the reward curve and the learned route change.",
+      zh: "让机器人一局局试错，学会去拿宝石、避开陷阱。改一改奖励，看每局奖励曲线和学到的路线怎么变。",
     },
   },
   {
@@ -226,6 +236,11 @@ export type Homework = {
   pitfalls: L[];
 };
 
+const AI_HW: L = {
+  en: "Use AI as much as you like to get ideas, explain how things work, and predict results, and attach the conversation link. Screenshots, numbers, and recordings must come from your own work, and the analysis must be written by you.",
+  zh: "鼓励用 AI 出主意、解释原理、预测结果，附对话链接；截图和数字须来自本人操作，分析须本人撰写。",
+};
+
 export const homeworks: Homework[] = [
   {
     id: 1,
@@ -234,272 +249,347 @@ export const homeworks: Homework[] = [
     out: { en: "Mon, Nov 23, after class", zh: "11 月 23 日 周一课后" },
     due: { en: "Mon, Nov 30, before class", zh: "11 月 30 日 周一上课前" },
     overview: {
-      en: "Use any AI tool and record a short video of it getting something wrong. You will see for yourself that fluent answers are not always correct answers.",
-      zh: "任选一个 AI 工具，录一段它出错的视频。你会亲眼看到：说得通顺，不等于说得正确。",
+      en: "Record DeepSeek getting something wrong with DeepThink turned on, prove it is wrong with a reliable source, then ask again and ask another AI. You will see for yourself that fluent answers are not always correct answers.",
+      zh: "在 DeepSeek 打开“深度思考”后录下它答错的过程，用可靠来源证明它错了，再新开对话、换一个 AI 问同一题。你会亲眼看到：说得通顺，不等于说得正确。",
     },
     tasks: [
       {
-        title: { en: "Record one mistake", zh: "录下一次出错" },
+        title: { en: "Task 1. Record one mistake (2 points)", zh: "任务一　录下一次出错（2 分）" },
         steps: [
-          { en: "Pick any AI tool, such as DeepSeek or Doubao. Ask several rounds of questions: specific numbers, dates, sources, or a slightly tricky calculation often trip it up.", zh: "任选一个 AI 工具，例如 DeepSeek 或豆包。多问几轮：具体的数字、日期、出处，或一道稍复杂的算术，往往就能让它出错。" },
-          { en: "Screen-record the whole exchange, or film the screen with your phone. The question and the answer must be readable.", zh: "录屏记录完整过程，也可以用手机对着屏幕拍。画面要能看清提问和回答。" },
-          { en: "Keep the video between 1 and 3 minutes.", zh: "视频 1 到 3 分钟。" },
-          { en: "Write two or three sentences: what exactly is wrong, and what might cause it.", zh: "附两三句说明：错在哪里、可能是什么原因。" },
+          { en: "Turn on DeepThink in DeepSeek and ask questions until it gets one wrong. You may first ask an AI which kinds of questions it tends to get wrong.", zh: "在 DeepSeek 打开“深度思考”后提问，直到它答错一题。可以先请 AI 帮你想想它哪类题容易错。" },
+          { en: "Screen-record the whole exchange, 1 to 3 minutes. The question and the answer must be readable.", zh: "录屏记录完整过程，1 到 3 分钟，画面要能看清提问和回答。" },
+        ],
+      },
+      {
+        title: { en: "Task 2. Prove it is wrong (1 point)", zh: "任务二　证明它错了（1 分）" },
+        text: { en: "Use a screenshot or link from an official website, a textbook, or an authoritative news outlet to show which sentence is wrong.", zh: "用官方网站、教材或权威媒体的截图或链接，指出它错在哪一句。" },
+      },
+      {
+        title: { en: "Task 3. Ask again (2 points)", zh: "任务三　再问一次（2 分）" },
+        steps: [
+          { en: "Ask the same question in a new conversation, then ask another AI such as Doubao. Record whether each one is still wrong.", zh: "新开对话再问一遍，再换一个 AI（如豆包）问同一题，记录是否还错。" },
+          { en: "Ask it to explain why it was wrong, and judge whether that explanation is believable.", zh: "让它解释为什么错，判断这个解释是否可信。" },
+          { en: "Write two or three sentences on what you will watch out for when you learn with AI.", zh: "写两三句：以后用 AI 学习要注意什么。" },
         ],
       },
     ],
-    submit: { en: "The video and your two or three sentences.", zh: "视频，以及两三句说明。" },
+    submit: { en: "The video, the source screenshot, two conversation links, and your analysis of at most 200 Chinese characters.", zh: "视频、来源截图、两段对话链接，以及不超过 200 字的分析。" },
     grading: [
-      { item: { en: "Clear, real recording", zh: "录制真实清楚" }, points: "2", look: { en: "Recorded by you, with the question and answer readable", zh: "本人录制，提问和回答都能看清" } },
-      { item: { en: "A real error", zh: "错误真实" }, points: "2", look: { en: "The answer is actually wrong, and you say exactly where", zh: "确实答错了，并指出错在哪一处" } },
-      { item: { en: "Possible cause", zh: "原因分析" }, points: "1", look: { en: "A sensible guess at why, such as made-up facts or outdated knowledge", zh: "对原因有合理的推测，例如编造事实、知识过时" } },
+      { item: { en: "A real recorded error", zh: "录下真实错误" }, points: "2", look: { en: "Recorded by you with DeepThink on, readable, and actually wrong", zh: "本人录制、打开了深度思考、画面清楚，确实答错了" } },
+      { item: { en: "Reliable source", zh: "来源可靠" }, points: "1", look: { en: "The source is reliable and points to the wrong sentence", zh: "来源可靠，并指出错在哪一句" } },
+      { item: { en: "Asking again", zh: "复查与启发" }, points: "2", look: { en: "Both re-asks are recorded, the explanation is judged, and the takeaway is concrete", zh: "两次复查都有记录，对错因解释有判断，启发具体" } },
     ],
-    ai: { en: "The video must be recorded by you, and the explanation written by you.", zh: "视频须本人录制，说明须本人撰写。" },
+    ai: AI_HW,
     pitfalls: [
-      { en: "The video is too blurry to read the question or answer.", zh: "画面模糊，看不清提问或回答。" },
-      { en: "Calling an answer wrong without checking it against a reliable source.", zh: "没有对照可靠来源就说它错了。" },
+      { en: "DeepThink was not turned on.", zh: "没有打开“深度思考”。" },
+      { en: "Saying “it is wrong” without a reliable source.", zh: "只说“它错了”，没有可靠来源。" },
     ],
   },
   {
     id: 2,
-    title: { en: "One maze, three searches", zh: "同一迷宫，三种搜索" },
+    title: { en: "Train a robot", zh: "训练一个机器人" },
     lectures: [2],
-    tools: ["maze", "grid"],
+    tools: ["rl", "maze"],
     out: { en: "Wed, Nov 25, after class", zh: "11 月 25 日 周三课后" },
     due: { en: "Mon, Nov 30, before class", zh: "11 月 30 日 周一上课前" },
     overview: {
-      en: "Use the maze search tool to compare how many cells different search methods examine in the same maze.",
-      zh: "用迷宫搜索工具，比较不同搜索方法在同一个迷宫里查看了多少格子。",
+      en: "Train a gem-seeking robot in the reinforcement learning tool and see how rewards decide what it learns. Before you start, ask an AI to calculate and predict, then check it against your own training.",
+      zh: "在强化学习练习页训练一个找宝石的机器人，看奖励怎样决定它学到的行为。动手前先让 AI 算一算、猜一猜，再用自己训练的结果核对。",
     },
     tasks: [
       {
-        title: { en: "One maze, three ways through", zh: "同一个迷宫，三种走法" },
+        title: { en: "Task 1. A bigger cost per step (2 points)", zh: "任务一　多扣分会怎样（2 分）" },
+        link: { href: "/teach/ai-intro/tools/rl/?map=S....._TWWWW._......_.WWWWW_......_WWWWWG&step=-0.1&gem=10&trap=-10&end=1&gamma=0.90&alpha=0.10&eps=0.20&max=100", label: { en: "Open the homework map", zh: "打开作业地图" } },
         steps: [
-          { en: "Generate a maze in the maze search tool and fix the start and goal.", zh: "在迷宫搜索工具里生成一个迷宫，起点和终点固定。" },
-          { en: "Run breadth-first, depth-first, and A* in turn. For each, record the number of cells examined and the length of the final path.", zh: "依次运行广度优先、深度优先和 A*，各记一次“查看过的格子数”和“最后路径的长度”。" },
-          { en: "Add more obstacles or move the goal, then compare again.", zh: "把障碍加多或移动终点，再对比一次。" },
-          { en: "In your own words: which method examines the fewest cells, and why?", zh: "用自己的话回答：哪种方法查看的格子最少，为什么。" },
+          { en: "Open the homework map. With a cost of −0.1 per step, train until the reward curve levels off, about 300 rounds. Take screenshots of the arrows and the reward curve.", zh: "打开作业地图，每步扣 −0.1，训练到奖励曲线平稳（约 300 局），截下箭头图和奖励曲线。" },
+          { en: "Make the cost 0.1 larger each time and train again. Find the value at which the robot jumps into the trap as soon as it leaves the start.", zh: "每次把扣分加大 0.1，重新训练，找出机器人一出门就跳进陷阱的那个值。" },
+          { en: "Explain why, using how many points the whole trip to the gem costs.", zh: "用“走到宝石一共要扣多少分”解释为什么会这样。" },
         ],
       },
       {
-        title: { en: "Optional, not graded", zh: "选做，不计分" },
+        title: { en: "Task 2. The robot finds a loophole (1 point)", zh: "任务二　机器人钻空子（1 分）" },
         text: {
-          en: "Open the grid world tool and click “一直算到不变” (run until stable). Then move “每走一步的奖励” (reward per step) toward negative values, find the value at which the robot heads into the trap, and think about why.",
-          zh: "打开网格世界练习页，先点“一直算到不变”，再把“每走一步的奖励”往负的方向调，找出机器人改去陷阱的那个值，想一想为什么。",
+          en: "Set the cost back to −0.1, uncheck “拿到宝石就结束” (reaching the gem ends the round), and train again. Take screenshots of its behavior and the reward curve, explain what loophole it found and which idea from class it shows, then change one setting to make it behave normally and check that it works.",
+          zh: "把扣分改回 −0.1，取消勾选“拿到宝石就结束”，重新训练。截下机器人的行为和奖励曲线，说明它钻了什么空子、和课上讲的哪个道理对应；再改一个设置让它恢复正常，并验证。",
         },
       },
+      {
+        title: { en: "Task 3. Ask AI first (2 points)", zh: "任务三　先问 AI（2 分）" },
+        text: {
+          en: "Before Task 1, send a screenshot of the map and the settings to DeepSeek or Doubao. Ask it to calculate the cost at which the robot switches to the trap and to predict what will happen in Task 2. After your experiments, compare its answers with your results in a table and say where it was right, where it was wrong, and at which step it went wrong.",
+          zh: "开始任务一之前，把地图截图和设置发给 DeepSeek 或豆包，请它算出机器人改去陷阱的扣分值，并预测任务二会发生什么。做完实验后，列表对比 AI 的答案和你的结果，指出 AI 哪里对、哪里错、错在哪一步。",
+        },
+      },
+      {
+        title: { en: "Optional, not graded", zh: "选做，不计分" },
+        text: { en: "In the maze search tool, run the three searches on the same maze and compare the cells examined and the path length.", zh: "在迷宫搜索工具里，同一张迷宫依次运行三种搜索，比较查看的格子数和路径长度。" },
+      },
     ],
-    submit: {
-      en: "One practice record sheet: a comparison table (cells examined, path length), two screenshots, and a short explanation of at most 150 Chinese characters.",
-      zh: "实践记录单一页：对比表（格子数、路径长度）、两张截图、一段不超过 150 字的原因分析。",
-    },
+    submit: { en: "Screenshots, reward curves, the setup link (from “复制本页链接”), the AI conversation link, and your analysis.", zh: "截图、奖励曲线、配置链接（点“复制本页链接”）、AI 对话链接和你的分析。" },
     grading: [
-      { item: { en: "Process evidence", zh: "过程证据" }, points: "2", look: { en: "Screenshots show three methods on the same maze, and the numbers match the screenshots", zh: "截图能看出是同一迷宫、三种方法的真实结果，数字与截图一致" } },
-      { item: { en: "Comparison", zh: "对比与呈现" }, points: "2", look: { en: "A clear table, plus a second comparison after changing the conditions", zh: "表格清楚，改了条件后又对比了一次" } },
-      { item: { en: "Explanation", zh: "原因分析" }, points: "1", look: { en: "Explains with intuition, such as why nearby cells are checked first, not just the numbers", zh: "能用“为什么先查近的、为什么有方向的更省”这样的直觉解释，不只复述数字" } },
+      { item: { en: "Finding the value", zh: "找到临界值" }, points: "2", look: { en: "Screenshots and links match the numbers, the value is reasonable, and the explanation uses the total cost of the trip", zh: "截图、链接与数字一致，找到的值合理，能用一路累计的扣分解释" } },
+      { item: { en: "The loophole", zh: "钻空子" }, points: "1", look: { en: "Links the loophole to how the reward was designed, and fixes it with a verified change", zh: "说清钻空子与奖励设计的关系，并改设置验证恢复正常" } },
+      { item: { en: "AI versus experiment", zh: "AI 与实验对比" }, points: "2", look: { en: "A comparison table that points to the exact step where the AI went wrong", zh: "对比表清楚，指出 AI 具体错在哪一步" } },
     ],
-    ai: { en: "The numbers must come from your own runs. Do not let AI make them up.", zh: "数字必须来自本人运行，不能让 AI 代编。" },
+    ai: AI_HW,
     pitfalls: [
-      { en: "Using a different maze for each run, so the numbers cannot be compared.", zh: "三次用了不同的迷宫，数字没有可比性。" },
-      { en: "Confusing “shortest path” with “fewest cells examined”.", zh: "把“最短路径”和“查看的格子最少”混为一谈。" },
+      { en: "Taking screenshots before training long enough.", zh: "没训练够局数就截图。" },
+      { en: "Copying the AI's answer without comparing it with your own results.", zh: "只抄 AI 的答案，没有和自己的结果对比。" },
     ],
   },
   {
     id: 3,
-    title: { en: "Cause overfitting on purpose", zh: "制造一次过拟合" },
+    title: { en: "When the minority gets outvoted", zh: "少数派被淹没" },
     lectures: [3],
     tools: ["ml"],
     out: { en: "Mon, Nov 30, after class", zh: "11 月 30 日 周一课后" },
     due: { en: "Mon, Dec 7, before class", zh: "12 月 7 日 周一上课前" },
     overview: {
-      en: "Train a classifier in the machine learning workflow tool and see what overfitting looks like in the numbers.",
-      zh: "在机器学习工作流练习页里训练分类器，从数字上看清过拟合是什么样子。",
+      en: "Use k-nearest neighbors on the zoo data and watch a small class disappear as k grows. Before you start, ask an AI to predict, then check it against your own experiment.",
+      zh: "用 k 近邻给动物园数据分类，看 k 变大时，数量少的类别怎样被“淹没”。动手前先让 AI 预测，再用自己的实验核对。",
     },
     tasks: [
       {
-        title: { en: "k = 1 versus k = 5", zh: "k 取 1 和取 5" },
-        link: { href: "/teach/ai-intro/tools/ml/?example=4", label: { en: "Open the example workflow", zh: "打开示例工作流" } },
+        title: { en: "Task 1. Find the tipping point (2 points)", zh: "任务一　找临界值（2 分）" },
+        link: { href: "/teach/ai-intro/tools/ml/?example=7", label: { en: "Open the example workflow", zh: "打开示例工作流" } },
         steps: [
-          { en: "Open the example “作业二 西瓜数据制造过拟合” (overfitting with the watermelon data).", zh: "打开示例“作业二 西瓜数据制造过拟合”。" },
-          { en: "Set k-nearest neighbors to k = 1. In “测试与评分” (test and score), record the accuracy on the test data and on the training data.", zh: "把 k 近邻的邻居个数设为 1，在“测试与评分”里分别记下在测试数据和训练数据上的分类准确率。" },
-          { en: "Change k to 5 and record again.", zh: "把 k 改成 5，再记一次。" },
-          { en: "Explain why k = 1 scores perfectly on the training data but drops on the test data.", zh: "说明为什么 k=1 在训练数据上满分，到测试数据上却下降。" },
+          { en: "Open the example “作业三 动物园 k 近邻”. It connects the zoo data (101 animals in 7 classes, only 4 of them amphibians) to k-nearest neighbors, Test and Score (5-fold cross-validation), and a confusion matrix.", zh: "打开示例“作业三 动物园 k 近邻”。它把动物园数据（101 种动物、7 类，两栖动物只有 4 种）接到 k 近邻、测试与评分（5 折交叉验证）和混淆矩阵。" },
+          { en: "Raise k from 1 to 15 and record the classification accuracy for each k.", zh: "k 从 1 加到 15，记下每个 k 的分类准确率。" },
+          { en: "Find the smallest k at which every amphibian is misclassified.", zh: "找出两栖动物全部被认错的最小 k。" },
         ],
       },
+      {
+        title: { en: "Task 2. Testing on the practice questions (1 point)", zh: "任务二　拿练习题考试（1 分）" },
+        text: {
+          en: "With k = 1, change the method to “在训练数据上测试” (test on training data) and compare the accuracy with cross-validation. Explain why you cannot test a model on its training data. From the confusion matrix, find which classes the reptiles are mistaken for when k = 1.",
+          zh: "k=1 时把测试方法改成“在训练数据上测试”，和交叉验证的准确率对比，说明为什么不能拿训练数据考试；再从混淆矩阵看 k=1 时爬行动物被认成了哪几类。",
+        },
+      },
+      {
+        title: { en: "Task 3. Ask AI first (2 points)", zh: "任务三　先问 AI（2 分）" },
+        text: { en: "Before Task 1, ask an AI how large k must be before every amphibian is misclassified, and record its answer and reasoning. Compare it with your experiment.", zh: "动手前先问 AI“k 加到多少两栖动物会全部认错”，记下答案和理由，再与实验结果对比。" },
+      },
     ],
-    submit: { en: "A screenshot of the canvas, a screenshot of the scores, the four numbers, and your explanation.", zh: "画布截图、评分截图、四个数字和你的解释。" },
+    submit: { en: "A table of accuracy for each k, confusion matrix screenshots, the AI conversation link, and your analysis.", zh: "各个 k 的准确率表、混淆矩阵截图、AI 对话链接和你的分析。" },
     grading: [
-      { item: { en: "Process evidence", zh: "过程证据" }, points: "2", look: { en: "Screenshots match the numbers", zh: "截图与数字一致" } },
-      { item: { en: "Comparison", zh: "对比与呈现" }, points: "2", look: { en: "All four numbers, clearly labeled", zh: "四个数字齐全、标注清楚" } },
-      { item: { en: "Explanation", zh: "原因分析" }, points: "1", look: { en: "Explains that k = 1 memorizes the training data, including noise", zh: "能说出 k=1 把训练数据连同噪声都记住了" } },
+      { item: { en: "Finding the tipping point", zh: "找到临界值" }, points: "2", look: { en: "The numbers match the screenshots and the tipping point is correct", zh: "数字与截图一致，临界值正确" } },
+      { item: { en: "Training versus test", zh: "训练与测试" }, points: "1", look: { en: "Explains why a perfect score on training data is not trustworthy", zh: "能说清在训练数据上满分为什么不可信" } },
+      { item: { en: "AI versus experiment", zh: "AI 与实验对比" }, points: "2", look: { en: "Says where the AI's prediction was right and where it was wrong", zh: "说清 AI 的预测哪里对、哪里错" } },
     ],
-    ai: { en: "Numbers and screenshots must come from your own work.", zh: "数字和截图必须来自本人操作。" },
-    pitfalls: [{ en: "Swapping the training and test numbers.", zh: "训练数据和测试数据的数字写反。" }],
+    ai: AI_HW,
+    pitfalls: [
+      { en: "Changing the number of folds halfway, so the numbers cannot be compared.", zh: "中途改了折数，前后数字不可比。" },
+      { en: "Swapping the training-data and cross-validation numbers.", zh: "把训练数据和交叉验证的数字写反。" },
+    ],
   },
   {
     id: 4,
-    title: { en: "Tune a neural network", zh: "调一次神经网络" },
+    title: { en: "The fewest neurons", zh: "最少几个神经元" },
     lectures: [4],
     tools: ["nn"],
     out: { en: "Wed, Dec 2, after class", zh: "12 月 2 日 周三课后" },
     due: { en: "Mon, Dec 7, before class", zh: "12 月 7 日 周一上课前" },
     overview: {
-      en: "Change the structure and learning rate in the neural network playground and watch how the loss curve responds.",
-      zh: "在神经网络练习页里改结构和学习率，看损失曲线怎么变。",
+      en: "Find the smallest neural network that can separate the circle data, then see how better inputs make the network smaller. Before you start, ask an AI to predict.",
+      zh: "找出能分开圆形数据的最小神经网络，再看换了输入以后网络能省掉多少。动手前先让 AI 预测。",
     },
     tasks: [
       {
-        title: { en: "Two changes, two curves", zh: "两次改动，两条曲线" },
+        title: { en: "Task 1. Find the fewest neurons (2 points)", zh: "任务一　找最少神经元（2 分）" },
         steps: [
-          { en: "Pick a dataset. Change the number of layers or neurons per layer, and record a loss curve.", zh: "选一个数据集，改变层数或每层神经元数，记一次损失曲线。" },
-          { en: "Change the learning rate and record again.", zh: "再改学习率，记一次。" },
-          { en: "State which change made the clearest difference, and why.", zh: "写明哪一次改动带来的差别最明显，以及原因。" },
+          { en: "In the neural network playground, choose the circle data, tick only the inputs X1 and X2, and use one hidden layer. Keep the other defaults: learning rate 0.03, tanh activation.", zh: "在神经网络练习页选圆形数据，输入只勾 X1、X2，一个隐藏层，其余保持默认（学习率 0.03、双曲正切）。" },
+          { en: "Start with 1 neuron and add one at a time, training at least 300 epochs each time.", zh: "神经元从 1 个往上加，每次训练 300 轮以上。" },
+          { en: "Find the fewest neurons that bring the test loss below 0.05. Take a screenshot for each number of neurons.", zh: "找出测试损失降到 0.05 以下的最少神经元数，每个数量截一张图。" },
         ],
       },
+      {
+        title: { en: "Task 2. Change the inputs (1 point)", zh: "任务二　换输入（1 分）" },
+        text: { en: "Also tick the squared inputs X1² and X2², and find again how many neurons you need. You may delete the hidden layer entirely.", zh: "再勾上 X1²、X2² 两个平方输入，重新找最少需要几个神经元，可以把隐藏层全部删掉。" },
+      },
+      {
+        title: { en: "Task 3. Ask AI first (2 points)", zh: "任务三　先问 AI（2 分）" },
+        text: { en: "Before Task 1, ask an AI both questions. Compare its answers with your experiment, and explain why the squared inputs let you drop neurons.", zh: "动手前先问 AI 这两个问题，再与实验结果对比，解释平方输入为什么能省掉神经元。" },
+      },
+      {
+        title: { en: "Optional, not graded", zh: "选做，不计分" },
+        text: { en: "Use CNN Explainer to look at the features layer by layer.", zh: "用 CNN Explainer 逐层看卷积网络提取的特征。" },
+      },
     ],
-    submit: { en: "Two loss-curve screenshots, the settings, and your description.", zh: "两张损失曲线截图、参数设置和现象描述。" },
+    submit: { en: "Screenshots, the AI conversation link, and your analysis.", zh: "截图、AI 对话链接和你的分析。" },
     grading: [
-      { item: { en: "Process evidence", zh: "过程证据" }, points: "2", look: { en: "Screenshots match the settings you report", zh: "截图与所写的设置一致" } },
-      { item: { en: "One change at a time", zh: "一次只改一个" }, points: "2", look: { en: "Each comparison changes only one setting", zh: "每次对比只改了一个条件" } },
-      { item: { en: "Explanation", zh: "原因分析" }, points: "1", look: { en: "Explains the effect, for example a learning rate that is too large makes the curve jump", zh: "能解释现象，例如学习率太大曲线会剧烈跳动" } },
+      { item: { en: "Fewest neurons", zh: "最少神经元" }, points: "2", look: { en: "Screenshots match the settings and the conclusion is correct", zh: "截图与设置一致，结论正确" } },
+      { item: { en: "Squared inputs", zh: "平方输入" }, points: "1", look: { en: "Finds the new minimum and explains why fewer neurons are needed", zh: "找到新的最少数量，并能解释为什么省掉了神经元" } },
+      { item: { en: "AI versus experiment", zh: "AI 与实验对比" }, points: "2", look: { en: "Says where the AI's prediction was right and where it was wrong", zh: "说清 AI 的预测哪里对、哪里错" } },
     ],
-    ai: { en: "Screenshots and settings must come from your own work.", zh: "截图和设置必须来自本人操作。" },
-    pitfalls: [{ en: "Changing several settings at once, so you cannot tell which one mattered.", zh: "一次改了多个条件，说不清是谁起了作用。" }],
+    ai: AI_HW,
+    pitfalls: [
+      { en: "Changing several settings at once.", zh: "一次改了多个设置。" },
+      { en: "Drawing a conclusion before training long enough.", zh: "训练轮数太少就下结论。" },
+    ],
   },
   {
     id: 5,
-    title: { en: "One task, four prompts", zh: "同一件事，四种问法" },
+    title: { en: "Make AI hit an exact length", zh: "让 AI 写准字数" },
     lectures: [5],
     tools: ["prompt"],
     out: { en: "Mon, Dec 7, after class", zh: "12 月 7 日 周一课后" },
     due: { en: "Mon, Dec 14, before class", zh: "12 月 14 日 周一上课前" },
     overview: {
-      en: "Ask DeepSeek the same task with four kinds of prompts and compare the outputs. Keep the outputs: HW6 checks them.",
-      zh: "用四种提示词问 DeepSeek 同一件事，比较输出。输出留着，作业 6 要核查它们。",
+      en: "Ask DeepSeek for a paragraph of exactly 50 Chinese characters and refine your prompt until it gets there. You will see why a model that writes word by word struggles to count.",
+      zh: "请 DeepSeek 写一段正好 50 个汉字的话，一轮轮改提示词直到写准。你会看到逐词生成的大模型为什么数不准字。",
     },
     tasks: [
       {
-        title: { en: "Four prompts", zh: "四种提示词" },
-        text: {
-          en: "Pick a task, such as introducing a historical event you are unfamiliar with. Ask with zero-shot, few-shot, with constraints, and with an example. Compare which output is better and why.",
-          zh: "选一个任务，例如介绍一个你不熟悉的历史事件。分别用零样本、少样本、加约束、给例子四种提示词去问，比较哪份输出好、好在哪。",
-        },
-      },
-    ],
-    submit: { en: "The four prompts, a comparison table, and the share links.", zh: "四种提示词、对比表和对话分享链接。" },
-    grading: [
-      { item: { en: "Four complete prompts", zh: "四种提示词完整" }, points: "2", look: { en: "The four prompts really differ in kind", zh: "四种提示词确实属于不同写法" } },
-      { item: { en: "Comparison with reasons", zh: "对比有依据" }, points: "2", look: { en: "Says which is better and points to the text that shows it", zh: "说出哪份更好，并指出依据" } },
-      { item: { en: "Records", zh: "记录完整" }, points: "1", look: { en: "Share links and dates are included", zh: "附分享链接和日期" } },
-    ],
-    ai: { en: "The comparison and judgment must be written by you.", zh: "比较和判断须本人撰写。" },
-    pitfalls: [{ en: "The four prompts differ only in wording, not in kind.", zh: "四种提示词只是换了说法，没有本质区别。" }],
-  },
-  {
-    id: 6,
-    title: { en: "Check every sentence", zh: "逐句核查与提示词迭代" },
-    lectures: [6],
-    tools: ["factcheck"],
-    out: { en: "Wed, Dec 9, after class", zh: "12 月 9 日 周三课后" },
-    due: { en: "Mon, Dec 14, before class", zh: "12 月 14 日 周一上课前" },
-    overview: {
-      en: "Check an AI output like a reviewer, then iterate on a prompt until it meets your requirements. This is the most important assignment of the course.",
-      zh: "像审稿人一样核查一份 AI 输出，再把一个提示词迭代到满足要求。这是全课最关键的一次作业。",
-    },
-    tasks: [
-      {
-        title: { en: "Part B. Check every sentence", zh: "Part B　逐句核查" },
+        title: { en: "Task 1. Refine the prompt (2 points)", zh: "任务一　迭代提示词（2 分）" },
         steps: [
-          { en: "From your HW5 outputs, pick the one you trust least.", zh: "从作业 5 的输出里挑出你最不放心的一份。" },
-          { en: "Mark each sentence as correct, wrong, or cannot tell.", zh: "逐句标注：对、错、无法判断。" },
-          { en: "Check wrong and uncertain sentences against an authoritative source. Write down the source and your conclusion.", zh: "错的和拿不准的句子，用权威来源核查，写下来源和结论。" },
-          { en: "Classify each error: fabricated fact, outdated information, logical error, or other.", zh: "给每处错误归类：事实编造、过时信息、逻辑错误、其他。" },
+          { en: "Turn off DeepThink and ask DeepSeek for an introduction to your hometown of exactly 50 Chinese characters, not counting punctuation.", zh: "关掉“深度思考”，请 DeepSeek 写一段正好 50 个汉字（标点不算）的家乡介绍。" },
+          { en: "Count the characters yourself, or use Word's word count. If it is wrong, improve the prompt using the five elements, for at least 3 rounds.", zh: "自己数字数，也可以用 Word 的字数统计。不对就用五要素改提示词，至少改 3 轮。" },
+          { en: "For each round, record what you changed and how many characters it wrote.", zh: "记下每轮改了什么、实际写了多少字。" },
         ],
       },
       {
-        title: { en: "Part C. Make a vague request clear", zh: "Part C　把需求问清楚" },
-        text: {
-          en: "Pick a text task with hard requirements, such as at most 100 characters and three key points. Ask casually first, then revise the prompt for at least two rounds. Record what you changed and how the output changed.",
-          zh: "挑一个有硬要求的文字任务，例如不超过 100 字、保留三个要点。先随口问一句，再改提示词，至少迭代两轮，记下每轮改了什么、输出怎么变。",
-        },
+        title: { en: "Task 2. Let it report the count (1 point)", zh: "任务二　让它自报（1 分）" },
+        text: { en: "After each round, ask “how many characters did you write?”. Record the count it reports and the real count.", zh: "每轮追问“你这段写了几个字”，记下它自报的字数和实际字数。" },
+      },
+      {
+        title: { en: "Task 3. Turn on DeepThink (2 points)", zh: "任务三　打开深度思考（2 分）" },
+        text: { en: "Do it again with DeepThink on and compare. Using next-word generation, explain why it cannot count characters reliably, and why DeepThink often gets it right.", zh: "打开“深度思考”再做一次并比较。结合“逐词生成”解释它为什么数不准字，深度思考为什么常能改对。" },
+      },
+      {
+        title: { en: "Optional, not graded", zh: "选做，不计分" },
+        text: { en: "Tell real from AI-written passages, or refine the “AI grader” prompt for three rounds.", zh: "真假文段鉴别；或把“AI 评分官”提示词迭代三轮。" },
       },
     ],
-    submit: { en: "The check table with sources, and the iteration log.", zh: "带来源的核查表和迭代记录。" },
+    submit: { en: "The prompt for each round, the real and reported counts, the conversation links, and your analysis.", zh: "每轮提示词、实际字数与自报字数、对话链接和你的分析。" },
     grading: [
-      { item: { en: "Chain of evidence", zh: "核查的证据链" }, points: "2", look: { en: "Wrong sentences are backed by authoritative sources", zh: "错误句子有权威来源支撑" } },
-      { item: { en: "Error analysis", zh: "错误分析" }, points: "1", look: { en: "Errors are classified sensibly", zh: "错误归类合理" } },
-      { item: { en: "Prompt iteration", zh: "提示词迭代" }, points: "1", look: { en: "Each change has a purpose and you check each requirement", zh: "每轮改动有目的，并逐条对照要求" } },
-      { item: { en: "Limits of use", zh: "使用边界" }, points: "1", look: { en: "Names the parts of the task where AI cannot be trusted directly", zh: "能说出这类任务哪些地方不能直接信任 AI" } },
+      { item: { en: "Prompt refinement", zh: "提示词迭代" }, points: "2", look: { en: "Every round is recorded and each change has a purpose", zh: "迭代记录完整，每次改动有目的" } },
+      { item: { en: "Reported versus real", zh: "自报与实际" }, points: "1", look: { en: "Both counts are recorded honestly for every round", zh: "每轮如实记录自报字数和实际字数" } },
+      { item: { en: "Explanation", zh: "原因分析" }, points: "2", look: { en: "Uses next-word generation to explain the miscounts and what DeepThink changes", zh: "能用逐词生成解释数不准字，以及深度思考起了什么作用" } },
     ],
-    gradingNote: { en: "Finding one real error scores higher than an output that is entirely correct.", zh: "找到一个真实的错误，比一份全对的输出得分更高。" },
-    ai: { en: "Your check conclusions and error classification must be written by you.", zh: "核查结论和错误归类必须本人撰写。" },
-    pitfalls: [
-      { en: "Writing “this sentence is correct” without a source.", zh: "只写“这句话对”，没有来源。" },
-      { en: "Citing another AI's answer instead of an authoritative source.", zh: "来源是另一个 AI 的回答，而不是权威资料。" },
+    ai: AI_HW,
+    pitfalls: [{ en: "Trusting the count it reports instead of counting yourself.", zh: "字数没有自己数，直接信了它的自报。" }],
+  },
+  {
+    id: 6,
+    title: { en: "Get AI to draw it right", zh: "让 AI 画对一张图" },
+    lectures: [6],
+    tools: ["denoise"],
+    out: { en: "Wed, Dec 9, after class", zh: "12 月 9 日 周三课后" },
+    due: { en: "Mon, Dec 14, before class", zh: "12 月 14 日 周一上课前" },
+    overview: {
+      en: "Pick a picture that text-to-image models find hard, refine the prompt round by round, and label every mistake. Then ask an AI that can see images to check the result.",
+      zh: "选一道文生图很难画对的题，一轮轮改提示词，并给每处错误归类。最后请能看图的 AI 验收。",
+    },
+    tasks: [
+      {
+        title: { en: "Task 1. Refine the picture (2 points)", zh: "任务一　迭代出图（2 分）" },
+        steps: [
+          { en: "With a Chinese text-to-image tool such as Doubao or Jimeng, pick one of these five: a clock showing 3:40, exactly 7 apples, a shop sign reading “燕山大学”, a red wine glass filled to the brim, a person holding an umbrella in the left hand and a book in the right.", zh: "用豆包、即梦等国产文生图工具，从五道难图里选一道：指针在 3 点 40 分的钟、恰好 7 个苹果、招牌上写着“燕山大学”、倒满到杯沿的红酒杯、左手拿伞右手拿书的人。" },
+          { en: "Revise the prompt for at least 4 rounds. Take a screenshot each round and judge whether it meets the requirement. If it never gets it right, record honestly where it gets stuck.", zh: "至少改 4 轮提示词，每轮截图并判断是否达标。画不对也照实记录卡在哪。" },
+        ],
+      },
+      {
+        title: { en: "Task 2. Label and explain the errors (1 point)", zh: "任务二　标错与归因（1 分）" },
+        text: { en: "Label the failed pictures with the five error types from Lecture 6: shape, text, spatial relation, fact, and inconsistent style. Guess whether each error comes from the data, the prompt, the model, or the task.", zh: "用第 6 讲的五类错误（形状、文字、空间关系、事实、风格不一致）标注没画对的图，推测错误来自数据、提示、模型还是任务。" },
+      },
+      {
+        title: { en: "Task 3. Ask AI to check (2 points)", zh: "任务三　请 AI 验收（2 分）" },
+        text: { en: "Give your last picture to an AI that can read images and ask whether it meets the requirement. Compare its judgment with yours, and write one sentence on how this picture should be labeled as AI-generated if posted online.", zh: "把最后一张图交给能看图的 AI，问它是否符合要求，对比它和你的判断；再写一句：这张图发到网上应怎样标注 AI 生成。" },
+      },
+      {
+        title: { en: "Optional, not graded", zh: "选做，不计分" },
+        text: { en: "Write a spot-the-error report, or try creating under constraints.", zh: "找茬报告，或“镣铐创作”。" },
+      },
     ],
+    submit: { en: "The prompt and screenshot for each round, your error labels, the conversation links, and your analysis.", zh: "每轮提示词与截图、错误标注、对话链接和你的分析。" },
+    grading: [
+      { item: { en: "Picture refinement", zh: "迭代出图" }, points: "2", look: { en: "At least 4 real rounds, each judged against the requirement", zh: "至少 4 轮真实记录，每轮都对照要求判断" } },
+      { item: { en: "Error labels", zh: "标错与归因" }, points: "1", look: { en: "Errors are classified and their causes guessed sensibly", zh: "错误归类与归因合理" } },
+      { item: { en: "AI check", zh: "AI 验收" }, points: "2", look: { en: "Points out where the AI's judgment differs from yours, and gives a concrete label", zh: "指出 AI 验收与本人判断的差异，并给出具体的标注做法" } },
+    ],
+    ai: AI_HW,
+    pitfalls: [{ en: "Keeping only the best picture and skipping the failed rounds.", zh: "只留最好的一张，没有记录失败的几轮。" }],
   },
   {
     id: 7,
-    title: { en: "Take apart a real AI product", zh: "拆解一款真实 AI 产品" },
+    title: { en: "Check an agent's work", zh: "核对一次智能体任务" },
     lectures: [7],
     tools: ["agent"],
     out: { en: "Mon, Dec 14, after class", zh: "12 月 14 日 周一课后" },
     due: { en: "Tue, Dec 22, the day before the final exam", zh: "12 月 22 日（期末考试前一天）" },
     overview: {
-      en: "Pick a real AI product and take apart how it completes one task: its execution chain, its risks, and which tools and data it is allowed to touch. A product close to your final project topic is a good choice.",
-      zh: "选一款真实的 AI 产品，拆解它完成一次任务的过程：执行链、风险和工具权限。最好选一款和你大作业题目相近的产品。",
+      en: "Give an AI that can search the web a real task of at least three steps, draw its execution chain, and check every step against official sources.",
+      zh: "交给能联网的 AI 一个至少三步的真实任务，画出它的执行链，再用官方来源逐步核对。",
     },
     tasks: [
       {
-        title: { en: "Three parts", zh: "三项内容" },
+        title: { en: "Task 1. Check the execution chain (2 points)", zh: "任务一　执行链核对（2 分）" },
         steps: [
-          { en: "Execution chain: which tools it calls, how it gets information, how it decides and reports back.", zh: "执行链：调用了哪些工具、如何获取信息、如何决策与反馈。" },
-          { en: "Limits and risks: where it fails easily, and what the failure would cause.", zh: "边界与风险：它哪里容易失败，失败会造成什么后果。" },
-          { en: "Tool permissions: which tools and data it may use, and which actions should stop for a person to confirm.", zh: "工具权限：它能动用哪些工具和数据，哪些操作应先请人确认。" },
+          { en: "Use an AI that can search the web, such as Doubao, DeepSeek with web search, or Kimi, for a real task of at least three steps. For example: find the earliest high-speed train from Qinhuangdao to Beijing next Monday and its second-class fare.", zh: "用能联网的 AI（豆包、DeepSeek 联网搜索、Kimi 等）完成一个至少三步的真实任务，例如查下周一秦皇岛到北京最早一班高铁的车次和二等座票价。" },
+          { en: "Draw its execution chain: what it searched, which pages it opened, and what it calculated at each step.", zh: "把它每一步搜了什么、打开了哪些网页、算了什么画成执行链。" },
+          { en: "Check each step against an official source such as 12306 and mark it right or wrong.", zh: "用 12306 等官方来源逐步核对，标出对错。" },
         ],
       },
+      {
+        title: { en: "Task 2. Where a person must confirm (1 point)", zh: "任务二　人在哪里确认（1 分）" },
+        text: { en: "Suppose it could also book and pay for you. Which step must stop for you to confirm first, and which data should never be handed to it?", zh: "假如它还能替你下单付款，哪一步必须先请人确认，哪些数据不该交给它？" },
+      },
+      {
+        title: { en: "Task 3. Let it describe itself (2 points)", zh: "任务三　让它复述自己（2 分）" },
+        text: { en: "Ask it to retell each step it just took and compare with what the interface actually showed. Find where they differ. Then write a sentence or two on which later courses you would need to build a more reliable agent.", zh: "请它复述刚才的每一步，和界面上真实显示的过程对比，找出不一致；再写一两句：想做出更可靠的智能体，后续还要学哪些课。" },
+      },
     ],
-    submit: { en: "An execution-chain diagram and your analysis of risks and permissions, with sources.", zh: "执行链图，以及风险与权限分析，注明信息来源。" },
+    submit: { en: "The execution-chain diagram, your check results, the conversation link, and your analysis.", zh: "执行链图、核对结果、对话链接和你的分析。" },
     grading: [
-      { item: { en: "Execution chain", zh: "执行链" }, points: "2", look: { en: "Detailed down to which tool is called at each step", zh: "细到每一步调用了什么工具" } },
-      { item: { en: "Risks", zh: "风险" }, points: "1", look: { en: "At least two concrete risks with consequences", zh: "至少两条具体风险，并说明后果" } },
-      { item: { en: "Permissions", zh: "工具权限" }, points: "1", look: { en: "Concrete limits and confirmation points", zh: "权限边界和确认点具体" } },
-      { item: { en: "Sources", zh: "来源" }, points: "1", look: { en: "Based on your own use or cited material", zh: "基于亲自使用或注明的资料" } },
+      { item: { en: "Execution chain", zh: "执行链核对" }, points: "2", look: { en: "Detailed down to each step, and every step is checked", zh: "执行链细到每一步，并逐步核对" } },
+      { item: { en: "Confirmation points", zh: "确认点" }, points: "1", look: { en: "Concrete confirmation points and data limits", zh: "确认点和数据边界具体" } },
+      { item: { en: "Retelling versus reality", zh: "复述与真实过程" }, points: "2", look: { en: "Finds where the retelling differs from what happened, and names fitting later courses", zh: "能指出复述与真实过程的不一致，后续课程对应准确" } },
     ],
-    gradingNote: { en: "Some of you will present drafts in Lecture 8 for feedback. That session is not graded.", zh: "第 8 讲课上会抽几位同学讲草稿、听取意见，这一环节不单独计分。" },
-    ai: { en: "You may use AI to help draw the diagram, and must say so. The analysis must be your own.", zh: "可以用 AI 辅助绘图，须注明；任务链与风险分析须本人完成。" },
-    pitfalls: [{ en: "Describing what the product claims to do, not what you saw it do.", zh: "只写产品宣传的功能，没有写亲眼看到它怎么做。" }],
+    ai: AI_HW,
+    pitfalls: [{ en: "Checking only the final answer, not each step.", zh: "只核对了最后的答案，没有逐步核对。" }],
   },
   {
     id: 8,
     title: { en: "My AI learning map", zh: "我的 AI 学习地图" },
     lectures: [8],
+    tools: ["factcheck"],
     out: { en: "Wed, Dec 16, after class", zh: "12 月 16 日 周三课后" },
     due: { en: "Tue, Dec 22, the day before the final exam", zh: "12 月 22 日（期末考试前一天）" },
     overview: {
-      en: "Look back on the four weeks and plan your study for the courses that follow.",
-      zh: "回顾这四周的收获，为后续的专业课做一份学习计划。",
+      en: "Fact-check what an AI says about your future courses, then plan your own study with the checked list.",
+      zh: "核查 AI 介绍的后续专业课，再用核查过的课程表为自己做一份学习计划。",
     },
     tasks: [
       {
-        title: { en: "Learning summary and plan", zh: "学习总结与计划" },
+        title: { en: "Task 1. Check the course map (2 points)", zh: "任务一　核查课程地图（2 分）" },
+        text: { en: "Ask DeepSeek which major courses the AI program at Yanshan University teaches in years 2 to 4, and in which semester. Label each sentence as correct, needs checking, wrong, or no source, using the 2026 curriculum, and count the errors.", zh: "问 DeepSeek“燕山大学人工智能专业大二到大四要学哪些专业课、各在第几学期”，用 2026 级培养方案按正确、需核查、错误、无来源四档逐句标注，数出错了几处。" },
+      },
+      {
+        title: { en: "For reference: later major courses in the 2026 curriculum", zh: "参考：2026 级培养方案中的后续专业课" },
+        text: { en: "Data Structures and Algorithms, Discrete Mathematics, and Mathematics for AI in semester 3; Machine Learning Methods and Applications, Pattern Recognition and Data Mining, and Deep Learning in semester 4; Computer Vision and Natural Language Processing in semester 5; Generative AI and Large Model Principles, and Intelligent Robots and Embodied Intelligence in semester 6; plus Introduction to AI Security.", zh: "数据结构与算法、离散数学、人工智能的数学基础在第 3 学期；机器学习方法与应用、模式识别与数据挖掘、深度学习在第 4 学期；计算机视觉、自然语言处理在第 5 学期；生成式人工智能与大模型原理、智能机器人与具身智能在第 6 学期；另有人工智能安全导论。" },
+      },
+      {
+        title: { en: "Task 2. Give it the material and ask again (1 point)", zh: "任务二　给它材料再问（1 分）" },
+        text: { en: "Send it the course list from the curriculum and ask again. Did the errors drop? Explain why.", zh: "把培养方案的课程表发给它再问一次，看错误少了没有，说明为什么。" },
+      },
+      {
+        title: { en: "Task 3. Summary and plan (2 points)", zh: "任务三　学习总结与计划（2 分）" },
         text: { en: "Write 300 to 500 Chinese characters covering:", zh: "写 300 到 500 字，包含：" },
         steps: [
-          { en: "The three most important things you learned.", zh: "这四周学到的最重要的三件事。" },
-          { en: "One idea of yours that changed.", zh: "一个你原来的想法被改变的例子。" },
-          { en: "At least 3 concrete ways you will keep up with AI, and the later courses they connect to.", zh: "至少 3 条跟踪 AI 前沿的具体途径，以及它们和哪几门后续专业课对应。" },
+          { en: "The three most important things you learned, and one idea of yours that changed.", zh: "这四周学到的最重要的三件事，以及一个你原来的想法被改变的例子。" },
+          { en: "At least 3 ways to keep up with AI, each matched to one of the courses you checked.", zh: "至少 3 条跟踪 AI 前沿的途径，各自对应一门核查过的后续课程。" },
+          { en: "For each way, the title and date of the latest item you actually read or watched.", zh: "每条途径写出你亲自看过的最近一条内容的标题和日期。" },
         ],
       },
     ],
-    submit: { en: "The essay.", zh: "短文。" },
+    submit: { en: "The check table, the conversation links, and your plan.", zh: "核查表、对话链接和学习计划。" },
     grading: [
-      { item: { en: "Concrete takeaways", zh: "收获具体" }, points: "2", look: { en: "Specific things that happened in this course", zh: "写的是课程里发生过的具体事" } },
-      { item: { en: "Actionable paths", zh: "途径可执行" }, points: "2", look: { en: "At least 3 concrete, named paths", zh: "至少 3 条具体途径，名称明确" } },
-      { item: { en: "Link to the curriculum", zh: "与课程对应" }, points: "1", look: { en: "Matches the program curriculum", zh: "与培养方案相符" } },
+      { item: { en: "Course map check", zh: "核查课程地图" }, points: "2", look: { en: "Every label is backed by the curriculum", zh: "每处标注都有培养方案依据" } },
+      { item: { en: "Asking with material", zh: "给材料再问" }, points: "1", look: { en: "Explains why giving it the material reduced the errors", zh: "能说明提供材料后错误减少的原因" } },
+      { item: { en: "Summary and plan", zh: "总结与计划" }, points: "2", look: { en: "Concrete takeaways, workable ways, and correct course matches", zh: "收获具体、途径可执行、课程对应准确" } },
     ],
-    gradingNote: { en: "Graded by the rubric. Submitting does not earn full marks by itself.", zh: "按量规评分，不是提交即满分。" },
-    ai: { en: "You may use AI to organize your thoughts, but your takeaways and plan must be your own.", zh: "可以用 AI 帮你整理思路，但收获和计划必须是你自己的。" },
-    pitfalls: [{ en: "Listing only vague paths like “follow some accounts”.", zh: "只列“关注公众号”这类泛泛的途径。" }],
+    ai: AI_HW,
+    pitfalls: [{ en: "Listing only vague ways like “follow some accounts”.", zh: "只列“关注公众号”这类泛泛的途径。" }],
   },
 ];
 
@@ -574,7 +664,7 @@ export const policies: { title: L; text: L }[] = [
   },
   {
     title: { en: "Using AI", zh: "AI 使用" },
-    text: { en: "Think and try on your own first, and turn to AI when you get stuck. Once you have your own idea or draft, you may use AI to organize, check, and revise it, with an honest statement of how you used it. Do not submit answers, analyses, or reports generated by AI. No AI is allowed in the in-class quizzes or the closed-book exam. In the final project you may use AI to brainstorm, search, and self-test with the published grading prompt; the problem, plan, and judgments must be your own. An honest statement never costs points. Hiding AI use does.", zh: "先自己想、自己做，遇到困难再用 AI。在本人已有思路或初稿的基础上，可以用 AI 梳理、检查、修改，并如实声明参与方式。不得直接提交 AI 生成的答案、分析或报告。随堂小测验和期末闭卷考试不得使用 AI。期末大作业可以用 AI 构思、查资料，并用公开的评分提示词自测；问题、方案和判断须本人完成。声明如实不扣分，隐瞒才扣分。" },
+    text: { en: "For homework, you are encouraged to use AI to get ideas, look up how things work, and predict results, and you must attach the conversation links. Screenshots, data, and recordings must come from your own work, and the analysis must be written by you. Do not submit answers, analyses, or reports generated by AI. No AI is allowed in the in-class quizzes or the closed-book exam. In the final project you may use AI to brainstorm, search, and self-test with the published grading prompt; the problem, plan, and judgments must be your own. An honest statement never costs points. Hiding AI use does.", zh: "课后作业鼓励借助 AI 出主意、查原理和预测结果，须附对话链接；截图、数据和录屏须来自本人操作，分析须本人撰写，不得直接提交 AI 生成的答案、分析或报告。随堂小测验和期末闭卷考试不得使用 AI。期末大作业可以用 AI 构思、查资料，并用公开的评分提示词自测；问题、方案和判断须本人完成。声明如实不扣分，隐瞒才扣分。" },
   },
   {
     title: { en: "Late work", zh: "迟交" },

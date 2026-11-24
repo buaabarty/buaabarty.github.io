@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>强化学习练习</title>
+  <link rel="stylesheet" href="../common/tool.css">
+  <script src="../common/tool.js"></script>
+  <style>
+    #board { display: grid; gap: 4px; width: min(100%, 560px); margin: 0 auto; }
+    .cell { position: relative; aspect-ratio: 1 / 1; border: 1px solid var(--border); border-radius: 10px; background: var(--surface);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; user-select: none; }
+    .cell:hover { border-color: var(--border-strong); }
+    .cell .v { font-size: 13px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+    .cell .a { font-size: 22px; line-height: 1; color: var(--accent); }
+    .cell .tag { font-size: 13px; font-weight: 600; }
+    .cell.wall { background: var(--c-wall); border-color: transparent; }
+    .cell.gold { background: color-mix(in oklab, var(--tone-amber) 26%, var(--surface)); border-color: var(--tone-amber); }
+    .cell.trap { background: color-mix(in oklab, var(--tone-rose) 20%, var(--surface)); border-color: var(--tone-rose); }
+    .cell.start { outline: 3px solid var(--tone-green); outline-offset: -3px; }
+    .cell.walk { background: color-mix(in oklab, var(--tone-green) 18%, var(--surface)); }
+    .cell .bot { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 30px; pointer-events: none; }
+    #curve { width: 100%; height: 170px; display: block; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); margin-top: 12px; }
+    .check { display: flex; gap: 8px; align-items: center; cursor: pointer; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .credit { font-size: 13px; color: var(--text-secondary); text-align: center; margin: 12px 0 0; }
+    .credit a { color: inherit; }
+    #copyMsg { min-height: 1.2em; }
+    .info-panel .field-group { margin-top: 14px; }
+  </style>
+</head>
+<body data-title-zh="强化学习练习" data-title-en="Reinforcement Learning Lab">
+  <main class="app-shell">
+    <section class="workspace" aria-label="强化学习练习区">
+      <aside class="control-panel" aria-label="控制面板">
+        <div class="field-group">
+          <span class="field-label" data-en="Click a cell to place">点格子放什么</span>
+          <div class="segmented three" role="group" aria-label="编辑方式">
+            <button type="button" class="mode-button is-active" data-mode="W" data-en="Wall">墙</button>
+            <button type="button" class="mode-button" data-mode="G" data-en="Gem">宝石</button>
+            <button type="button" class="mode-button" data-mode="T" data-en="Trap">陷阱</button>
+            <button type="button" class="mode-button" data-mode="S" data-en="Start">起点</button>
+            <button type="button" class="mode-button" data-mode="." data-en="Empty">空地</button>
+          </div>
+        </div>
+        <div class="field-group">
+          <label for="step"><span data-en="Cost per step:&nbsp;">每步扣分：</span><b id="stepV"></b></label>
+          <input id="step" type="range" min="-20" max="0" value="-1">
+        </div>
+        <div class="field-group">
+          <label for="gem"><span data-en="Gem reward:&nbsp;">宝石奖励：</span><b id="gemV"></b></label>
+          <input id="gem" type="range" min="1" max="20" value="10">
+        </div>
+        <div class="field-group">
+          <label for="trap"><span data-en="Trap penalty:&nbsp;">陷阱惩罚：</span><b id="trapV"></b></label>
+          <input id="trap" type="range" min="-20" max="0" value="-10">
+        </div>
+        <div class="field-group">
+          <label class="check"><input id="ends" type="checkbox" checked> <span data-en="Reaching the gem ends the round">拿到宝石就结束</span></label>
+        </div>
+        <div class="field-group">
+          <label for="gamma"><span data-en="Discount on future reward:&nbsp;">远处奖励打几折：</span><b id="gammaV"></b></label>
+          <input id="gamma" type="range" min="50" max="99" value="90">
+        </div>
+        <div class="field-group">
+          <label for="alpha"><span data-en="Learning rate:&nbsp;">学习率：</span><b id="alphaV"></b></label>
+          <input id="alpha" type="range" min="1" max="100" value="10">
+        </div>
+        <div class="field-group">
+          <label for="eps"><span data-en="Exploration rate:&nbsp;">探索率：</span><b id="epsV"></b></label>
+          <input id="eps" type="range" min="0" max="100" value="20">
+          <p class="hint" data-en="The share of moves picked at random instead of following the best known move.">每一步有这么大的概率随便试一个方向，而不是走目前认为最好的方向。</p>
+        </div>
+        <div class="field-group">
+          <label for="maxSteps"><span data-en="Max steps per round:&nbsp;">每局最多步数：</span><b id="maxStepsV"></b></label>
+          <input id="maxSteps" type="range" min="20" max="300" step="10" value="100">
+        </div>
+        <div class="field-group">
+          <label for="speed"><span data-en="Speed:&nbsp;">速度：</span><b id="speedV"></b></label>
+          <input id="speed" type="range" min="0" max="3" value="2">
+        </div>
+        <div class="button-grid">
+          <button type="button" id="runBtn" class="primary" data-en="Start training">开始训练</button>
+          <button type="button" id="fastBtn" data-en="Train 100 rounds">训练 100 局</button>
+          <button type="button" id="resetBtn" data-en="Start over">重新开始</button>
+          <button type="button" id="defaultBtn" data-en="Homework map">作业地图</button>
+        </div>
+      </aside>
+
+      <section class="maze-area" aria-label="网格">
+        <div class="canvas-frame"><div id="board"></div></div>
+        <canvas id="curve" aria-label="每局奖励曲线"></canvas>
+        <p class="credit"><span data-en="Interface inspired by">界面参考</span> <a href="https://github.com/awjuliani/web-rl-playground" target="_blank" rel="noopener">web-rl-playground</a>（MIT）</p>
+      </section>
+
+      <aside class="info-panel" aria-label="运行状态">
+        <div class="metric-list">
+          <div><span data-en="Rounds trained">已训练局数</span><strong id="eps_n">0</strong></div>
+          <div><span data-en="Reward last round">上一局奖励</span><strong id="lastR">-</strong></div>
+          <div><span data-en="Average of last 20 rounds">最近 20 局平均</span><strong id="avgR">-</strong></div>
+          <div><span data-en="Following the arrows from the start">按箭头从起点走</span><strong id="outcome">-</strong></div>
+          <div><span data-en="Steps on that route">这条路线走几步</span><strong id="steps">-</strong></div>
+        </div>
+        <div class="field-group">
+          <span class="field-label" data-en="Show in cells">格子里显示</span>
+          <div class="segmented" role="group" aria-label="显示方式">
+            <button type="button" class="mode-button view-button is-active" data-view="arrow" data-en="Arrows">箭头</button>
+            <button type="button" class="mode-button view-button" data-view="value" data-en="Values">数值</button>
+          </div>
+        </div>
+        <div class="button-grid">
+          <button type="button" id="copyBtn" data-en="Copy link to this setup">复制本页链接</button>
+        </div>
+        <p class="hint" id="copyMsg"></p>
+        <div class="tips">
+          <h2 data-en="How it works">怎么回事</h2>
+          <p data-en="The robot knows nothing about the map. Each round it starts from the start cell and tries moves. After every step it updates how good that move was, using the reward it just got and how good the next cell looks.">机器人一开始对地图一无所知。每一局它从起点出发，一步步试着走。每走一步，它就根据刚拿到的奖励和下一格看起来有多好，更新“刚才那一步值多少分”。</p>
+          <p data-en="The arrow in a cell is the move it currently thinks is best there. In value view, the number is how much reward it expects to collect from that cell onward.">格子里的箭头是它目前认为最好的走法。切到“数值”时，数字是它估计从这一格出发往后还能拿到多少奖励。</p>
+          <p data-en="Changing the map, the rewards, the discount, or the checkbox starts training over. The address bar always holds the current setup, so you can share it.">改地图、改奖励、改折扣或改勾选框，训练都会从头开始。地址栏里始终是当前的设置，可以直接复制分享。</p>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var HW_MAP = ['S.....', 'TWWWW.', '......', '.WWWWW', '......', 'WWWWWG'];
+  var DEF = { step: -1, gem: 10, trap: -10, ends: true, gamma: 90, alpha: 10, eps: 20, maxSteps: 100 };
+  var DIRS = [[-1, 0, '↑'], [1, 0, '↓'], [0, -1, '←'], [0, 1, '→']];
+  var SPEEDS = [
+    { zh: '慢', en: 'Slow', every: 6, steps: 1 },
+    { zh: '中', en: 'Medium', every: 1, steps: 1 },
+    { zh: '快', en: 'Fast', every: 1, steps: 25 },
+    { zh: '极快', en: 'Very fast', every: 1, steps: 2000 }
+  ];
+  var grid, R, C, Q, episodes, curve, agent, epReward, epSteps, running = false, frame = 0, mode = 'W', view = 'arrow';
+
+  function P() {
+    return { step: +$('step').value / 10, gem: +$('gem').value, trap: +$('trap').value, ends: $('ends').checked,
+             gamma: +$('gamma').value / 100, alpha: +$('alpha').value / 100, eps: +$('eps').value / 100,
+             maxSteps: +$('maxSteps').value };
+  }
+
+  /* ---------- 地址栏 <-> 设置 ---------- */
+  function readURL() {
+    var q = new URLSearchParams(location.search), rows = (q.get('map') || '').split('_');
+    var ok = rows.length >= 3 && rows.length <= 10 && rows.every(function (r) { return r.length === rows[0].length && /^[SWGT.]{3,10}$/.test(r); }) &&
+      rows.join('').split('S').length === 2;
+    grid = (ok ? rows : HW_MAP).map(function (r) { return r.split(''); });
+    function num(k, lo, hi, d) { var v = parseFloat(q.get(k)); return isFinite(v) ? Math.min(hi, Math.max(lo, v)) : d; }
+    $('step').value = Math.round(num('step', -2, 0, DEF.step / 10) * 10);
+    $('gem').value = num('gem', 1, 20, DEF.gem);
+    $('trap').value = num('trap', -20, 0, DEF.trap);
+    $('ends').checked = q.has('end') ? q.get('end') !== '0' : DEF.ends;
+    $('gamma').value = Math.round(num('gamma', 0.5, 0.99, DEF.gamma / 100) * 100);
+    $('alpha').value = Math.round(num('alpha', 0.01, 1, DEF.alpha / 100) * 100);
+    $('eps').value = Math.round(num('eps', 0, 1, DEF.eps / 100) * 100);
+    $('maxSteps').value = num('max', 20, 300, DEF.maxSteps);
+  }
+  function writeURL() {
+    var p = P(), q = new URLSearchParams();
+    q.set('map', grid.map(function (r) { return r.join(''); }).join('_'));
+    q.set('step', p.step.toFixed(1)); q.set('gem', p.gem); q.set('trap', p.trap); q.set('end', p.ends ? 1 : 0);
+    q.set('gamma', p.gamma.toFixed(2)); q.set('alpha', p.alpha.toFixed(2)); q.set('eps', p.eps.toFixed(2)); q.set('max', p.maxSteps);
+    var lang = new URLSearchParams(location.search).get('lang'); if (lang) q.set('lang', lang);
+    history.replaceState(null, '', location.pathname + '?' + q.toString());
+  }
+
+  /* ---------- 学习 ---------- */
+  function startCell() {
+    for (var r = 0; r < R; r++) for (var c = 0; c < C; c++) if (grid[r][c] === 'S') return [r, c];
+    return null;
+  }
+  function reset() {
+    R = grid.length; C = grid[0].length;
+    Q = []; for (var i = 0; i < R * C; i++) Q.push([0, 0, 0, 0]);
+    episodes = 0; curve = []; newEpisode();
+    writeURL(); render();
+  }
+  function newEpisode() { agent = startCell(); epReward = 0; epSteps = 0; }
+  function move(r, c, d) {
+    var nr = r + DIRS[d][0], nc = c + DIRS[d][1];
+    if (nr < 0 || nr >= R || nc < 0 || nc >= C || grid[nr][nc] === 'W') return [r, c];
+    return [nr, nc];
+  }
+  function argmax(qs, random) {
+    var m = Math.max.apply(null, qs), best = [];
+    for (var i = 0; i < 4; i++) if (qs[i] === m) best.push(i);
+    return random ? best[Math.floor(Math.random() * best.length)] : best[0];
+  }
+  // 走一步：奖励只看走进了哪一格。宝石要从别的格子走进去才给分。
+  function tick(p) {
+    if (!agent) return;
+    var r = agent[0], c = agent[1], qs = Q[r * C + c];
+    var a = Math.random() < p.eps ? Math.floor(Math.random() * 4) : argmax(qs, true);
+    var n = move(r, c, a), ch = grid[n[0]][n[1]], moved = n[0] !== r || n[1] !== c;
+    var rew = p.step, done = false;
+    if (ch === 'T') { rew = p.trap; done = true; }
+    else if (ch === 'G' && moved) { rew = p.gem; done = p.ends; }
+    var target = rew + (done ? 0 : p.gamma * Math.max.apply(null, Q[n[0] * C + n[1]]));
+    qs[a] += p.alpha * (target - qs[a]);
+    epReward += rew; epSteps++; agent = n;
+    if (done || epSteps >= p.maxSteps) { episodes++; curve.push(epReward); newEpisode(); return true; }
+    return false;
+  }
+  function greedyWalk() {
+    var s = startCell(), seen = {}, n = 0;
+    if (!s || !episodes) return { path: {}, end: '-', n: '-' };
+    var path = {};
+    for (var i = 0; i < R * C + 1; i++) {
+      path[s[0] + ',' + s[1]] = 1;
+      var ch = grid[s[0]][s[1]];
+      if (ch === 'G' && i > 0) return { path: path, end: TOOL.t('拿到宝石', 'Gets the gem'), n: n };
+      if (ch === 'T') return { path: path, end: TOOL.t('掉进陷阱', 'Falls into the trap'), n: n };
+      if (seen[s]) break;
+      seen[s] = 1;
+      s = move(s[0], s[1], argmax(Q[s[0] * C + s[1]], false)); n++;
+    }
+    return { path: path, end: TOOL.t('原地打转', 'Goes in circles'), n: '-' };
+  }
+
+  /* ---------- 画面 ---------- */
+  function render() {
+    var p = P(), sp = SPEEDS[+$('speed').value];
+    $('stepV').textContent = p.step.toFixed(1); $('gemV').textContent = '+' + p.gem; $('trapV').textContent = p.trap;
+    $('gammaV').textContent = p.gamma.toFixed(2); $('alphaV').textContent = p.alpha.toFixed(2);
+    $('epsV').textContent = p.eps.toFixed(2); $('maxStepsV').textContent = p.maxSteps; $('speedV').textContent = TOOL.t(sp.zh, sp.en);
+    var w = greedyWalk(), b = $('board');
+    b.style.gridTemplateColumns = 'repeat(' + C + ', minmax(0, 1fr))'; b.innerHTML = '';
+    grid.forEach(function (row, r) {
+      row.forEach(function (ch, c) {
+        var d = document.createElement('div'), k = r * C + c, qs = Q[k], html = '';
+        d.className = 'cell' + (ch === 'W' ? ' wall' : ch === 'G' ? ' gold' : ch === 'T' ? ' trap' : '') +
+          (ch === 'S' ? ' start' : '') + (w.path[r + ',' + c] && ch !== 'G' && ch !== 'T' ? ' walk' : '');
+        if (ch === 'G') html = '<span class="tag">' + TOOL.t('宝石', 'Gem') + '</span><span class="v">+' + p.gem + '</span>';
+        else if (ch === 'T') html = '<span class="tag">' + TOOL.t('陷阱', 'Trap') + '</span><span class="v">' + p.trap + '</span>';
+        else if (ch !== 'W') {
+          var touched = qs.some(function (x) { return x !== 0; });
+          if (view === 'arrow') html = touched ? '<span class="a">' + DIRS[argmax(qs, false)][2] + '</span>' : '';
+          else html = '<span class="v">' + (touched ? Math.max.apply(null, qs).toFixed(1) : '0') + '</span>';
+          if (ch === 'S') html += '<span class="tag">' + TOOL.t('起点', 'Start') + '</span>';
+        }
+        if (running && agent && agent[0] === r && agent[1] === c && sp.steps < 100) html += '<span class="bot">🤖</span>';
+        d.innerHTML = html;
+        d.addEventListener('click', function () { edit(r, c); });
+        b.appendChild(d);
+      });
+    });
+    $('eps_n').textContent = episodes;
+    $('lastR').textContent = curve.length ? curve[curve.length - 1].toFixed(1) : '-';
+    var tail = curve.slice(-20);
+    $('avgR').textContent = tail.length ? (tail.reduce(function (s, x) { return s + x; }, 0) / tail.length).toFixed(1) : '-';
+    $('outcome').textContent = w.end; $('steps').textContent = w.n;
+    drawCurve();
+  }
+  function drawCurve() {
+    var cv = $('curve'), dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    var g = cv.getContext('2d'); g.scale(dpr, dpr); g.clearRect(0, 0, W, H);
+    var txt = TOOL.css('--text-secondary') || '#555', acc = TOOL.css('--accent') || '#2563eb', grid2 = TOOL.css('--border') || '#ddd';
+    g.font = '12px system-ui, sans-serif'; g.fillStyle = txt;
+    g.fillText(TOOL.t('每局奖励（横轴：第几局）', 'Reward per round (x: round)'), 10, 16);
+    if (curve.length < 2) return;
+    var L = 46, T = 26, RW = W - L - 12, RH = H - T - 22;
+    var lo = Math.min.apply(null, curve), hi = Math.max.apply(null, curve);
+    if (hi - lo < 1) { hi += 0.5; lo -= 0.5; }
+    var x = function (i) { return L + RW * i / (curve.length - 1); }, y = function (v) { return T + RH * (hi - v) / (hi - lo); };
+    g.strokeStyle = grid2; g.lineWidth = 1;
+    [lo, (lo + hi) / 2, hi].forEach(function (v) { g.beginPath(); g.moveTo(L, y(v)); g.lineTo(L + RW, y(v)); g.stroke(); g.fillText(v.toFixed(0), 6, y(v) + 4); });
+    if (lo < 0 && hi > 0) { g.strokeStyle = txt; g.beginPath(); g.moveTo(L, y(0)); g.lineTo(L + RW, y(0)); g.stroke(); }
+    g.fillText('1', L, H - 6); g.fillText(String(curve.length), L + RW - 24, H - 6);
+    g.globalAlpha = 0.3; g.strokeStyle = acc; g.beginPath();
+    curve.forEach(function (v, i) { if (i) g.lineTo(x(i), y(v)); else g.moveTo(x(i), y(v)); }); g.stroke();
+    g.globalAlpha = 1; g.lineWidth = 2; g.beginPath(); var s = 0;
+    curve.forEach(function (v, i) { s += v; if (i >= 20) s -= curve[i - 20]; var m = s / Math.min(i + 1, 20); if (i) g.lineTo(x(i), y(m)); else g.moveTo(x(i), y(m)); });
+    g.stroke();
+  }
+
+  /* ---------- 交互 ---------- */
+  function edit(r, c) {
+    if (mode === 'S') grid.forEach(function (row) { row.forEach(function (x, j) { if (x === 'S') row[j] = '.'; }); });
+    else if (grid[r][c] === 'S') return; // 起点只能挪，不能删
+    grid[r][c] = mode; reset();
+  }
+  function loop() {
+    if (!running) return;
+    var sp = SPEEDS[+$('speed').value], p = P();
+    frame++;
+    if (frame % sp.every === 0) {
+      for (var i = 0; i < sp.steps; i++) tick(p);
+      render();
+    }
+    requestAnimationFrame(loop);
+  }
+  function setRunning(on) {
+    running = on;
+    var b = $('runBtn');
+    b.setAttribute('data-zh', on ? '暂停' : '开始训练'); b.setAttribute('data-en', on ? 'Pause' : 'Start training');
+    b.innerHTML = TOOL.t(b.getAttribute('data-zh'), b.getAttribute('data-en'));
+    if (on) requestAnimationFrame(loop); else render();
+  }
+  [].forEach.call(document.querySelectorAll('[data-mode]'), function (btn) {
+    btn.addEventListener('click', function () {
+      mode = btn.getAttribute('data-mode');
+      [].forEach.call(document.querySelectorAll('[data-mode]'), function (x) { x.classList.toggle('is-active', x === btn); });
+    });
+  });
+  [].forEach.call(document.querySelectorAll('.view-button'), function (btn) {
+    btn.addEventListener('click', function () {
+      view = btn.getAttribute('data-view');
+      [].forEach.call(document.querySelectorAll('.view-button'), function (x) { x.classList.toggle('is-active', x === btn); });
+      render();
+    });
+  });
+  // 这些设置改变了“什么是好结果”，旧的经验作废，从头训练
+  ['step', 'gem', 'trap', 'gamma'].forEach(function (id) { $(id).addEventListener('input', reset); });
+  $('ends').addEventListener('change', reset);
+  // 这些只改变学习方式，保留已学到的
+  ['alpha', 'eps', 'maxSteps', 'speed'].forEach(function (id) { $(id).addEventListener('input', function () { writeURL(); render(); }); });
+  $('runBtn').addEventListener('click', function () { setRunning(!running); });
+  $('fastBtn').addEventListener('click', function () {
+    var p = P(), target = episodes + 100, guard = 0;
+    while (episodes < target && guard++ < 100 * 400) tick(p);
+    render();
+  });
+  $('resetBtn').addEventListener('click', reset);
+  $('defaultBtn').addEventListener('click', function () {
+    grid = HW_MAP.map(function (r) { return r.split(''); });
+    $('step').value = DEF.step; $('gem').value = DEF.gem; $('trap').value = DEF.trap; $('ends').checked = DEF.ends;
+    $('gamma').value = DEF.gamma; $('alpha').value = DEF.alpha; $('eps').value = DEF.eps; $('maxSteps').value = DEF.maxSteps;
+    reset();
+  });
+  $('copyBtn').addEventListener('click', function () {
+    var url = location.href, msg = $('copyMsg');
+    function done(ok) { msg.textContent = ok ? TOOL.t('已复制，可以贴进作业。', 'Copied.') : TOOL.t('复制失败，请直接复制地址栏。', 'Copy failed. Copy the address bar instead.'); }
+    if (navigator.clipboard) navigator.clipboard.writeText(url).then(function () { done(true); }, function () { done(false); }); else done(false);
+  });
+  window.addEventListener('resize', drawCurve);
+  readURL(); reset();
+  TOOL.onLang(function () { setRunning(running); render(); });
+})();
+</script>
+</body>
+</html>

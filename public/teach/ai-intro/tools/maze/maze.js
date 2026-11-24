@@ -259,13 +259,13 @@
     resetSearchView(msg("已更新迷宫", "Maze updated"));
   }
 
-  function neighbors(cellKey) {
+  // 深度优先用栈，后压入的先尝试。按右、左、下、上压入，实际尝试顺序就是课上讲的上、下、左、右。
+  const DFS_PUSH_ORDER = [[0, 1], [0, -1], [1, 0], [-1, 0]];
+  const DEFAULT_ORDER = [[-1, 0], [0, -1], [0, 1], [1, 0]];
+
+  function neighbors(cellKey, order) {
     const { row, col } = parseKey(cellKey);
-    const moves = [
-      [-1, 0],
-      [0, -1], [0, 1],
-      [1, 0]
-    ];
+    const moves = order || DEFAULT_ORDER;
     const result = [];
     moves.forEach(([dr, dc]) => {
       const nextRow = row + dr;
@@ -302,7 +302,7 @@
   }
 
   function openHasBetterPath(open, cellKey, gScore) {
-    return open.some((node) => node.key === cellKey && gScore > node.g);
+    return open.some((node) => node.key === cellKey && node.g <= gScore);
   }
 
   function uniqueKeys(nodes, closed) {
@@ -343,7 +343,8 @@
 
   function finalFoundStep(node, visited) {
     const path = buildPathFromNode(node);
-    const distance = path.length;
+    // path 不含起点和终点，步数是走过的边数，比中间格子数多 1
+    const distance = path.length + 1;
     return snapshot(
       node.key,
       visited,
@@ -380,6 +381,9 @@
       const current = lowestCostNode(open);
       const currentNode = current.node;
       open.splice(current.index, 1);
+      if (exploredHas(closed, currentNode.key)) {
+        continue;
+      }
       closed.push(currentNode);
       visited.add(currentNode.key);
       if (currentNode.key === targetKey) {
@@ -431,7 +435,7 @@
       }
 
       explored.push(current);
-      neighbors(current.key).forEach((nextKey) => {
+      neighbors(current.key, useStack ? DFS_PUSH_ORDER : null).forEach((nextKey) => {
         if (!frontierHas(frontier, nextKey) && !exploredHas(explored, nextKey)) {
           frontier.push(makeNode(nextKey, current));
         }

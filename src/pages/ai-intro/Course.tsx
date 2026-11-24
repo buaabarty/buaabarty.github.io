@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useT } from "@/i18n";
 import { aiRecord, course, demoSite, exam, grading, lectureDates, lectureTime, tools, homeworks, lectures, policies, project, projectPrompt, scheduleEvents, week, type Homework } from "./content";
 
@@ -236,12 +236,15 @@ function HomeworkPage({ hw }: { hw: Homework }) {
       {hw.tools && (
         <p>
           {s("Tool: ", "使用工具：")}
-          {hw.tools.map((id) => {
+          {hw.tools.map((id, i) => {
             const tool = tools.find((x) => x.id === id)!;
             return (
-              <a key={id} href={tool.href} target="_blank" rel="noopener">
-                {t(tool.title)}
-              </a>
+              <Fragment key={id}>
+                {i > 0 && s(", ", "、")}
+                <a href={tool.href} target="_blank" rel="noopener">
+                  {t(tool.title)}
+                </a>
+              </Fragment>
             );
           })}
         </p>
