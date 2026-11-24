@@ -124,8 +124,8 @@ export const tools: { id: ToolId; lecture: number; href: string; title: L; text:
     href: "/teach/ai-intro/tools/rl/",
     title: { en: "Reinforcement learning lab", zh: "强化学习练习" },
     text: {
-      en: "Train a robot by trial and error to find the gem and avoid the trap. Change the rewards and watch the reward curve and the learned route change.",
-      zh: "让机器人一局局试错，学会去拿宝石、避开陷阱。改一改奖励，看每局奖励曲线和学到的路线怎么变。",
+      en: "Train a robot by trial and error to find the gem and avoid the trap. Try six algorithms and four exploration strategies, change the rewards, and watch the values, the route, and the reward curve change.",
+      zh: "让机器人一局局试错，学会去拿宝石、避开陷阱。可以换 6 种算法和 4 种探索策略、改奖励，看价值、路线和每局奖励曲线怎么变。",
     },
   },
   {
@@ -293,48 +293,50 @@ export const homeworks: Homework[] = [
     out: { en: "Wed, Nov 25, after class", zh: "11 月 25 日 周三课后" },
     due: { en: "Mon, Nov 30, before class", zh: "11 月 30 日 周一上课前" },
     overview: {
-      en: "Train a gem-seeking robot in the reinforcement learning tool and see how rewards decide what it learns. Before you start, ask an AI to calculate and predict, then check it against your own training.",
-      zh: "在强化学习练习页训练一个找宝石的机器人，看奖励怎样决定它学到的行为。动手前先让 AI 算一算、猜一猜，再用自己训练的结果核对。",
+      en: "Train a gem-seeking robot in the reinforcement learning lab and see how rewards decide what it learns. Then pick a setting of your own, such as another algorithm or exploration strategy, and use AI to understand how it computes each step.",
+      zh: "在强化学习练习页训练一个找宝石的机器人，看奖励怎样决定它学到的行为。再自选一种不同的设置，例如换一种算法或探索策略，借助 AI 弄懂它每一步是怎么算的。",
     },
     tasks: [
       {
         title: { en: "Task 1. A bigger cost per step (2 points)", zh: "任务一　多扣分会怎样（2 分）" },
-        link: { href: "/teach/ai-intro/tools/rl/?map=S....._TWWWW._......_.WWWWW_......_WWWWWG&step=-0.1&gem=10&trap=-10&end=1&gamma=0.90&alpha=0.10&eps=0.20&max=100", label: { en: "Open the homework map", zh: "打开作业地图" } },
+        link: { href: "/teach/ai-intro/tools/rl/?algo=q-learning&strategy=epsilon-greedy&lr=0.1&discount=0.9&epsilon=0.2&grid=6&display=policy&stepPenalty=-0.1&gemReward=10&badReward=-10&maxSteps=100&terminate=1&map=S....._XWWWW._......_.WWWWW_......_WWWWWG", label: { en: "Open the homework map", zh: "打开作业地图" } },
         steps: [
-          { en: "Open the homework map. With a cost of −0.1 per step, train until the reward curve levels off, about 300 rounds. Take screenshots of the arrows and the reward curve.", zh: "打开作业地图，每步扣 −0.1，训练到奖励曲线平稳（约 300 局），截下箭头图和奖励曲线。" },
-          { en: "Make the cost 0.1 larger each time and train again. Find the value at which the robot jumps into the trap as soon as it leaves the start.", zh: "每次把扣分加大 0.1，重新训练，找出机器人一出门就跳进陷阱的那个值。" },
+          { en: "Open the homework map. With a cost of −0.1 per step, train about 300 rounds (“快速训练 100 局” three times) until the reward curve levels off. Take screenshots of the arrows and the reward curve.", zh: "打开作业地图，每步扣 −0.1，训练约 300 局（点三次“快速训练 100 局”），到奖励曲线平稳为止，截下箭头图和奖励曲线。" },
+          { en: "Make the cost 0.1 larger each time, click “重置算法” (reset algorithm), and train again. Find the value at which the robot jumps into the trap as soon as it leaves the start.", zh: "每次把扣分加大 0.1，点“重置算法”后重新训练，找出机器人一出门就跳进陷阱的那个值。" },
           { en: "Explain why, using how many points the whole trip to the gem costs.", zh: "用“走到宝石一共要扣多少分”解释为什么会这样。" },
         ],
       },
       {
         title: { en: "Task 2. The robot finds a loophole (1 point)", zh: "任务二　机器人钻空子（1 分）" },
         text: {
-          en: "Set the cost back to −0.1, uncheck “拿到宝石就结束” (reaching the gem ends the round), and train again. Take screenshots of its behavior and the reward curve, explain what loophole it found and which idea from class it shows, then change one setting to make it behave normally and check that it works.",
-          zh: "把扣分改回 −0.1，取消勾选“拿到宝石就结束”，重新训练。截下机器人的行为和奖励曲线，说明它钻了什么空子、和课上讲的哪个道理对应；再改一个设置让它恢复正常，并验证。",
+          en: "Set the cost back to −0.1, uncheck “拿到宝石就结束” (reaching the gem ends the round), reset the algorithm, and train again. Take screenshots of its behavior and the reward curve, explain what loophole it found and which idea from class it shows, then change one setting to make it behave normally and check that it works.",
+          zh: "把扣分改回 −0.1，取消勾选“拿到宝石就结束”，重置算法后重新训练。截下机器人的行为和奖励曲线，说明它钻了什么空子、和课上讲的哪个道理对应；再改一个设置让它恢复正常，并验证。",
         },
       },
       {
-        title: { en: "Task 3. Ask AI first (2 points)", zh: "任务三　先问 AI（2 分）" },
-        text: {
-          en: "Before Task 1, send a screenshot of the map and the settings to DeepSeek or Doubao. Ask it to calculate the cost at which the robot switches to the trap and to predict what will happen in Task 2. After your experiments, compare its answers with your results in a table and say where it was right, where it was wrong, and at which step it went wrong.",
-          zh: "开始任务一之前，把地图截图和设置发给 DeepSeek 或豆包，请它算出机器人改去陷阱的扣分值，并预测任务二会发生什么。做完实验后，列表对比 AI 的答案和你的结果，指出 AI 哪里对、哪里错、错在哪一步。",
-        },
+        title: { en: "Task 3. Explore a setting of your choice (2 points)", zh: "任务三　自选设置探索（2 分）" },
+        steps: [
+          { en: "Pick any one different setting: another algorithm (SARSA, Expected SARSA, Monte Carlo, Actor-Critic, Successor Representation), another exploration strategy (Softmax, random, greedy), or another value of the discount factor, learning rate, or exploration rate.", zh: "任选一种不同的设置：换一种算法（SARSA、期望 SARSA、蒙特卡洛、演员-评论家、后继表示），换一种探索策略（Softmax、完全随机、纯贪心），或改折扣因子、学习率、探索率中的一项。" },
+          { en: "Train it on the homework map and compare the route and reward curve with the default Q-learning settings.", zh: "在作业地图上训练，和默认的 Q 学习设置对比路线和奖励曲线。" },
+          { en: "With the help of AI, understand how this setting computes each step. The algorithm notes at the bottom of the page are a good starting point. Pick one step and work through its update in your own words, then explain how this calculation leads to the difference you saw.", zh: "借助 AI 弄懂这种设置每一步是怎么算的，可以从页面下方的“当前算法说明”入手。挑一步，用自己的话把这一步的更新过程算一遍，再说明这种算法正是怎样导致了你看到的差别。" },
+        ],
       },
       {
         title: { en: "Optional, not graded", zh: "选做，不计分" },
         text: { en: "In the maze search tool, run the three searches on the same maze and compare the cells examined and the path length.", zh: "在迷宫搜索工具里，同一张迷宫依次运行三种搜索，比较查看的格子数和路径长度。" },
       },
     ],
-    submit: { en: "Screenshots, reward curves, the setup link (from “复制本页链接”), the AI conversation link, and your analysis.", zh: "截图、奖励曲线、配置链接（点“复制本页链接”）、AI 对话链接和你的分析。" },
+    submit: { en: "Screenshots, reward curves, the setup links (from “复制本页链接”), the AI conversation link, and your analysis.", zh: "截图、奖励曲线、配置链接（点“复制本页链接”）、AI 对话链接和你的分析。" },
     grading: [
       { item: { en: "Finding the value", zh: "找到临界值" }, points: "2", look: { en: "Screenshots and links match the numbers, the value is reasonable, and the explanation uses the total cost of the trip", zh: "截图、链接与数字一致，找到的值合理，能用一路累计的扣分解释" } },
       { item: { en: "The loophole", zh: "钻空子" }, points: "1", look: { en: "Links the loophole to how the reward was designed, and fixes it with a verified change", zh: "说清钻空子与奖励设计的关系，并改设置验证恢复正常" } },
-      { item: { en: "AI versus experiment", zh: "AI 与实验对比" }, points: "2", look: { en: "A comparison table that points to the exact step where the AI went wrong", zh: "对比表清楚，指出 AI 具体错在哪一步" } },
+      { item: { en: "Your own setting", zh: "自选设置探索" }, points: "2", look: { en: "A clear comparison with the default, one step worked through correctly, and the calculation tied to the difference observed", zh: "与默认设置的对比清楚，挑出的一步算得对，并能把算法的计算方式和看到的差别对应起来" } },
     ],
     ai: AI_HW,
     pitfalls: [
+      { en: "Changing the cost without clicking “重置算法”, so the robot keeps what it learned before.", zh: "改了扣分没有点“重置算法”，机器人还带着上一次学到的东西。" },
       { en: "Taking screenshots before training long enough.", zh: "没训练够局数就截图。" },
-      { en: "Copying the AI's answer without comparing it with your own results.", zh: "只抄 AI 的答案，没有和自己的结果对比。" },
+      { en: "Pasting the AI's explanation without tying it to your own training results.", zh: "只贴 AI 的解释，没有和自己训练的结果对应起来。" },
     ],
   },
   {
