@@ -156,7 +156,7 @@ function Schedule() {
         </tbody>
       </table>
       <p className="course-note">
-        {t({ en: "HW7 and HW8 are due on Dec 22, the day before the final exam. The final project is due on Dec 23 at 23:59.", zh: "HW7、HW8 在 12 月 22 日（期末考试前一天）截止，期末大作业在 12 月 23 日 23:59 前提交。" })}
+        {t({ en: "HW7 and HW8 are due on Jan 5, the day before the final exam. The final project is due on Jan 6 at 23:59.", zh: "HW7、HW8 在 1 月 5 日（期末考试前一天）截止，期末大作业在 1 月 6 日 23:59 前提交。" })}
       </p>
     </section>
   );
@@ -169,8 +169,8 @@ function Assignments() {
       <h2 id="assignments">{t({ en: "Assignments", zh: "作业" })}</h2>
       <p>
         {t({
-          en: "One assignment per lecture, 8 in total, 5 points each. Two assignments share a deadline: HW1–2 on Nov 30, HW3–4 on Dec 7, HW5–6 on Dec 14 (before class), HW7–8 on Dec 22. You can start in class and submit any time on Xuexitong, including before class or during the break.",
-          zh: "每讲一个作业，共 8 个，各 5 分。两个作业一起截止：HW1–2 在 11 月 30 日、HW3–4 在 12 月 7 日、HW5–6 在 12 月 14 日（均为上课前），HW7–8 在 12 月 22 日。可以课上开个头，课前、课间随时在学习通提交。",
+          en: "One assignment per lecture, 8 in total, 5 points each. Two assignments share a deadline: HW1–2 on Nov 30, HW3–4 on Dec 7, HW5–6 on Dec 14 (before class), HW7–8 on Jan 5. You can start in class and submit any time on Xuexitong, including before class or during the break.",
+          zh: "每讲一个作业，共 8 个，各 5 分。两个作业一起截止：HW1–2 在 11 月 30 日、HW3–4 在 12 月 7 日、HW5–6 在 12 月 14 日（均为上课前），HW7–8 在 1 月 5 日。可以课上开个头，课前、课间随时在学习通提交。",
         })}
       </p>
       <table className="course-table">

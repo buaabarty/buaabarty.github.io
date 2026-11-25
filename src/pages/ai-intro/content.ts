@@ -518,7 +518,7 @@ export const homeworks: Homework[] = [
     lectures: [7],
     tools: ["agent"],
     out: { en: "Mon, Dec 14, after class", zh: "12 月 14 日 周一课后" },
-    due: { en: "Tue, Dec 22, the day before the final exam", zh: "12 月 22 日（期末考试前一天）" },
+    due: { en: "Tue, Jan 5, the day before the final exam", zh: "1 月 5 日（期末考试前一天）" },
     overview: {
       en: "Give an AI that can search the web a real task of at least three steps, draw its execution chain, and check every step against official sources.",
       zh: "交给能联网的 AI 一个至少三步的真实任务，画出它的执行链，再用官方来源逐步核对。",
@@ -556,7 +556,7 @@ export const homeworks: Homework[] = [
     lectures: [8],
     tools: ["factcheck"],
     out: { en: "Wed, Dec 16, after class", zh: "12 月 16 日 周三课后" },
-    due: { en: "Tue, Dec 22, the day before the final exam", zh: "12 月 22 日（期末考试前一天）" },
+    due: { en: "Tue, Jan 5, the day before the final exam", zh: "1 月 5 日（期末考试前一天）" },
     overview: {
       en: "Fact-check what an AI says about your future courses, then plan your own study with the checked list.",
       zh: "核查 AI 介绍的后续专业课，再用核查过的课程表为自己做一份学习计划。",
@@ -596,7 +596,7 @@ export const homeworks: Homework[] = [
 ];
 
 export const exam = {
-  when: { en: "Wed, Dec 23, 13:30, computer lab (room to be announced)", zh: "12 月 23 日 周三 13:30，机房（地点另行通知）" },
+  when: { en: "Wed, Jan 6, 2027, computer lab (time and room to be announced)", zh: "2027 年 1 月 6 日 周三，机房（具体时间和地点另行通知）" },
   rows: [
     { item: { en: "Single choice", zh: "单项选择" }, n: "30", each: "1", total: "30" },
     { item: { en: "Multiple choice", zh: "多项选择" }, n: "10", each: "2", total: "20" },
@@ -612,7 +612,7 @@ export const exam = {
 
 export const project = {
   title: { en: "Design a Challenge Cup idea: use AI to solve a real problem", zh: "设计一个挑战杯创意：用人工智能解决一个真实问题" },
-  due: { en: "Wed, Dec 23, 23:59 (the day of the final exam), on Xuexitong", zh: "12 月 23 日（期末考试当天）23:59 前，学习通提交" },
+  due: { en: "Wed, Jan 6, 23:59 (the day of the final exam), on Xuexitong", zh: "1 月 6 日（期末考试当天）23:59 前，学习通提交" },
   overview: {
     en: "Individual work, 30 points. Following the standard of the Challenge Cup entrepreneurship competition, design an idea that uses AI to solve a real problem, and write it up as a proposal. Submit only the idea. You do not need to build anything. The idea must relate to the research direction of your innovation mentor: use one technique or idea from that direction on a concrete problem. You do not need to do research. A good idea has a real problem, something new, a plan that holds together, and well-understood risks.",
     zh: "个人完成，30 分。按“挑战杯”创业计划竞赛的标准，设计一个用人工智能解决真实问题的创意，写成一份提案。只交创意，不要求做出东西。创意要和你的双创导师的研究方向有一定相关性：把导师方向里的某项技术或思路用在一个具体问题上，不要求做研究本身。好的创意问题真实、有新意、方案讲得通、风险想得清。",
