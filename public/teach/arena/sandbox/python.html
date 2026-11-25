@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' blob: https://cdn.jsdelivr.net/npm/pyodide@314.0.8/; worker-src blob:; connect-src https://cdn.jsdelivr.net/npm/pyodide@314.0.8/; base-uri 'none'; form-action 'none'">
+<meta name="robots" content="noindex">
+<title>sandbox</title>
+</head>
+<body>
+<script type="text/plain" id="worker">// Python bots. The CSP allows the pinned Pyodide directory and nothing else.
+const post = self.postMessage.bind(self);
+let handle = null;
+
+self.addEventListener("message", async ({ data: m }) => {
+  try {
+    if (m.kind === "boot") {
+      post({ kind: "status", text: "正在加载 Python" });
+      const { loadPyodide } = await import("https://cdn.jsdelivr.net/npm/pyodide@314.0.8/pyodide.mjs");
+      const out = (text) => post({ kind: "log", text });
+      const py = await loadPyodide({ indexURL: "https://cdn.jsdelivr.net/npm/pyodide@314.0.8/", stdout: out, stderr: out });
+      py.runPython(`
+import sys, types, json
+_npe = types.ModuleType("npe")
+def _run(think): _npe.think = think
+_npe.run = _run
+_npe.think = None
+sys.modules["npe"] = _npe
+def _npe_line(line):
+    m = json.loads(line)
+    if m["type"] == "init":
+        return '{"ready":true}'
+    if m["type"] == "turn":
+        return json.dumps({"turn": m["turn"], "action": _npe.think(m["obs"])})
+    return ""
+`);
+      handle = py.globals.get("_npe_line");
+      const scope = py.toPy({ __name__: "__main__" });
+      py.runPython(m.code, { globals: scope, filename: "bot.py" });
+      if (!py.runPython("_npe.think is not None")) throw new Error("the bot never called npe.run(think)");
+      post({ kind: "booted" });
+    } else if (m.kind === "line") {
+      const r = handle(m.text);
+      if (r) post({ kind: "reply", text: r });
+    }
+  } catch (e) {
+    // The last lines of a Python traceback say what happened.
+    const t = String((e && e.message) || e).trim().split("\n");
+    post({ kind: "crash", text: t.slice(-6).join("\n") });
+  }
+});
+</script>
+<script>
+"use strict";
+// Runs untrusted code in a Worker. This page must be framed with
+// sandbox="allow-scripts", so it has an opaque origin. Anywhere else it
+// refuses to start, because it would then share the site's origin.
+(function () {
+  if (self.origin !== "null" || window.parent === window) {
+    document.body.textContent = "This page only works inside a sandboxed frame.";
+    return;
+  }
+  // Frames share a thread, so a flood would slow the other bots down. The
+  // message budget is per request and small, and going over it ends the bot.
+  var MAX_TEXT = 1e6, MAX_LOGS = 400, MAX_LOG_CHARS = 64000, MAX_MESSAGES = 200;
+  var worker = null, logs = 0, logChars = 0, count = 0;
+  // Never convert worker values to strings: nested arrays can blow up.
+  function str(v, n) { return typeof v === "string" ? v.slice(0, n) : "(not text)"; }
+  function up(m) { window.parent.postMessage(m, "*"); }
+  function stop(text) {
+    if (worker) worker.terminate();
+    worker = null;
+    up({ kind: "crash", text: str(text, 4000) });
+  }
+  function fromWorker(e) {
+    if (!worker) return;
+    if (++count > MAX_MESSAGES) return stop("too many messages or log lines in one turn");
+    var m = e.data;
+    if (!m || typeof m !== "object") return;
+    if (typeof m.text === "string" && m.text.length > MAX_TEXT) return stop("message too large");
+    if (m.kind === "log") {
+      var t = str(m.text, 2000);
+      logs++; logChars += t.length;
+      if (logs > MAX_LOGS || logChars > MAX_LOG_CHARS) return;
+      up({ kind: "log", text: t });
+    } else if (m.kind === "reply") {
+      if (typeof m.text === "string" && m.text.length <= 65536) up({ kind: "reply", text: m.text });
+    } else if (m.kind === "booted") {
+      up({ kind: "booted" });
+    } else if (m.kind === "status") {
+      up({ kind: "status", text: str(m.text, 200) });
+    } else if (m.kind === "built" && false) {
+      if (m.wasm instanceof Uint8Array) up({ kind: "built", wasm: m.wasm });
+      else up({ kind: "built", error: str(m.error, 8000) });
+    } else if (m.kind === "crash") {
+      stop(m.text);
+    }
+  }
+  window.addEventListener("message", function (e) {
+    if (e.source !== window.parent || !e.data || typeof e.data !== "object") return;
+    var m = e.data;
+    count = 0;
+    if (m.kind === "boot" && !worker) {
+      var src = document.getElementById("worker").textContent;
+      worker = new Worker(URL.createObjectURL(new Blob([src], { type: "text/javascript" })));
+      worker.onmessage = fromWorker;
+      worker.onerror = function (err) { stop(err.message || "worker error"); };
+    }
+    if (worker) worker.postMessage(m);
+  });
+  up({ kind: "hello" });
+})();
+</script>
+</body>
+</html>

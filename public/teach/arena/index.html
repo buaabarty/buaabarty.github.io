@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' data:; connect-src 'self'; frame-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 对战场</title>
+<link rel="stylesheet" href="style.css">
+<script src="theme.js"></script>
+<script type="module" src="app.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <h1>AI 对战场</h1>
+  <div class="tools">
+    <span id="mode" class="tag"></span>
+    <button id="importBtn" type="button">打开回放</button>
+    <button id="exportBtn" type="button" disabled>保存回放</button>
+    <button id="feedbackBtn" type="button" class="accent">提建议</button>
+    <input id="importFile" type="file" accept=".json,application/json" hidden>
+  </div>
+</header>
+<main>
+  <section class="panel side" aria-label="对战设置">
+    <div id="games" class="seg" role="group" aria-label="选择游戏"></div>
+    <p id="desc" class="hint"></p>
+    <h2>选手</h2>
+    <div id="seats"></div>
+    <button id="addSeat" type="button" class="wide">添加选手</button>
+    <label class="seed">随机种子 <input id="seed" type="number" min="0" max="4294967295" value="1"></label>
+    <div class="row">
+      <button id="run" title="Ctrl+Enter" type="button" class="primary">开始对战</button>
+      <button id="series" type="button">连测</button>
+      <button id="stop" type="button" disabled>停止</button>
+    </div>
+    <p id="status" class="hint" role="status"></p>
+  </section>
+  <section class="panel stage" aria-label="对战画面">
+    <div id="score"></div>
+    <canvas id="board" tabindex="0" aria-label="对战画面"></canvas>
+    <div class="player">
+      <button id="play" type="button" aria-label="播放或暂停">播放</button>
+      <button id="prev" type="button" aria-label="上一回合">‹</button>
+      <button id="next" type="button" aria-label="下一回合">›</button>
+      <input id="seek" type="range" min="0" max="0" value="0" aria-label="回合">
+      <span id="turn" class="mono">0 / 0</span>
+      <select id="speed" aria-label="播放速度"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select>
+    </div>
+    <div id="result" class="result" hidden></div>
+  </section>
+  <section class="panel code" aria-label="代码">
+    <div class="codebar">
+      <strong id="codeTitle"></strong>
+      <select id="lang" aria-label="语言"></select>
+      <select id="sample" aria-label="示例程序"></select>
+      <button id="try" type="button" title="编译并在当前局面试走一步">试跑一步</button>
+      <button id="openSrc" type="button">打开文件</button>
+      <button id="saveSrc" type="button">保存文件</button>
+      <input id="srcFile" type="file" accept=".c,.cpp,.py,.js,.java,.rs" hidden>
+      <button id="upload" type="button" hidden>选择 .wasm 文件</button>
+      <input id="uploadFile" type="file" accept=".wasm" hidden>
+    </div>
+    <p id="langNote" class="hint"></p>
+    <div id="editor"></div>
+    <div id="tabs" class="seg tabs" role="group" aria-label="辅助面板">
+      <button type="button" data-tab="log">日志</button>
+      <button type="button" data-tab="state">局面</button>
+      <button type="button" data-tab="doc">字段说明</button>
+    </div>
+    <pre id="log" class="log" tabindex="0"></pre>
+    <pre id="state" class="log" tabindex="0" hidden></pre>
+    <div id="doc" class="log doc" tabindex="0" hidden></div>
+  </section>
+</main>
+<dialog id="feedback">
+  <h2>提建议</h2>
+  <p class="hint">内容会公开发布在 GitHub 上,请不要填写个人信息。点击后会打开 GitHub 页面,由你确认提交。没有 GitHub 账号时,可以复制内容发给老师。</p>
+  <label>类型
+    <select id="fbType"><option>问题反馈</option><option>功能建议</option><option>新游戏建议</option></select>
+  </label>
+  <label>内容 <textarea id="fbText" maxlength="1500" rows="7"></textarea></label>
+  <p id="fbNote" class="hint" role="status"></p>
+  <div class="row">
+    <button id="fbOpen" type="button" class="primary">去 GitHub 提交</button>
+    <button id="fbCopy" type="button">复制</button>
+    <button id="fbClose" type="button">关闭</button>
+  </div>
+</dialog>
+</body>
+</html>
