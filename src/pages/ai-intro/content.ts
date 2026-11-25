@@ -347,8 +347,8 @@ export const homeworks: Homework[] = [
     out: { en: "Mon, Nov 30, after class", zh: "11 月 30 日 周一课后" },
     due: { en: "Mon, Dec 7, before class", zh: "12 月 7 日 周一上课前" },
     overview: {
-      en: "Use k-nearest neighbors on the zoo data and watch a small class disappear as k grows. Before you start, ask an AI to predict, then check it against your own experiment.",
-      zh: "用 k 近邻给动物园数据分类，看 k 变大时，数量少的类别怎样被“淹没”。动手前先让 AI 预测，再用自己的实验核对。",
+      en: "Use k-nearest neighbors on the zoo data and watch a small class disappear as k grows. Ask an AI to predict first, then switch to another model and see which one recognizes the small classes.",
+      zh: "用 k 近邻给动物园数据分类，看 k 变大时，数量少的类别怎样被“淹没”。先让 AI 预测，再用实验核对；然后换一个模型，看谁认得出数量少的类。",
     },
     tasks: [
       {
@@ -356,8 +356,9 @@ export const homeworks: Homework[] = [
         link: { href: "/teach/ai-intro/tools/ml/?example=7", label: { en: "Open the example workflow", zh: "打开示例工作流" } },
         steps: [
           { en: "Open the example “作业三 动物园 k 近邻”. It connects the zoo data (101 animals in 7 classes, only 4 of them amphibians) to k-nearest neighbors, Test and Score (5-fold cross-validation), and a confusion matrix.", zh: "打开示例“作业三 动物园 k 近邻”。它把动物园数据（101 种动物、7 类，两栖动物只有 4 种）接到 k 近邻、测试与评分（5 折交叉验证）和混淆矩阵。" },
+          { en: "Before you run anything, ask an AI how large k must be before every amphibian is misclassified. Record its answer and reasoning.", zh: "动手前先问 AI“k 加到多少两栖动物会全部认错”，记下答案和理由。" },
           { en: "Raise k from 1 to 15 and record the classification accuracy for each k.", zh: "k 从 1 加到 15，记下每个 k 的分类准确率。" },
-          { en: "Find the smallest k at which every amphibian is misclassified.", zh: "找出两栖动物全部被认错的最小 k。" },
+          { en: "Find the smallest k at which every amphibian is misclassified, and compare it with the AI's prediction.", zh: "找出两栖动物全部被认错的最小 k，并与 AI 的预测对比。" },
         ],
       },
       {
@@ -368,15 +369,19 @@ export const homeworks: Homework[] = [
         },
       },
       {
-        title: { en: "Task 3. Ask AI first (2 points)", zh: "任务三　先问 AI（2 分）" },
-        text: { en: "Before Task 1, ask an AI how large k must be before every amphibian is misclassified, and record its answer and reasoning. Compare it with your experiment.", zh: "动手前先问 AI“k 加到多少两栖动物会全部认错”，记下答案和理由，再与实验结果对比。" },
+        title: { en: "Task 3. Switch to another model (2 points)", zh: "任务三　换一个模型（2 分）" },
+        steps: [
+          { en: "Replace k-nearest neighbors with a decision tree, a random forest, or logistic regression. Keep the default settings and 5-fold cross-validation.", zh: "把 k 近邻换成决策树、随机森林或逻辑回归中的一种，参数用默认值，仍用 5 折交叉验证。" },
+          { en: "Compare the accuracy with k-NN at k = 1, and count how many amphibians and reptiles each model gets right.", zh: "和 k=1 的 k 近邻比较准确率，数一数两栖动物和爬行动物各认对几种。" },
+          { en: "Ask an AI how this model decides. Pick one animal, follow the steps yourself, and say where the explanation helped and where it was wrong or did not match.", zh: "请 AI 解释这个模型怎么判断，挑一种动物自己照着走一遍，说明 AI 的解释哪里有用、哪里不对或对不上。" },
+        ],
       },
     ],
-    submit: { en: "A table of accuracy for each k, confusion matrix screenshots, the AI conversation link, and your analysis.", zh: "各个 k 的准确率表、混淆矩阵截图、AI 对话链接和你的分析。" },
+    submit: { en: "A table of accuracy for each k, confusion matrix screenshots for both models, the AI conversation link, and your analysis.", zh: "各个 k 的准确率表、两种模型的混淆矩阵截图、AI 对话链接和你的分析。" },
     grading: [
-      { item: { en: "Finding the tipping point", zh: "找到临界值" }, points: "2", look: { en: "The numbers match the screenshots and the tipping point is correct", zh: "数字与截图一致，临界值正确" } },
+      { item: { en: "Finding the tipping point", zh: "找到临界值" }, points: "2", look: { en: "The numbers match the screenshots, the tipping point is correct, and the AI's prediction is compared with it", zh: "数字与截图一致，临界值正确，并与 AI 的预测作了对比" } },
       { item: { en: "Training versus test", zh: "训练与测试" }, points: "1", look: { en: "Explains why a perfect score on training data is not trustworthy", zh: "能说清在训练数据上满分为什么不可信" } },
-      { item: { en: "AI versus experiment", zh: "AI 与实验对比" }, points: "2", look: { en: "Says where the AI's prediction was right and where it was wrong", zh: "说清 AI 的预测哪里对、哪里错" } },
+      { item: { en: "Another model", zh: "换一个模型" }, points: "2", look: { en: "The comparison matches the screenshots, and the model's steps on one animal are followed correctly, with a judgment of the AI's explanation", zh: "对比与截图一致，能挑一种动物说清模型怎么判断，并指出 AI 的解释哪里有用、哪里不对" } },
     ],
     ai: AI_HW,
     pitfalls: [

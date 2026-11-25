@@ -355,7 +355,9 @@
     { title: '训练集与测试集：数据抽样', titleEn: 'Training and test sets: Data Sampler', nodes: [['file', 90, 230, { src: 'iris' }], ['sampler', 280, 230], ['tree', 280, 400], ['test', 500, 230, { method: 'test' }], ['pred', 500, 400], ['cm', 700, 230]],
       links: [[0, '数据', 1, '数据'], [1, '数据样本', 3, '数据'], [1, '剩余数据', 3, '测试数据'], [2, '学习器', 3, '学习器'], [1, '数据样本', 2, '数据'], [2, '模型', 4, '模型'], [1, '剩余数据', 4, '数据'], [3, '评估结果', 5, '评估结果']], open: 3 },
     { title: '作业三 动物园 k 近邻', titleEn: 'Assignment 3: k-NN on the zoo data', nodes: [['file', 100, 230, { src: 'zoo' }], ['table', 300, 110], ['knn', 300, 350, { k: 1 }], ['test', 520, 230], ['cm', 740, 230]],
-      links: [[0, '数据', 1, '数据'], [0, '数据', 3, '数据'], [2, '学习器', 3, '学习器'], [3, '评估结果', 4, '评估结果']], open: 3 }
+      links: [[0, '数据', 1, '数据'], [0, '数据', 3, '数据'], [2, '学习器', 3, '学习器'], [3, '评估结果', 4, '评估结果']], open: 3 },
+    { title: '第3讲 泰坦尼克号决策树', titleEn: 'Lecture 3: Titanic decision tree', nodes: [['file', 90, 230, { src: 'titanic' }], ['table', 290, 100], ['tree', 290, 300, { limitDepth: true, maxDepth: 2 }], ['treeview', 500, 380], ['test', 500, 190], ['cm', 720, 190]],
+      links: [[0, '数据', 1, '数据'], [0, '数据', 2, '数据'], [0, '数据', 4, '数据'], [2, '模型', 3, '树模型'], [2, '学习器', 4, '学习器'], [4, '评估结果', 5, '评估结果']], open: 3 }
   ];
   function loadExample(ex) {
     Object.keys(wins).forEach(function (id) { closeWin(+id); });
