@@ -1,0 +1,169 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' blob:; worker-src blob:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="robots" content="noindex">
+<title>sandbox</title>
+</head>
+<body>
+<script type="text/plain" id="worker">// JavaScript and WASI bots. No network: the frame's CSP has no connect-src.
+const post = self.postMessage.bind(self);
+const log = (text) => post({ kind: "log", text });
+const show = (v) => { try { return typeof v === "string" ? v : JSON.stringify(v); } catch { return String(v); } };
+for (const k of ["log", "info", "warn", "error", "debug"]) console[k] = (...a) => log(a.map(show).join(" "));
+let handle = null;
+
+function bootJs(code) {
+  let think = null;
+  const npe = { run: (f) => { think = f; } };
+  new Function("npe", code)(npe);
+  if (typeof think !== "function") throw new Error("the bot never called npe.run(think)");
+  handle = (line) => {
+    const m = JSON.parse(line);
+    if (m.type === "init") return '{"ready":true}';
+    if (m.type === "turn") return JSON.stringify({ turn: m.turn, action: think(m.obs) });
+    return "";
+  };
+}
+
+async function bootWasm(bytes) {
+  const module = await WebAssembly.compile(bytes);
+  let x;
+  const view = () => new DataView(x.memory.buffer);
+  const dec = new TextDecoder();
+  let rest = "", seed = 1;
+  const write = (fd, iov, n, out) => {
+    const v = view();
+    let total = 0;
+    for (let i = 0; i < n; i++) {
+      const p = v.getUint32(iov + 8 * i, true), len = v.getUint32(iov + 8 * i + 4, true);
+      if (rest.length < 8192) rest += dec.decode(new Uint8Array(x.memory.buffer, p, Math.min(len, 4096)));
+      total += len;
+    }
+    const lines = rest.split("\n");
+    rest = lines.pop();
+    lines.forEach(log);
+    v.setUint32(out, total, true);
+    return 0;
+  };
+  // The bot gets no files, no arguments and no environment.
+  const zero2 = (a, b) => { view().setUint32(a, 0, true); view().setUint32(b, 0, true); return 0; };
+  const wasi = {
+    fd_write: write,
+    fd_read: (fd, iov, n, out) => { view().setUint32(out, 0, true); return 0; },
+    fd_close: () => 0,
+    fd_seek: () => 70,
+    fd_fdstat_get: (fd, p) => { for (let i = 0; i < 24; i++) view().setUint8(p + i, 0); view().setUint8(p, 2); return fd < 3 ? 0 : 8; },
+    fd_prestat_get: () => 8,
+    environ_sizes_get: zero2, environ_get: () => 0,
+    args_sizes_get: zero2, args_get: () => 0,
+    clock_time_get: (id, prec, p) => { view().setBigUint64(p, BigInt(Math.floor(performance.now() * 1e6)), true); return 0; },
+    clock_res_get: (id, p) => { view().setBigUint64(p, 1000000n, true); return 0; },
+    random_get: (p, len) => { for (let i = 0; i < len; i++) { seed = (seed * 1103515245 + 12345) >>> 0; view().setUint8(p + i, seed >>> 16); } return 0; },
+    sched_yield: () => 0,
+    proc_exit: (c) => { throw new Error("the bot exited with code " + c); },
+  };
+  const imports = {};
+  for (const i of WebAssembly.Module.imports(module)) {
+    if (i.kind !== "function") throw new Error("unsupported import " + i.module + "." + i.name);
+    (imports[i.module] ??= {})[i.name] = (i.module === "wasi_snapshot_preview1" && wasi[i.name]) || (() => 52);
+  }
+  x = (await WebAssembly.instantiate(module, imports)).exports;
+  if (!x.npe_buf || !x.npe_line || !x.memory) throw new Error("not an NPlayEngine bot: npe_buf and npe_line are missing");
+  x._initialize?.();
+  handle = (line) => {
+    const b = new TextEncoder().encode(line);
+    const p = x.npe_buf(b.length);
+    new Uint8Array(x.memory.buffer, p, b.length).set(b);
+    const r = x.npe_line();
+    const mem = new Uint8Array(x.memory.buffer);
+    let e = r;
+    while (e < mem.length && mem[e] && e - r < 65536) e++;
+    return dec.decode(mem.slice(r, e));
+  };
+}
+
+const explain = (e) => {
+  const t = String((e && e.stack) || e);
+  return t.includes("unreachable") || t.includes("out of bounds") ? "memory error or abort: " + t : t;
+};
+
+self.addEventListener("message", async ({ data: m }) => {
+  try {
+    if (m.kind === "boot") {
+      if (m.lang === "js") bootJs(m.code);
+      else await bootWasm(m.wasm);
+      post({ kind: "booted" });
+    } else if (m.kind === "line") {
+      const r = handle(m.text);
+      if (r) post({ kind: "reply", text: r });
+    }
+  } catch (e) {
+    post({ kind: "crash", text: explain(e) });
+  }
+});
+</script>
+<script>
+"use strict";
+// Runs untrusted code in a Worker. This page must be framed with
+// sandbox="allow-scripts", so it has an opaque origin. Anywhere else it
+// refuses to start, because it would then share the site's origin.
+(function () {
+  if (self.origin !== "null" || window.parent === window) {
+    document.body.textContent = "This page only works inside a sandboxed frame.";
+    return;
+  }
+  // Frames share a thread, so a flood would slow the other bots down. The
+  // message budget is per request and small, and going over it ends the bot.
+  var MAX_TEXT = 1e6, MAX_LOGS = 400, MAX_LOG_CHARS = 64000, MAX_MESSAGES = 200;
+  var worker = null, logs = 0, logChars = 0, count = 0;
+  // Never convert worker values to strings: nested arrays can blow up.
+  function str(v, n) { return typeof v === "string" ? v.slice(0, n) : "(not text)"; }
+  function up(m) { window.parent.postMessage(m, "*"); }
+  function stop(text) {
+    if (worker) worker.terminate();
+    worker = null;
+    up({ kind: "crash", text: str(text, 4000) });
+  }
+  function fromWorker(e) {
+    if (!worker) return;
+    if (++count > MAX_MESSAGES) return stop("too many messages or log lines in one turn");
+    var m = e.data;
+    if (!m || typeof m !== "object") return;
+    if (typeof m.text === "string" && m.text.length > MAX_TEXT) return stop("message too large");
+    if (m.kind === "log") {
+      var t = str(m.text, 2000);
+      logs++; logChars += t.length;
+      if (logs > MAX_LOGS || logChars > MAX_LOG_CHARS) return;
+      up({ kind: "log", text: t });
+    } else if (m.kind === "reply") {
+      if (typeof m.text === "string" && m.text.length <= 65536) up({ kind: "reply", text: m.text });
+    } else if (m.kind === "booted") {
+      up({ kind: "booted" });
+    } else if (m.kind === "status") {
+      up({ kind: "status", text: str(m.text, 200) });
+    } else if (m.kind === "built" && false) {
+      if (m.wasm instanceof Uint8Array) up({ kind: "built", wasm: m.wasm });
+      else up({ kind: "built", error: str(m.error, 8000) });
+    } else if (m.kind === "crash") {
+      stop(m.text);
+    }
+  }
+  window.addEventListener("message", function (e) {
+    if (e.source !== window.parent || !e.data || typeof e.data !== "object") return;
+    var m = e.data;
+    count = 0;
+    if (m.kind === "boot" && !worker) {
+      var src = document.getElementById("worker").textContent;
+      worker = new Worker(URL.createObjectURL(new Blob([src], { type: "text/javascript" })));
+      worker.onmessage = fromWorker;
+      worker.onerror = function (err) { stop(err.message || "worker error"); };
+    }
+    if (worker) worker.postMessage(m);
+  });
+  up({ kind: "hello" });
+})();
+</script>
+</body>
+</html>

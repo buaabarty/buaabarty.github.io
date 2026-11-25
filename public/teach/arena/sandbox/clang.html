@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' blob: https://cdn.jsdelivr.net/npm/@yowasp/clang@22.0.0-git20695-13/; worker-src blob:; connect-src https://cdn.jsdelivr.net/npm/@yowasp/clang@22.0.0-git20695-13/; base-uri 'none'; form-action 'none'">
+<meta name="robots" content="noindex">
+<title>sandbox</title>
+</head>
+<body>
+<script type="text/plain" id="worker">// Compiles C and C++ with the pinned YoWASP Clang build. Student code is only
+// compiled here, never run. The result runs in run.html, which has no network.
+const post = self.postMessage.bind(self);
+let clang = null;
+
+self.addEventListener("message", async ({ data: m }) => {
+  try {
+    if (m.kind === "boot") {
+      post({ kind: "status", text: "正在加载 C/C++ 编译器,首次约 30 MB" });
+      clang = await import("https://cdn.jsdelivr.net/npm/@yowasp/clang@22.0.0-git20695-13/gen/bundle.js");
+      post({ kind: "booted" });
+    } else if (m.kind === "build") {
+      const cpp = m.lang === "cpp";
+      const name = cpp ? "bot.cpp" : "bot.c";
+      const args = [
+        cpp ? "-std=c++17" : "-std=c11", "-O2", "-mexec-model=reactor", "-I.", "-Wl,--stack-first", "-Wl,-z,stack-size=1048576",
+        ...(cpp ? ["-fno-exceptions"] : []), name, "-o", "bot.wasm",
+      ];
+      let log = "";
+      const sink = (b) => { if (b && log.length < 8000) log += new TextDecoder().decode(b); };
+      const tool = clang.commands[cpp ? "clang++" : "clang"];
+      try {
+        const out = await tool(args, { ...m.headers, [name]: m.code }, { stdout: sink, stderr: sink });
+        post({ kind: "built", wasm: new Uint8Array(out["bot.wasm"]) });
+      } catch (e) {
+        post({ kind: "built", error: log || String(e) });
+      }
+    }
+  } catch (e) {
+    post({ kind: "crash", text: String((e && e.message) || e) });
+  }
+});
+</script>
+<script>
+"use strict";
+// Runs untrusted code in a Worker. This page must be framed with
+// sandbox="allow-scripts", so it has an opaque origin. Anywhere else it
+// refuses to start, because it would then share the site's origin.
+(function () {
+  if (self.origin !== "null" || window.parent === window) {
+    document.body.textContent = "This page only works inside a sandboxed frame.";
+    return;
+  }
+  // Frames share a thread, so a flood would slow the other bots down. The
+  // message budget is per request and small, and going over it ends the bot.
+  var MAX_TEXT = 1e6, MAX_LOGS = 400, MAX_LOG_CHARS = 64000, MAX_MESSAGES = 200;
+  var worker = null, logs = 0, logChars = 0, count = 0;
+  // Never convert worker values to strings: nested arrays can blow up.
+  function str(v, n) { return typeof v === "string" ? v.slice(0, n) : "(not text)"; }
+  function up(m) { window.parent.postMessage(m, "*"); }
+  function stop(text) {
+    if (worker) worker.terminate();
+    worker = null;
+    up({ kind: "crash", text: str(text, 4000) });
+  }
+  function fromWorker(e) {
+    if (!worker) return;
+    if (++count > MAX_MESSAGES) return stop("too many messages or log lines in one turn");
+    var m = e.data;
+    if (!m || typeof m !== "object") return;
+    if (typeof m.text === "string" && m.text.length > MAX_TEXT) return stop("message too large");
+    if (m.kind === "log") {
+      var t = str(m.text, 2000);
+      logs++; logChars += t.length;
+      if (logs > MAX_LOGS || logChars > MAX_LOG_CHARS) return;
+      up({ kind: "log", text: t });
+    } else if (m.kind === "reply") {
+      if (typeof m.text === "string" && m.text.length <= 65536) up({ kind: "reply", text: m.text });
+    } else if (m.kind === "booted") {
+      up({ kind: "booted" });
+    } else if (m.kind === "status") {
+      up({ kind: "status", text: str(m.text, 200) });
+    } else if (m.kind === "built" && true) {
+      if (m.wasm instanceof Uint8Array) up({ kind: "built", wasm: m.wasm });
+      else up({ kind: "built", error: str(m.error, 8000) });
+    } else if (m.kind === "crash") {
+      stop(m.text);
+    }
+  }
+  window.addEventListener("message", function (e) {
+    if (e.source !== window.parent || !e.data || typeof e.data !== "object") return;
+    var m = e.data;
+    count = 0;
+    if (m.kind === "boot" && !worker) {
+      var src = document.getElementById("worker").textContent;
+      worker = new Worker(URL.createObjectURL(new Blob([src], { type: "text/javascript" })));
+      worker.onmessage = fromWorker;
+      worker.onerror = function (err) { stop(err.message || "worker error"); };
+    }
+    if (worker) worker.postMessage(m);
+  });
+  up({ kind: "hello" });
+})();
+</script>
+</body>
+</html>
