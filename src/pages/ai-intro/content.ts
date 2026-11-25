@@ -612,7 +612,7 @@ export const exam = {
 
 export const project = {
   title: { en: "Design a Challenge Cup idea: use AI to solve a real problem", zh: "设计一个挑战杯创意：用人工智能解决一个真实问题" },
-  due: { en: "Wed, Dec 23, 23:59 (the day of the final exam), on Xuexitong", zh: "12 月 23 日（期末考试当天）23:59 前，学习通提交" },
+  due: { en: "Tue, Dec 22, 23:59 (the day before the final exam), on Xuexitong", zh: "12 月 22 日（期末考试前一天）23:59 前，学习通提交" },
   overview: {
     en: "Individual work, 30 points. Following the standard of the Challenge Cup entrepreneurship competition, design an idea that uses AI to solve a real problem, and write it up as a proposal. Submit only the idea. You do not need to build anything. The idea must relate to the research direction of your innovation mentor: use one technique or idea from that direction on a concrete problem. You do not need to do research. A good idea has a real problem, something new, a plan that holds together, and well-understood risks.",
     zh: "个人完成，30 分。按“挑战杯”创业计划竞赛的标准，设计一个用人工智能解决真实问题的创意，写成一份提案。只交创意，不要求做出东西。创意要和你的双创导师的研究方向有一定相关性：把导师方向里的某项技术或思路用在一个具体问题上，不要求做研究本身。好的创意问题真实、有新意、方案讲得通、风险想得清。",
