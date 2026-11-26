@@ -249,8 +249,8 @@ export const homeworks: Homework[] = [
     out: { en: "Mon, Nov 23, after class", zh: "11 月 23 日 周一课后" },
     due: { en: "Mon, Nov 30, before class", zh: "11 月 30 日 周一上课前" },
     overview: {
-      en: "Record DeepSeek getting something wrong with DeepThink turned on, prove it is wrong with a reliable source, then ask again and ask another AI. You will see for yourself that fluent answers are not always correct answers.",
-      zh: "在 DeepSeek 打开“深度思考”后录下它答错的过程，用可靠来源证明它错了，再新开对话、换一个 AI 问同一题。你会亲眼看到：说得通顺，不等于说得正确。",
+      en: "Record DeepSeek getting something wrong with DeepThink turned on, prove it is wrong with a reliable source, then ask again and ask another AI. You will see for yourself that fluent answers are not always correct answers. Keep this question: you will need it again in Assignment 5.",
+      zh: "在 DeepSeek 打开“深度思考”后录下它答错的过程，用可靠来源证明它错了，再新开对话、换一个 AI 问同一题。你会亲眼看到：说得通顺，不等于说得正确。这道错题请留好，第 5 次作业还要用。",
     },
     tasks: [
       {
@@ -443,45 +443,52 @@ export const homeworks: Homework[] = [
   },
   {
     id: 5,
-    title: { en: "Make AI hit an exact length", zh: "让 AI 写准字数" },
+    title: { en: "Fix it with a better prompt", zh: "改提示词，让 AI 做对" },
     lectures: [5],
     tools: ["prompt"],
     out: { en: "Mon, Dec 7, after class", zh: "12 月 7 日 周一课后" },
     due: { en: "Mon, Dec 14, before class", zh: "12 月 14 日 周一上课前" },
     overview: {
-      en: "Ask DeepSeek for a paragraph of exactly 50 Chinese characters and refine your prompt until it gets there. You will see why a model that writes word by word struggles to count.",
-      zh: "请 DeepSeek 写一段正好 50 个汉字的话，一轮轮改提示词直到写准。你会看到逐词生成的大模型为什么数不准字。",
+      en: "First ask DeepSeek for a paragraph of exactly 50 Chinese characters and see why a model that writes word by word struggles to count. Then go back to the mistake you caught in Assignment 1 and try to make the AI answer it correctly by improving your prompt.",
+      zh: "先请 DeepSeek 写一段正好 50 个汉字的话，看逐词生成的大模型为什么数不准字。再拿出第 1 次作业里抓到的错题，用改提示词的办法让 AI 答对。",
     },
     tasks: [
       {
-        title: { en: "Task 1. Refine the prompt (2 points)", zh: "任务一　迭代提示词（2 分）" },
+        title: { en: "Task 1. Hit exactly 50 characters (2 points)", zh: "任务一　写准字数（2 分）" },
         steps: [
           { en: "Turn off DeepThink and ask DeepSeek for an introduction to your hometown of exactly 50 Chinese characters, not counting punctuation.", zh: "关掉“深度思考”，请 DeepSeek 写一段正好 50 个汉字（标点不算）的家乡介绍。" },
           { en: "Count the characters yourself, or use Word's word count. If it is wrong, improve the prompt using the five elements, for at least 3 rounds.", zh: "自己数字数，也可以用 Word 的字数统计。不对就用五要素改提示词，至少改 3 轮。" },
-          { en: "For each round, record what you changed and how many characters it wrote.", zh: "记下每轮改了什么、实际写了多少字。" },
+          { en: "After each round, ask “how many characters did you write?”. Record what you changed, the count it reports, and the real count.", zh: "每轮追问“你这段写了几个字”，记下改了什么、它自报的字数和实际字数。" },
         ],
       },
       {
-        title: { en: "Task 2. Let it report the count (1 point)", zh: "任务二　让它自报（1 分）" },
-        text: { en: "After each round, ask “how many characters did you write?”. Record the count it reports and the real count.", zh: "每轮追问“你这段写了几个字”，记下它自报的字数和实际字数。" },
+        title: { en: "Task 2. Turn on DeepThink (1 point)", zh: "任务二　打开深度思考（1 分）" },
+        text: { en: "Do it again with DeepThink on and compare. Using next-word generation, explain why it cannot count characters reliably, and why DeepThink often gets it right.", zh: "打开“深度思考”再做一次并比较。结合“逐词生成”解释它为什么数不准字，深度思考为什么常能改对。" },
       },
       {
-        title: { en: "Task 3. Turn on DeepThink (2 points)", zh: "任务三　打开深度思考（2 分）" },
-        text: { en: "Do it again with DeepThink on and compare. Using next-word generation, explain why it cannot count characters reliably, and why DeepThink often gets it right.", zh: "打开“深度思考”再做一次并比较。结合“逐词生成”解释它为什么数不准字，深度思考为什么常能改对。" },
+        title: { en: "Task 3. Fix your own mistake case (2 points)", zh: "任务三　修好你的错题（2 分）" },
+        steps: [
+          { en: "Take the question DeepSeek got wrong in Assignment 1. If it already answered correctly when you asked again, find a new question it gets wrong, or use a classmate's and say so.", zh: "拿出第 1 次作业里 DeepSeek 答错的那道题。如果重问时它已经答对，就换一道新的错题，或借用同学的错题并注明。" },
+          { en: "Turn off DeepThink and improve the prompt for at least 3 rounds, using the five elements, examples, step-by-step reasoning, or asking for sources, until it answers correctly or you are sure it cannot. Do not put the correct answer or the key fact in the prompt. You may attach original material, but say so in your report.", zh: "关掉“深度思考”，用五要素、给示例、要求分步推理、要求给出处等办法改提示词，至少 3 轮，直到它答对或确认改不好。提示词里不能直接写出正确答案或关键事实；可以附上原始资料，但要在报告里注明。" },
+          { en: "Say which change made the difference. If it never got it right, judge whether this kind of mistake needs source material, a web search, or a human check.", zh: "说明哪一招起了作用；改不好的，判断这类错要靠给资料、联网搜索，还是只能由人核查。" },
+        ],
       },
       {
         title: { en: "Optional, not graded", zh: "选做，不计分" },
         text: { en: "Tell real from AI-written passages, or refine the “AI grader” prompt for three rounds.", zh: "真假文段鉴别；或把“AI 评分官”提示词迭代三轮。" },
       },
     ],
-    submit: { en: "The prompt for each round, the real and reported counts, the conversation links, and your analysis.", zh: "每轮提示词、实际字数与自报字数、对话链接和你的分析。" },
+    submit: { en: "The prompt and result of every round in Tasks 1 and 3, the real and reported counts, the conversation links, and your analysis.", zh: "任务一和任务三每轮的提示词与结果、实际字数与自报字数、对话链接和你的分析。" },
     grading: [
-      { item: { en: "Prompt refinement", zh: "提示词迭代" }, points: "2", look: { en: "Every round is recorded and each change has a purpose", zh: "迭代记录完整，每次改动有目的" } },
-      { item: { en: "Reported versus real", zh: "自报与实际" }, points: "1", look: { en: "Both counts are recorded honestly for every round", zh: "每轮如实记录自报字数和实际字数" } },
-      { item: { en: "Explanation", zh: "原因分析" }, points: "2", look: { en: "Uses next-word generation to explain the miscounts and what DeepThink changes", zh: "能用逐词生成解释数不准字，以及深度思考起了什么作用" } },
+      { item: { en: "Hitting the count", zh: "写准字数" }, points: "2", look: { en: "Every round is recorded, the counts are your own, and both reported and real counts are given", zh: "每轮记录完整，字数是本人数的，自报字数和实际字数都如实记录" } },
+      { item: { en: "DeepThink", zh: "深度思考" }, points: "1", look: { en: "A clear comparison, explained with next-word generation", zh: "比较清楚，能用逐词生成解释差别" } },
+      { item: { en: "Fixing the mistake", zh: "修好错题" }, points: "2", look: { en: "No answer hidden in the prompt, records match the screenshots, and the analysis says what worked or why it could not be fixed; a case that stays wrong loses no points if it is analysed well", zh: "提示词没有直接给答案，记录与截图一致，说清哪一招起作用或为什么改不好；改不好但分析到位不扣分" } },
     ],
     ai: AI_HW,
-    pitfalls: [{ en: "Trusting the count it reports instead of counting yourself.", zh: "字数没有自己数，直接信了它的自报。" }],
+    pitfalls: [
+      { en: "Trusting the count it reports instead of counting yourself.", zh: "字数没有自己数，直接信了它的自报。" },
+      { en: "Writing the correct answer into the prompt.", zh: "把正确答案直接写进了提示词。" },
+    ],
   },
   {
     id: 6,
