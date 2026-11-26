@@ -397,41 +397,48 @@ export const homeworks: Homework[] = [
     out: { en: "Wed, Dec 2, after class", zh: "12 月 2 日 周三课后" },
     due: { en: "Mon, Dec 7, before class", zh: "12 月 7 日 周一上课前" },
     overview: {
-      en: "Find the smallest neural network that can separate the circle data, then see how better inputs make the network smaller. Before you start, ask an AI to predict.",
-      zh: "找出能分开圆形数据的最小神经网络，再看换了输入以后网络能省掉多少。动手前先让 AI 预测。",
+      en: "Find the smallest neural network that can separate the circle data, and see how better inputs make the network smaller. Ask an AI to predict first. Then design your own network for the much harder spiral data.",
+      zh: "找出能分开圆形数据的最小神经网络，再看换了输入以后网络能省掉多少，动手前先让 AI 预测。然后自己设计网络，挑战难得多的螺旋数据。",
     },
     tasks: [
       {
         title: { en: "Task 1. Find the fewest neurons (2 points)", zh: "任务一　找最少神经元（2 分）" },
         steps: [
           { en: "In the neural network playground, choose the circle data, tick only the inputs X1 and X2, and use one hidden layer. Keep the other defaults: learning rate 0.03, tanh activation.", zh: "在神经网络练习页选圆形数据，输入只勾 X1、X2，一个隐藏层，其余保持默认（学习率 0.03、双曲正切）。" },
+          { en: "Before you run anything, ask an AI how many neurons are needed, and how many once the squared inputs are added. Record its answers and reasoning.", zh: "动手前先问 AI 最少要几个神经元、加上平方输入后要几个，记下答案和理由。" },
           { en: "Start with 1 neuron and add one at a time, training at least 300 epochs each time.", zh: "神经元从 1 个往上加，每次训练 300 轮以上。" },
           { en: "Find the fewest neurons that bring the test loss below 0.05. Take a screenshot for each number of neurons.", zh: "找出测试损失降到 0.05 以下的最少神经元数，每个数量截一张图。" },
         ],
       },
       {
         title: { en: "Task 2. Change the inputs (1 point)", zh: "任务二　换输入（1 分）" },
-        text: { en: "Also tick the squared inputs X1² and X2², and find again how many neurons you need. You may delete the hidden layer entirely.", zh: "再勾上 X1²、X2² 两个平方输入，重新找最少需要几个神经元，可以把隐藏层全部删掉。" },
+        text: { en: "Also tick the squared inputs X1² and X2², and find again how many neurons you need. You may delete the hidden layer entirely. Compare both results with the AI's predictions, and explain why the squared inputs let you drop neurons.", zh: "再勾上 X1²、X2² 两个平方输入，重新找最少需要几个神经元，可以把隐藏层全部删掉。把两次结果与 AI 的预测对比，解释平方输入为什么能省掉神经元。" },
       },
       {
-        title: { en: "Task 3. Ask AI first (2 points)", zh: "任务三　先问 AI（2 分）" },
-        text: { en: "Before Task 1, ask an AI both questions. Compare its answers with your experiment, and explain why the squared inputs let you drop neurons.", zh: "动手前先问 AI 这两个问题，再与实验结果对比，解释平方输入为什么能省掉神经元。" },
+        title: { en: "Task 3. Take on the spiral (2 points)", zh: "任务三　挑战螺旋（2 分）" },
+        steps: [
+          { en: "Choose the spiral data and tick only X1 and X2. Keep learning rate 0.03 and tanh.", zh: "选螺旋数据，输入只勾 X1、X2，学习率 0.03、双曲正切保持不变。" },
+          { en: "Design the number of hidden layers and neurons yourself. Within 2000 epochs, bring the test loss below 0.1, using as few neurons in total as you can.", zh: "自己设计隐藏层数和每层神经元数，在 2000 轮以内把测试损失降到 0.1 以下，神经元总数越少越好。" },
+          { en: "Run each setting at least twice, clicking reset in between, and record every result.", zh: "每种设置至少跑两次，中间点重置，记下每次的结果。" },
+          { en: "Ask an AI for a design and its reasons. Try it once and judge whether the AI was right.", zh: "请 AI 给出设计建议并说明理由，按建议试一次，判断 AI 说得对不对。" },
+        ],
       },
       {
         title: { en: "Optional, not graded", zh: "选做，不计分" },
         text: { en: "Use CNN Explainer to look at the features layer by layer.", zh: "用 CNN Explainer 逐层看卷积网络提取的特征。" },
       },
     ],
-    submit: { en: "Screenshots, the AI conversation link, and your analysis.", zh: "截图、AI 对话链接和你的分析。" },
+    submit: { en: "Screenshots, a record of your spiral attempts, the AI conversation link, and your analysis.", zh: "截图、螺旋的尝试记录、AI 对话链接和你的分析。" },
     grading: [
-      { item: { en: "Fewest neurons", zh: "最少神经元" }, points: "2", look: { en: "Screenshots match the settings and the conclusion is correct", zh: "截图与设置一致，结论正确" } },
+      { item: { en: "Fewest neurons", zh: "最少神经元" }, points: "2", look: { en: "Screenshots match the settings, the conclusion is correct, and the AI's prediction is compared with it", zh: "截图与设置一致，结论正确，并与 AI 的预测作了对比" } },
       { item: { en: "Squared inputs", zh: "平方输入" }, points: "1", look: { en: "Finds the new minimum and explains why fewer neurons are needed", zh: "找到新的最少数量，并能解释为什么省掉了神经元" } },
-      { item: { en: "AI versus experiment", zh: "AI 与实验对比" }, points: "2", look: { en: "Says where the AI's prediction was right and where it was wrong", zh: "说清 AI 的预测哪里对、哪里错" } },
+      { item: { en: "The spiral", zh: "挑战螺旋" }, points: "2", look: { en: "The records match the screenshots, the network reaches the target, repeated runs are reported, and the AI's advice is checked by experiment", zh: "记录与截图一致，网络达到要求，报告了重复跑的结果，并用实验检验了 AI 的建议" } },
     ],
     ai: AI_HW,
     pitfalls: [
       { en: "Changing several settings at once.", zh: "一次改了多个设置。" },
       { en: "Drawing a conclusion before training long enough.", zh: "训练轮数太少就下结论。" },
+      { en: "Judging a spiral setting from a single run, when another starting point may give a different result.", zh: "螺旋只跑一次就下结论，换个随机起点结果可能不同。" },
     ],
   },
   {
