@@ -1,0 +1,5 @@
+MediaPipe Tasks Vision (@mediapipe/tasks-vision 0.10.14) and the Pose Landmarker Lite model
+Copyright Google LLC. Licensed under the Apache License, Version 2.0.
+https://github.com/google-ai-edge/mediapipe
+https://www.apache.org/licenses/LICENSE-2.0
+Files in this folder are unmodified copies, hosted here so the page works without access to Google servers.

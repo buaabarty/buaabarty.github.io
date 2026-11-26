@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>动作识别练习</title>
+  <link rel="stylesheet" href="../common/tool.css">
+  <script src="../common/tool.js"></script>
+  <style>
+    .stage { position: relative; width: 100%; max-width: 900px; }
+    .stage video { display: none; }
+    #view { width: 100%; height: auto; background: #111; border-radius: 10px; }
+    .big-label { font-family: var(--font-display); font-size: 28px; font-weight: 700; text-align: center; min-height: 1.4em; }
+    .bar { height: 10px; border-radius: 6px; background: var(--surface-muted); overflow: hidden; }
+    .bar > i { display: block; height: 100%; background: var(--c-path, #003F88); width: 0; transition: width .2s; }
+    .tally { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+    .tally td, .tally th { padding: 6px 4px; border-bottom: 1px solid var(--border-subtle); text-align: center; }
+    .status { color: var(--text-secondary); font-size: var(--text-sm); min-height: 1.4em; text-align: center; }
+    input[type=text] { width: 100%; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border-subtle); background: var(--surface); color: var(--text-primary); }
+    .hidden { display: none !important; }
+    .control-panel { min-width: 0; }
+    .control-panel .segmented { width: 100%; }
+    .control-panel .segmented button { min-width: 0; padding-inline: 8px; }
+    .control-panel .field-group { grid-template-columns: minmax(0, 1fr); }
+    input[type=file] { display: block; width: 100%; margin-top: 4px; }
+  </style>
+</head>
+<body data-title-zh="动作识别练习" data-title-en="Pose and Movement Lab">
+  <main class="app-shell">
+    <p class="intro" data-en="The computer finds 33 body keypoints in each frame. Switch to the classifier, record two kinds of movement, train, and test it on someone new. Everything runs in your browser; no video is uploaded.">电脑在每一帧画面里找出身体的 33 个关键点。切到“动作分类”，录两类动作、训练，再请没参加录制的同学来测。全部在你的浏览器里运行，视频不会上传。</p>
+    <div class="tabs">
+      <button type="button" class="primary" id="tabPose" data-en="Skeleton">骨骼识别</button>
+      <button type="button" id="tabCls" data-en="Movement classifier">动作分类</button>
+    </div>
+    <section class="workspace">
+      <aside class="control-panel">
+        <div class="field-group">
+          <span class="field-label" data-en="Input">画面来源</span>
+          <div class="segmented">
+            <button type="button" id="srcCam" data-en="Camera">摄像头</button>
+            <button type="button" id="srcDemo" data-en="Demo video">示例视频</button>
+          </div>
+          <label class="hint"><span data-en="Or upload a video:">或者上传一段视频：</span> <input type="file" id="file" accept="video/*,image/*"></label>
+        </div>
+
+        <div id="posePanel">
+          <div class="metric-list">
+            <div class="inline-field"><span data-en="People found">识别到的人数</span><b id="mPeople">-</b></div>
+            <div class="inline-field"><span data-en="Visible keypoints (of 33)">看得清的关键点（共 33 个）</span><b id="mVisible">-</b></div>
+            <div class="inline-field"><span data-en="Average confidence">平均把握</span><b id="mConf">-</b></div>
+          </div>
+          <p class="hint" data-en="Green points are clear; red points are ones the computer is unsure about. Try turning sideways, covering a leg, or moving fast.">绿点表示看得清，红点表示电脑没把握。试试侧身、挡住一条腿、快速转体，看哪些点变红。</p>
+          <button type="button" id="snapBtn" data-en="Save a screenshot">保存截图</button>
+        </div>
+
+        <div id="clsPanel" class="hidden">
+          <div class="field-group">
+            <span class="field-label" data-en="Class A">第一类</span>
+            <input type="text" id="nameA" value="标准深蹲">
+            <button type="button" id="recA" data-en="Record A for 3 seconds">录 3 秒</button>
+            <span class="hint"><span data-en="Samples:">样本数：</span><b id="nA">0</b></span>
+          </div>
+          <div class="field-group">
+            <span class="field-label" data-en="Class B">第二类</span>
+            <input type="text" id="nameB" value="膝盖内扣">
+            <button type="button" id="recB" data-en="Record B for 3 seconds">录 3 秒</button>
+            <span class="hint"><span data-en="Samples:">样本数：</span><b id="nB">0</b></span>
+          </div>
+          <div class="button-grid">
+            <button type="button" class="primary" id="trainBtn" data-en="Train">训练</button>
+            <button type="button" id="clearBtn" data-en="Clear all">全部清空</button>
+          </div>
+          <div class="tips">
+            <span class="field-label" data-en="Test record">测试记录</span>
+            <p class="hint" data-en="Ask a classmate who did not record to do each movement. After each try, mark whether the computer was right.">请没参加录制的同学做动作，每做一次，按下面的按钮记下电脑判对还是判错。</p>
+            <table class="tally">
+              <tr><th></th><th data-en="Right">判对</th><th data-en="Wrong">判错</th></tr>
+              <tr><td id="tA">标准深蹲</td><td><button type="button" data-t="A1">+1</button> <b id="cA1">0</b></td><td><button type="button" data-t="A0">+1</button> <b id="cA0">0</b></td></tr>
+              <tr><td id="tB">膝盖内扣</td><td><button type="button" data-t="B1">+1</button> <b id="cB1">0</b></td><td><button type="button" data-t="B0">+1</button> <b id="cB0">0</b></td></tr>
+            </table>
+          </div>
+        </div>
+      </aside>
+
+      <section class="maze-area">
+        <div class="canvas-frame">
+          <div class="big-label" id="pred"></div>
+          <div class="bar" style="width:60%" id="barWrap"><i id="bar"></i></div>
+          <div class="stage">
+            <video id="video" playsinline muted loop></video>
+            <canvas id="view" width="960" height="540"></canvas>
+          </div>
+          <p class="status" id="status" data-en="Loading the pose model...">正在加载姿态模型……</p>
+        </div>
+      </section>
+    </section>
+    <p class="intro" data-en="Pose model: MediaPipe Pose Landmarker (Apache-2.0). Demo video: FitnessScape, Wikimedia Commons, CC BY 3.0.">姿态模型：MediaPipe Pose Landmarker（Apache-2.0）。示例视频：FitnessScape，Wikimedia Commons，CC BY 3.0。</p>
+  </main>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
