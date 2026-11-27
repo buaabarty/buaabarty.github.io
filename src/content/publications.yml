@@ -79,7 +79,17 @@ main:
     page: https://tutorcode.org/
 
 # Shown only on the Publications page, not on the homepage.
-earlier:
+research_earlier:
+
+  - id: sp17-wastk
+    tag: "SP'17"
+    title: "WASTK: A Weighted Abstract Syntax Tree Kernel Method for Source Code Plagiarism Detection"
+    authors: Deqiang Fu, Yanyan Xu, Haoran Yu, <strong>Boyang Yang</strong>
+    conference_short: Scientific Programming
+    conference: Scientific Programming, 2017.
+    pdf: https://doi.org/10.1155/2017/7809047
+
+education:
 
   - id: ceisee19-training
     tag: "CEISEE'19"
@@ -106,14 +116,6 @@ earlier:
       zh: 实验技术与管理，2018(6)。
     pdf: https://www.cnki.com.cn/Article/CJFDTotal-SYJL201806055.htm
     slides: /files/pubs/etm2018-slides.pdf
-
-  - id: sp17-wastk
-    tag: "SP'17"
-    title: "WASTK: A Weighted Abstract Syntax Tree Kernel Method for Source Code Plagiarism Detection"
-    authors: Deqiang Fu, Yanyan Xu, Haoran Yu, <strong>Boyang Yang</strong>
-    conference_short: Scientific Programming
-    conference: Scientific Programming, 2017.
-    pdf: https://doi.org/10.1155/2017/7809047
 
   - id: cseit16-visual
     tag: "CSEIT'16"
