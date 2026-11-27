@@ -373,15 +373,16 @@ export const homeworks: Homework[] = [
         steps: [
           { en: "Replace k-nearest neighbors with a decision tree, a random forest, or logistic regression. Keep the default settings and 5-fold cross-validation.", zh: "把 k 近邻换成决策树、随机森林或逻辑回归中的一种，参数用默认值，仍用 5 折交叉验证。" },
           { en: "Compare the accuracy with k-NN at k = 1, and count how many amphibians and reptiles each model gets right.", zh: "和 k=1 的 k 近邻比较准确率，数一数两栖动物和爬行动物各认对几种。" },
-          { en: "Ask an AI how this model decides. Pick one animal, follow the steps yourself, and say where the explanation helped and where it was wrong or did not match.", zh: "请 AI 解释这个模型怎么判断，挑一种动物自己照着走一遍，说明 AI 的解释哪里有用、哪里不对或对不上。" },
+          { en: "If you choose a decision tree: before connecting anything, ask an AI which feature the tree will ask about first on the zoo data, and why. Then connect a Tree Viewer to check. Give the AI only the counts of each class in each branch under the first question, ask it to compute the information gain of that split with entropy, and check every number in its working against your screenshot.", zh: "选决策树的同学：动手前先问 AI“动物园数据上，决策树的第一个问题会问哪个特征，为什么”。再接上“树查看器”核对。然后只把树查看器里第一个问题下面各分支、各类动物的数量告诉 AI，请它用熵算这一刀的信息增益，逐项核对它算式里的数和你的截图是否一致。" },
+          { en: "If you choose a random forest or logistic regression: ask an AI how the model decides, pick one animal, follow the steps yourself, and say where the explanation helped and where it was wrong or did not match.", zh: "选随机森林或逻辑回归的同学：请 AI 解释这个模型怎么判断，挑一种动物自己照着走一遍，说明 AI 的解释哪里有用、哪里不对或对不上。" },
         ],
       },
     ],
-    submit: { en: "A table of accuracy for each k, confusion matrix screenshots for both models, the AI conversation link, and your analysis.", zh: "各个 k 的准确率表、两种模型的混淆矩阵截图、AI 对话链接和你的分析。" },
+    submit: { en: "A table of accuracy for each k, confusion matrix screenshots for both models, a Tree Viewer screenshot if you chose a decision tree, the AI conversation link, and your analysis.", zh: "各个 k 的准确率表、两种模型的混淆矩阵截图（选决策树的附树查看器截图）、AI 对话链接和你的分析。" },
     grading: [
       { item: { en: "Finding the tipping point", zh: "找到临界值" }, points: "2", look: { en: "The numbers match the screenshots, the tipping point is correct, and the AI's prediction is compared with it", zh: "数字与截图一致，临界值正确，并与 AI 的预测作了对比" } },
       { item: { en: "Training versus test", zh: "训练与测试" }, points: "1", look: { en: "Explains why a perfect score on training data is not trustworthy", zh: "能说清在训练数据上满分为什么不可信" } },
-      { item: { en: "Another model", zh: "换一个模型" }, points: "2", look: { en: "The comparison matches the screenshots, and the model's steps on one animal are followed correctly, with a judgment of the AI's explanation", zh: "对比与截图一致，能挑一种动物说清模型怎么判断，并指出 AI 的解释哪里有用、哪里不对" } },
+      { item: { en: "Another model", zh: "换一个模型" }, points: "2", look: { en: "The comparison matches the screenshots. Decision tree: the AI's guess and every number in its working are checked against the Tree Viewer, with errors pointed out. Other models: the steps on one animal are followed correctly, with a judgment of the AI's explanation", zh: "对比与截图一致。决策树：AI 的猜测和算式里的每个数都与树查看器核对过，错处指出来；其他模型：挑一种动物说清怎么判断，并指出 AI 的解释哪里有用、哪里不对" } },
     ],
     ai: AI_HW,
     pitfalls: [

@@ -661,6 +661,20 @@
         'Depth ' + r.depth + ', ' + r.leaves + ' final decisions. Each box shows the majority class, its share and the number of rows that reach the box. The bottom line of a box names the feature asked next.') }));
       el.appendChild(h('div', { class: 'ow-scroll tree-wrap', html: r.svg }));
       el.appendChild(h('div', { html: r.legend }));
+      // 第一个问题下各分支、各类别的条数：用熵手算信息增益时要用
+      var root = m.tree, cls = m.classes;
+      if (!root.leaf) {
+        var row = function (name, n) {
+          var tot = n.dist.reduce(function (a, b) { return a + b; }, 0);
+          return '<tr><th>' + esc(name) + '</th>' + n.dist.map(function (k) { return '<td>' + k + '</td>'; }).join('') + '<td>' + tot + '</td></tr>';
+        };
+        var s = '<table class="ow-grid cm"><thead><tr><th class="corner">' + T('分支 ↓ / 类别 →', 'Branch ↓ / Class →') + '</th>' +
+          cls.map(function (c) { return '<th>' + esc(D(c)) + '</th>'; }).join('') + '<th>' + T('合计', 'Total') + '</th></tr></thead><tbody>' +
+          row(T('全部数据', 'All rows'), root) + root.children.map(function (c) { return row(D(m.table.cols[root.f].name) + ' ' + c[0], c[1]); }).join('') + '</tbody></table>';
+        el.appendChild(h('p', { class: 'ow-info', text: T('第一个问题“' + D(m.table.cols[root.f].name) + '”把数据分成下面几支，表里是每一支各类别的条数。',
+          'The first question, "' + D(m.table.cols[root.f].name) + '", splits the data into the branches below. The table gives the number of rows of each class in each branch.') }));
+        el.appendChild(h('div', { class: 'ow-scroll', html: s }));
+      }
     }
   };
 
