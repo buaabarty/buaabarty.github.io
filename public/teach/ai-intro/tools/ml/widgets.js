@@ -631,6 +631,8 @@
       var t = w.inputs['数据'], ms = w.inputs['模型'] || [];
       if (!t || !ms.length) { el.appendChild(h('p', { class: 'ow-info', text: T('需要连接“数据”和至少一个“模型”（决策树等组件在有数据输入时会输出模型）。', 'Connect "Data" and at least 1 "Model". A learner such as Tree outputs a model once it has input data.') })); return; }
       var y = ML.yIdx(t);
+      // 每条预测带上模型的把握：逻辑回归是概率，k 近邻是票数占比，决策树是叶子里的占比
+      var conf = ms.map(function (m) { return ML.align(m.table, t).map(function (r) { var d = m.dist(r); return Math.max.apply(null, d); }); });
       var rows = ms.map(function (m) { return ML.align(m.table, t).map(function (r) { return ML.predict(m, r); }); });
       var head = ms.map(function (m) { return '<th class="pred">' + esc(OW.title(m.name)) + '</th>'; }).join('');
       var acc = ms.map(function (m, k) {
@@ -640,7 +642,7 @@
       }).filter(Boolean);
       if (acc.length) el.appendChild(h('p', { class: 'ow-info', text: acc.join(T('；', '. ')) + T('。', '.') }));
       el.appendChild(h('div', { class: 'ow-scroll', html: dataTableHtml(t, 500, head, function (r, i) {
-        return rows.map(function (pr) { var ok = y >= 0 && pr[i] === r[y]; return '<td class="pred ' + (y < 0 ? '' : ok ? 'ok' : 'bad') + '">' + esc(D(pr[i])) + '</td>'; }).join('');
+        return rows.map(function (pr, k) { var ok = y >= 0 && pr[i] === r[y]; return '<td class="pred ' + (y < 0 ? '' : ok ? 'ok' : 'bad') + '">' + esc(D(pr[i])) + ' <span class="conf">' + Math.round(conf[k][i] * 100) + '%</span></td>'; }).join('');
       }) }));
     }
   };

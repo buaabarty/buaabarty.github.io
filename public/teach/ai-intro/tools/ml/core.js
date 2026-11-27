@@ -216,6 +216,8 @@
       var s = e.reduce(function (a, b) { return a + b; }, 0);
       return e.map(function (v) { return v / s; });
     }
+    // 步长：惩罚很重（C 很小）时步长 1 会让权重来回震荡发散，只在这时把步长缩小；C 不太小时与原来完全一致
+    var lr = lam < 1 ? 1.0 : 1 / (1 + lam);
     for (var it = 0; it < 500; it++) {
       var G = W.map(function (w) { return w.map(function () { return 0; }); });
       for (var n = 0; n < X.length; n++) {
@@ -226,7 +228,7 @@
         }
       }
       for (var c2 = 0; c2 < C; c2++) for (var j = 0; j < D; j++) {
-        W[c2][j] -= 1.0 * (G[c2][j] / X.length + (j < D - 1 ? lam * W[c2][j] : 0));
+        W[c2][j] -= lr * (G[c2][j] / X.length + (j < D - 1 ? lam * W[c2][j] : 0));
       }
     }
     return { classes: cls, table: t, dist: function (r) { return probs(enc(r).concat([1])); } };
